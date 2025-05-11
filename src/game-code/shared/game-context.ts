@@ -15,9 +15,13 @@ export abstract class GameContext {
   score: number = 0
   gravity: number = 0.12
   currentDir: direction = direction.NONE
+  time: number = 300 // 5 minutes
 
   private xSpeed: number = 1.5
   private mainLoop: number | null = null
+  private timerLoop: number | null = null
+
+  protected readonly levels: Level[] = []
 
   // Temporary player object until initialized
   protected abstract player: Player
@@ -43,12 +47,24 @@ export abstract class GameContext {
     this.mainLoop = setInterval(() => {
       this.updateGameArea()
     }, 5)
+
+    if (this.timerLoop) {
+      clearInterval(this.timerLoop)
+    }
+    this.timerLoop = setInterval(() => {
+      this.timerTick()
+    }, 1000)
   }
 
   stopMainLoop() {
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
       this.mainLoop = null
+    }
+
+    if (this.timerLoop) {
+      clearInterval(this.timerLoop)
+      this.timerLoop = null
     }
   }
 
@@ -79,9 +95,16 @@ export abstract class GameContext {
     }
   }
 
-  setLevel(level: Level) {
+  setLevel(levelName: string) {
     this.clear()
     this.gameObjects = []
+    this.uiObjects = []
+
+    const level = this.levels.find((level) => level.name === levelName)
+    if (!level) {
+      throw new Error(`Level ${levelName} not found`)
+    }
+
     const addGameObject = (
       piece: gamePiece,
       addToList: (gameObject: GameObject) => void,
@@ -111,10 +134,7 @@ export abstract class GameContext {
   private updateGameArea() {
     this.clear()
 
-    this.player.update()
-    this.player.draw(this.gameContext)
     const canMove = this.player.canMove(this.currentDir)
-
     for (const gameObject of this.gameObjects) {
       if (!gameObject.isStatic && canMove) {
         // We move the game object opposite to the player
@@ -126,7 +146,7 @@ export abstract class GameContext {
         }
       }
 
-      if (gameObject instanceof MovingGameObject) {
+      if (!gameObject.isStatic && gameObject instanceof MovingGameObject) {
         gameObject.update()
       }
 
@@ -140,6 +160,11 @@ export abstract class GameContext {
     // The ui layer is never out of bounds
     for (const uiObject of this.uiObjects) {
       uiObject.draw(this.uiContext)
+    }
+
+    if (!outOfBounds(this.player.rect, this)) {
+      this.player.update()
+      this.player.draw(this.gameContext)
     }
   }
 
@@ -198,5 +223,21 @@ export abstract class GameContext {
     canvas.height = 810
     const context = canvas.getContext('2d') as CanvasRenderingContext2D
     return { canvas, context }
+  }
+
+  private timerTick() {
+    this.time--
+    if (this.time <= 0) {
+      if (this.timerLoop) {
+        clearInterval(this.timerLoop)
+        this.timerLoop = null
+      }
+
+      for (const gameObject of this.gameObjects) {
+        gameObject.isStatic = true
+      }
+
+      this.player.playerKill()
+    }
   }
 }

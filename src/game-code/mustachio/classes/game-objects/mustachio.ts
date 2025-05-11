@@ -20,8 +20,6 @@ import type { GameObject } from '@/game-code/shared/game-object'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Mustachio extends Player {
-  readonly objectId = 0
-
   private readonly imageStraight = new Image()
   private readonly imageLeft = new Image()
   private readonly imageRight = new Image()
@@ -32,6 +30,8 @@ export class Mustachio extends Player {
   private isBig = false
   private hitTimer: number | null = null
   private warpPipe: WarpPipe | null = null
+
+  private deathAnimationTimeout: number | null = null
 
   constructor(gameContext: GameContext, objectId: number) {
     super(gameContext, objectId, {
@@ -55,25 +55,27 @@ export class Mustachio extends Player {
   draw(ctx: CanvasRenderingContext2D) {
     let image: HTMLImageElement
 
-    if (!this.isFire) {
-      if (this.gameContext.currentDir === direction.RIGHT) {
-        image = this.imageRight
-      } else if (this.gameContext.currentDir === direction.LEFT) {
-        image = this.imageLeft
+    if (!this.isDead) {
+      if (!this.isFire) {
+        if (this.gameContext.currentDir === direction.RIGHT) {
+          image = this.imageRight
+        } else if (this.gameContext.currentDir === direction.LEFT) {
+          image = this.imageLeft
+        } else {
+          image = this.imageStraight
+        }
       } else {
-        image = this.imageStraight
+        if (this.gameContext.currentDir === direction.RIGHT) {
+          image = this.imageRightFire
+        } else if (this.gameContext.currentDir === direction.LEFT) {
+          image = this.imageLeftFire
+        } else {
+          image = this.imageStraightFire
+        }
       }
     } else {
-      if (this.gameContext.currentDir === direction.RIGHT) {
-        image = this.imageRightFire
-      } else if (this.gameContext.currentDir === direction.LEFT) {
-        image = this.imageLeftFire
-      } else {
-        image = this.imageStraightFire
-      }
+      image = this.imageStraight
     }
-
-    this.handleGravity()
 
     ctx.drawImage(
       image,
@@ -85,6 +87,14 @@ export class Mustachio extends Player {
   }
 
   update(): void {
+    if (this.isDead) {
+      if (this.deathAnimationTimeout === null) {
+        this.rect.y += this.speedY
+        this.speedY += 0.06
+      }
+
+      return
+    }
     this.blockedDirHor = direction.NONE
     this.blockedDirVert = direction.NONE
 
@@ -92,6 +102,8 @@ export class Mustachio extends Player {
     for (const gameObject of this.gameContext.gameObjects) {
       this.handleGameObject(gameObject)
     }
+
+    this.handleGravity()
   }
 
   goDownPipe() {
@@ -279,6 +291,10 @@ export class Mustachio extends Player {
   }
 
   playerKill() {
-    console.log('playerKill') // TODO: Implement playerKill
+    this.isDead = true
+    this.deathAnimationTimeout = setTimeout(() => {
+      this.deathAnimationTimeout = null
+      this.speedY = -5
+    }, 1000)
   }
 }

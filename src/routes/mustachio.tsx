@@ -1,4 +1,3 @@
-import { testLevelOne } from '@/game-code/mustachio/levels/test-level-one'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { GameContextMustachio } from '@/game-code/mustachio/game-context-mustachio'
@@ -10,7 +9,7 @@ export const Route = createFileRoute('/mustachio')({
 function MustachioGame() {
   useEffect(() => {
     const gc = new GameContextMustachio()
-    testLevelOne(gc)
+    gc.setLevel('Test Level One')
     gc.startMainLoop()
   }, [])
 
