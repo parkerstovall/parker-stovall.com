@@ -1,12 +1,13 @@
 import type { GameContext } from '../../shared/game-context'
 import { Floor } from '../classes/game-objects/set-pieces/obstacles/floor'
 
-import type { levelPiece } from '@/game-code/shared/types'
+import type { Level, gamePiece } from '@/game-code/shared/types'
 import { Wall } from '../classes/game-objects/set-pieces/obstacles/wall'
 import { StacheStalker } from '../classes/game-objects/point-items/enemies/stache-stalker'
+import { ScoreDisplay } from '../classes/game-objects/ui-objects/score-display'
 
 export function testLevelOne(gameContext: GameContext) {
-  const levelPieces: levelPiece[] = [
+  const gamePieces: gamePiece[] = [
     {
       gameObject: Floor,
       rect: {
@@ -45,5 +46,23 @@ export function testLevelOne(gameContext: GameContext) {
     },
   ]
 
-  gameContext.setLevel(levelPieces)
+  const uiPieces: gamePiece[] = [
+    {
+      gameObject: ScoreDisplay,
+      rect: {
+        x: 40,
+        y: 40,
+        width: 40,
+        height: 40,
+      },
+    },
+  ]
+
+  const level: Level = {
+    name: 'Test Level One',
+    gameObjects: gamePieces,
+    uiObjects: uiPieces,
+  }
+
+  gameContext.setLevel(level)
 }

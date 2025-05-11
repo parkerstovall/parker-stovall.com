@@ -18,7 +18,8 @@ function MustachioGame() {
     <div>
       <h1>Mustachio</h1>
       <p>Welcome to the Mustachio game!</p>
-      <canvas id="game-area" className="gameCanvas" />
+      <canvas id="game-layer" className="gameCanvas" />
+      <canvas id="ui-layer" className="gameCanvas" />
     </div>
   )
 }

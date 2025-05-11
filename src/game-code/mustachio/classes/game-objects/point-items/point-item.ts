@@ -1,5 +1,5 @@
-import { GameObject } from '../../../../shared/game-object'
+import { MovingGameObject } from '@/game-code/shared/moving-game-object'
 
-export abstract class PointItem extends GameObject {
+export abstract class PointItem extends MovingGameObject {
   abstract pointValue: number
 }

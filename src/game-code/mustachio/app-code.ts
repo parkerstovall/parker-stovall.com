@@ -19,9 +19,9 @@ export function outOfBounds(rect: rectangle, gameContext: GameContext) {
   const canvasHeight = gameContext.gameArea.height
 
   return (
-    rect.x < 0 ||
-    rect.x + rect.width > canvasWidth ||
-    rect.y < 0 ||
-    rect.y + rect.height > canvasHeight
+    rect.x + rect.width < 0 ||
+    rect.x > canvasWidth ||
+    rect.y + rect.height < 0 ||
+    rect.y > canvasHeight
   )
 }

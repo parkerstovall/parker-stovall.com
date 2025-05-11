@@ -9,7 +9,7 @@ export enum direction {
   NONE = 0,
 }
 
-export type levelPiece = {
+export type gamePiece = {
   rect: rectangle
   gameObject: new (
     gameContext: GameContext,
@@ -17,6 +17,13 @@ export type levelPiece = {
     rect: rectangle,
   ) => GameObject
 }
+
+export type Level = {
+  name: string
+  gameObjects: gamePiece[]
+  uiObjects: gamePiece[]
+}
+
 export type rectangle = {
   x: number
   y: number

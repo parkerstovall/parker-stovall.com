@@ -30,7 +30,7 @@ export class Mustachio extends Player {
   private readonly imageRightFire = new Image()
   private isFire = false
   private isBig = false
-  private beingHit = false
+  private hitTimer: number | null = null
   private warpPipe: WarpPipe | null = null
 
   constructor(gameContext: GameContext, objectId: number) {
@@ -54,14 +54,6 @@ export class Mustachio extends Player {
 
   draw(ctx: CanvasRenderingContext2D) {
     let image: HTMLImageElement
-
-    this.blockedDirHor = direction.NONE
-    this.blockedDirVert = direction.NONE
-
-    this.warpPipe = null
-    for (const gameObject of this.gameContext.gameObjects) {
-      this.handleGameObject(gameObject)
-    }
 
     if (!this.isFire) {
       if (this.gameContext.currentDir === direction.RIGHT) {
@@ -90,6 +82,16 @@ export class Mustachio extends Player {
       this.rect.width,
       this.rect.height,
     )
+  }
+
+  update(): void {
+    this.blockedDirHor = direction.NONE
+    this.blockedDirVert = direction.NONE
+
+    this.warpPipe = null
+    for (const gameObject of this.gameContext.gameObjects) {
+      this.handleGameObject(gameObject)
+    }
   }
 
   goDownPipe() {
@@ -142,11 +144,8 @@ export class Mustachio extends Player {
     // FireBar and Laser are projectiles that can hit the player
     // but only after a small amount of time
     // has passed since the player was hit
-    if (
-      (gameObject instanceof FireBar || gameObject instanceof Laser) &&
-      !this.beingHit
-    ) {
-      console.log('playerHit') // TODO: Implement playerHit
+    if (gameObject instanceof FireBar || gameObject instanceof Laser) {
+      this.playerHit()
       return
     }
 
@@ -178,9 +177,6 @@ export class Mustachio extends Player {
     const bottomY = this.rect.y + this.rect.height - 10
     // Theres a small amount of time between the player hitting
     // the enemy and the enemy leaving the screen
-    if (enemy.isDead) {
-      return
-    }
 
     let stacheSeed: StacheSeed | null = null
     if (enemy instanceof StacheSeed) {
@@ -189,13 +185,16 @@ export class Mustachio extends Player {
 
     // You can jump on any enemy except for the StacheSeed
     if (bottomY <= enemy.rect.y && stacheSeed === null) {
-      console.log('enemyHit') // TODO: Implement enemyHit
-      this.gameContext.score += enemy.pointValue
+      if (!enemy.isDead) {
+        enemy.enemyHit()
+      }
+
+      this.landOnGameObject(enemy)
 
       // If the enemy is a StacheSeed OR if the player hits from
       // the side or below, then the player is hit
     } else if (stacheSeed === null || !stacheSeed.inPipe) {
-      console.log('playerHit') // TODO: Implement playerHit
+      this.playerHit()
     }
   }
 
@@ -210,10 +209,8 @@ export class Mustachio extends Player {
     // If you are on top of a setPiece, set speedY to 0
     // and set the rect.y to the top of the setPiece
     if (setPiece.rect.y >= this.rect.y && this.speedY >= 0) {
-      this.blockedDirVert = direction.DOWN
-      this.rect.y = setPiece.rect.y - this.rect.height + 1
-      this.numJumps = 0
-      this.speedY = 0
+      this.landOnGameObject(setPiece)
+
       if (setPiece instanceof Obstacle) {
         this.handleCollisionObstacle(setPiece)
       }
@@ -261,5 +258,27 @@ export class Mustachio extends Player {
     if (obstacle instanceof WarpPipe) {
       this.warpPipe = obstacle
     }
+  }
+
+  playerHit() {
+    if (this.hitTimer !== null) {
+      return
+    }
+
+    if (this.isFire) {
+      this.isFire = false
+    } else if (this.isBig) {
+      this.isBig = false
+    } else {
+      this.playerKill()
+    }
+
+    this.hitTimer = setTimeout(() => {
+      this.hitTimer = null
+    }, 1000)
+  }
+
+  playerKill() {
+    console.log('playerKill') // TODO: Implement playerKill
   }
 }

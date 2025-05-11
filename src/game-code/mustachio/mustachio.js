@@ -4052,13 +4052,13 @@ function enemy(x, y, type, color) {
   }
 }
 
-function enemyHit(j) {
-  myEnemies[j].dead = true
-  myEnemies[j].speed = 0
-  myEnemies[j].height /= 2
-  myEnemies[j].y += myEnemies[j].height
-  setTimeout(killEnemy, 500)
-}
+// function enemyHit(j) {
+//   myEnemies[j].dead = true
+//   myEnemies[j].speed = 0
+//   myEnemies[j].height /= 2
+//   myEnemies[j].y += myEnemies[j].height
+//   setTimeout(killEnemy, 500)
+// }
 
 function win() {
   myGameArea.stop()

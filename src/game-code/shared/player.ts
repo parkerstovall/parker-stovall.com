@@ -1,11 +1,14 @@
 import type { GameContext } from './game-context'
 import { GameObject } from './game-object'
+import { MovingGameObject } from './moving-game-object'
 import { direction, type rectangle } from './types'
 
-export abstract class Player extends GameObject {
+export abstract class Player extends MovingGameObject {
+  isDead: boolean = false
   blockedDirHor: direction = direction.NONE
   blockedDirVert: direction = direction.NONE
-  speedY = 0
+  speedX: number = 0
+  speedY: number = 0
   numJumps = 0
 
   protected readonly gameContext: GameContext
@@ -18,9 +21,10 @@ export abstract class Player extends GameObject {
 
   canMove(dir: direction) {
     return (
-      this.blockedDirHor === direction.NONE ||
-      this.blockedDirVert === direction.NONE ||
-      (this.blockedDirHor !== dir && this.blockedDirVert !== dir)
+      !this.isDead &&
+      (this.blockedDirHor === direction.NONE ||
+        this.blockedDirVert === direction.NONE ||
+        (this.blockedDirHor !== dir && this.blockedDirVert !== dir))
     )
   }
 
@@ -34,4 +38,13 @@ export abstract class Player extends GameObject {
     this.blockedDirVert = direction.NONE
     this.rect.y -= 5
   }
+
+  landOnGameObject(gameObject: GameObject) {
+    this.blockedDirVert = direction.DOWN
+    this.rect.y = gameObject.rect.y - this.rect.height + 1
+    this.numJumps = 0
+    this.speedY = 0
+  }
+
+  abstract playerHit(): void
 }

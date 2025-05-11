@@ -1,12 +1,10 @@
 import type { rectangle } from '@/game-code/shared/types'
 import { Enemy } from './enemy'
 import type { GameContext } from '@/game-code/shared/game-context'
-import { collisionDetection } from '@/game-code/mustachio/app-code'
+import { collisionDetection, outOfBounds } from '@/game-code/mustachio/app-code'
 
 export class StacheStalker extends Enemy {
   pointValue: number = 100
-  protected speed: number = 0.5
-  protected speedY: number = 0
 
   constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
     super(gameContext, objectId, rect)
@@ -17,11 +15,10 @@ export class StacheStalker extends Enemy {
     )
 
     this.image.src = this.imageSources[0]
+    this.speedX = 0.5
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.setPosition()
-
     ctx.drawImage(
       this.image,
       this.rect.x,
@@ -31,8 +28,11 @@ export class StacheStalker extends Enemy {
     )
   }
 
-  setPosition() {
-    let onFloor = false
+  update() {
+    // The floor is never outside of the canvas
+    // so if the object is outside of the canvas
+    // we dont use gravity
+    let onFloor = outOfBounds(this.rect, this.gameContext)
     for (const gameObject of this.gameContext.gameObjects) {
       if (gameObject.objectId === this.objectId) {
         continue
@@ -42,18 +42,17 @@ export class StacheStalker extends Enemy {
         continue
       }
 
-      console.log('Collision detected with', gameObject.constructor.name)
-      if (gameObject.rect.y > this.rect.y + this.rect.height - 10) {
+      if (!onFloor && gameObject.rect.y > this.rect.y + this.rect.height - 10) {
         onFloor = true
         this.rect.y = gameObject.rect.y - this.rect.height
         this.speedY = 0
         continue
       }
 
-      this.speed *= -1
+      this.speedX *= -1
     }
 
-    this.rect.x += this.speed
+    this.rect.x += this.speedX
 
     if (!onFloor) {
       this.rect.y += this.speedY

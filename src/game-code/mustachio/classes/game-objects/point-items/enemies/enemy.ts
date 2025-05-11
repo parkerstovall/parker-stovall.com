@@ -8,9 +8,6 @@ export abstract class Enemy extends PointItem {
   protected imageSources: string[] = []
   protected imageSourceIndex: number = 0
 
-  protected abstract speed: number
-  protected abstract speedY: number
-
   constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
     super(gameContext, objectId, rect)
 
@@ -25,5 +22,18 @@ export abstract class Enemy extends PointItem {
       this.imageSourceIndex = 0
     }
     this.image.src = this.imageSources[this.imageSourceIndex]
+  }
+
+  enemyHit() {
+    this.isDead = true
+    this.speedX = 0
+    this.speedY = 0
+    this.rect.height /= 2
+    this.rect.y += this.rect.height / 2
+    this.gameContext.score += this.pointValue
+
+    setTimeout(() => {
+      this.gameContext.removeGameObject(this)
+    }, 500)
   }
 }
