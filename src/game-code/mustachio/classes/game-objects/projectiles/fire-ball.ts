@@ -7,7 +7,7 @@ export class FireBall extends Projectile {
     this.leftRightMovement()
 
     if (this.onGround) {
-      this.speedY = -5.5
+      this.speedY = -4
     }
 
     if (outOfBounds(this.rect, this.gameContext)) {

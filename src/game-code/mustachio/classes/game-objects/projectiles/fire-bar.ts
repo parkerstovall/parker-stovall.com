@@ -1,8 +1,91 @@
+import type { GameContext } from '@/game-code/shared/game-context'
+import type { rectangle } from '@/game-code/shared/types'
+import type { FireBarBlock } from '../set-pieces/obstacles/fire-bar-block'
 import { Projectile } from './projectile'
 
 export class FireBar extends Projectile {
-  draw(ctx: CanvasRenderingContext2D) {
-    console.log(ctx)
-    throw new Error('Method not implemented.')
+  private rotation: number = 0
+  private readonly rotationSpeed: number = 0.01
+  private readonly anchorBlock: FireBarBlock
+
+  constructor(
+    gameContext: GameContext,
+    objectId: number,
+    x: number,
+    y: number,
+    anchorBlock: FireBarBlock,
+  ) {
+    const rect: rectangle = {
+      x,
+      y,
+      width: 10,
+      height: 250,
+    }
+
+    super(gameContext, objectId, rect)
+    this.anchorBlock = anchorBlock
+  }
+
+  update(): void {
+    this.rotation += this.rotationSpeed
+    this.rotation %= Math.PI * 2
+
+    const anchorCenterX =
+      this.anchorBlock.rect.x + this.anchorBlock.rect.width / 2
+    const anchorCenterY =
+      this.anchorBlock.rect.y + this.anchorBlock.rect.height / 2
+
+    // Position the firebar so its BOTTOM CENTER is at the anchor center
+    this.rect.x = anchorCenterX - this.rect.width / 2
+    this.rect.y = anchorCenterY - this.rect.height
+  }
+
+  draw(ctx: CanvasRenderingContext2D): void {
+    ctx.save()
+
+    // Move the origin to the bottom-center of the firebar
+    ctx.translate(
+      this.rect.x + this.rect.width / 2,
+      this.rect.y + this.rect.height,
+    )
+
+    // Rotate around the bottom edge
+    ctx.rotate(this.rotation)
+
+    // Draw the bar with its bottom edge at the origin
+    ctx.fillStyle = 'red'
+    ctx.fillRect(
+      -this.rect.width / 2, // center horizontally
+      -this.rect.height, // draw upward from pivot
+      this.rect.width,
+      this.rect.height,
+    )
+
+    ctx.restore()
+  }
+
+  hitDetection(playerX: number, playerY: number) {
+    // 1. Move player point into firebar's local space (rotated frame)
+    const pivotX = this.rect.x + this.rect.width / 2
+    const pivotY = this.rect.y + this.rect.height
+
+    // Translate to pivot
+    const dx = playerX - pivotX
+    const dy = playerY - pivotY
+
+    // Unrotate the point (rotate opposite direction)
+    const sin = Math.sin(-this.rotation)
+    const cos = Math.cos(-this.rotation)
+
+    const localX = dx * cos - dy * sin
+    const localY = dx * sin + dy * cos
+
+    // 2. Check against firebar's axis-aligned box in local space
+    const halfW = this.rect.width / 2
+    const height = this.rect.height
+
+    return (
+      localX >= -halfW && localX <= halfW && localY >= -height && localY <= 0
+    )
   }
 }

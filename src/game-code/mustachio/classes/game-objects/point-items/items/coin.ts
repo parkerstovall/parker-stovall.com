@@ -1,8 +1,9 @@
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { rectangle } from '@/game-code/shared/types'
 import { Item } from './item'
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
-export class StandingCoin extends Item {
+export class Coin extends Item {
   pointValue: number = 100
 
   constructor(
@@ -15,6 +16,10 @@ export class StandingCoin extends Item {
 
     if (fromItemBlock) {
       this.speedY = -2
+      this.rect.width = 20
+      this.rect.height = 20
+      this.rect.x -= rect.width / 2
+      this.rect.y += BLOCK_SIZE
     }
   }
 

@@ -2,7 +2,7 @@ import { outOfBounds } from '../mustachio/app-code'
 import type { GameObject } from './game-object'
 import { MovingGameObject } from './moving-game-object'
 import type { Player } from './player'
-import { direction, type gamePiece, type Level } from './types'
+import { direction } from './types'
 
 export abstract class GameContext {
   gameArea: HTMLCanvasElement
@@ -21,8 +21,6 @@ export abstract class GameContext {
   private mainLoop: number | null = null
   private timerLoop: number | null = null
   private readonly pressedKeys: string[] = []
-
-  protected readonly levels: Level[] = []
 
   // Temporary player object until initialized
   protected abstract player: Player
@@ -108,37 +106,6 @@ export abstract class GameContext {
     }
   }
 
-  setLevel(levelName: string) {
-    this.clear()
-    this.gameObjects = []
-    this.uiObjects = []
-
-    const level = this.levels.find((level) => level.name === levelName)
-    if (!level) {
-      throw new Error(`Level ${levelName} not found`)
-    }
-
-    const addGameObject = (
-      piece: gamePiece,
-      addToList: (gameObject: GameObject) => void,
-    ) => {
-      const gameObject = new piece.gameObject(
-        this,
-        this.generateUniqueId(),
-        piece.rect,
-      )
-      addToList(gameObject)
-    }
-
-    for (const piece of level.gameObjects) {
-      addGameObject(piece, (go) => this.addGameObject(go))
-    }
-
-    for (const piece of level.uiObjects) {
-      addGameObject(piece, (go) => this.addUIObject(go))
-    }
-  }
-
   private clear() {
     this.gameContext.clearRect(0, 0, this.gameArea.width, this.gameArea.height)
     this.uiContext.clearRect(0, 0, this.ui.width, this.ui.height)
@@ -187,6 +154,19 @@ export abstract class GameContext {
     }
 
     const key = event.key.toLocaleLowerCase().trim()
+
+    if (key === 'p') {
+      if (this.mainLoop) {
+        this.stopMainLoop()
+      } else {
+        this.startMainLoop()
+      }
+    }
+
+    if (this.mainLoop === null) {
+      return
+    }
+
     if (this.pressedKeys.includes(key)) {
       return
     }
@@ -201,12 +181,6 @@ export abstract class GameContext {
       this.player.jump()
     } else if (key === 'shift') {
       this.xSpeed = 3
-    } else if (key === 'p') {
-      if (this.mainLoop) {
-        this.stopMainLoop()
-      } else {
-        this.startMainLoop()
-      }
     }
   }
 

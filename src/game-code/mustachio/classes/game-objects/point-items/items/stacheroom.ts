@@ -1,6 +1,7 @@
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { rectangle } from '@/game-code/shared/types'
 import { Item } from './item'
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Stacheroom extends Item {
   pointValue: number = 1000
@@ -15,8 +16,8 @@ export class Stacheroom extends Item {
   ) {
     rect.width = 20
     rect.height = 20
-    rect.x += rect.width / 2
-    rect.y += 40
+    rect.x -= rect.width / 2
+    rect.y += BLOCK_SIZE
     super(gameContext, objectId, rect, fromItemBlock)
   }
 

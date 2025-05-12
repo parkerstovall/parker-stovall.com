@@ -3420,38 +3420,38 @@ function component(x, y, width, type, color, itemType, dir, isTop) {
   }
 }
 
-function timerBox() {
-  this.update = function () {
-    ctx = myGameArea.uiCon
-    ctx.font = '40px Arial'
-    ctx.fillStyle = 'white'
-    var timerText = 'TIME: ' + levelTimerCount
-    ctx.fillText(timerText, 40, 40)
-  }
-}
+// function timerBox() {
+//   this.update = function () {
+//     ctx = myGameArea.uiCon
+//     ctx.font = '40px Arial'
+//     ctx.fillStyle = 'white'
+//     var timerText = 'TIME: ' + levelTimerCount
+//     ctx.fillText(timerText, 40, 40)
+//   }
+// }
 
-function scoreBox() {
-  this.update = function () {
-    ctx = myGameArea.uiCon
-    ctx.font = '40px Arial'
-    ctx.fillStyle = 'white'
-    var scoreText = 'SCORE: ' + score + '   '
-    ctx.fillText(
-      scoreText,
-      myGameArea.ui.width - ctx.measureText(scoreText).width,
-      40,
-    )
-  }
-}
+// function scoreBox() {
+//   this.update = function () {
+//     ctx = myGameArea.uiCon
+//     ctx.font = '40px Arial'
+//     ctx.fillStyle = 'white'
+//     var scoreText = 'SCORE: ' + score + '   '
+//     ctx.fillText(
+//       scoreText,
+//       myGameArea.ui.width - ctx.measureText(scoreText).width,
+//       40,
+//     )
+//   }
+// }
 
-function countdown() {
-  levelTimerCount--
-  if (levelTimerCount <= 0) {
-    mustachio.fire = false
-    mustachio.big = false
-    killMethod()
-  }
-}
+// function countdown() {
+//   levelTimerCount--
+//   if (levelTimerCount <= 0) {
+//     mustachio.fire = false
+//     mustachio.big = false
+//     killMethod()
+//   }
+// }
 
 function fireBar(x, y, dir) {
   this.getPos = true

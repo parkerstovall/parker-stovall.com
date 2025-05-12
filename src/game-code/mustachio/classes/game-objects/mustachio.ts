@@ -6,7 +6,6 @@ import { Flag } from './set-pieces/flag'
 import { FireStache } from './point-items/items/fire-stache'
 import { Item } from './point-items/items/item'
 import { Stacheroom } from './point-items/items/stacheroom'
-import { FireBar } from './projectiles/fire-bar'
 import { Laser } from './projectiles/laser'
 import { FallingFloor } from './set-pieces/obstacles/falling-floor'
 import { Wall } from './set-pieces/obstacles/wall'
@@ -17,8 +16,9 @@ import { SetPiece } from './set-pieces/set-piece'
 import { Player } from '@/game-code/shared/player'
 import { direction } from '@/game-code/shared/types'
 import type { GameObject } from '@/game-code/shared/game-object'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBall } from './projectiles/fire-ball'
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
+import { FireBar } from './projectiles/fire-bar'
 
 export class Mustachio extends Player {
   private readonly imageStraight = new Image()
@@ -38,8 +38,8 @@ export class Mustachio extends Player {
     super(gameContext, objectId, {
       x: gameContext.gameArea.width / 4,
       y: (gameContext.gameArea.height / 4) * 3,
-      width: BLOCK_SIZE,
-      height: BLOCK_SIZE,
+      width: BLOCK_SIZE * 0.66,
+      height: BLOCK_SIZE * 0.66,
     })
 
     this.imageStraight.src = 'Images/Mustachio.png'
@@ -122,10 +122,10 @@ export class Mustachio extends Player {
     let runCount = 0
     let changeID: number | null = null
     const change = () => {
-      runCount++
-      if (runCount > 3 && changeID) {
+      if (++runCount > 3 && changeID) {
         clearInterval(changeID)
       }
+
       if (this.isBig) {
         this.rect.height += 10
         this.rect.width += 3
@@ -171,6 +171,22 @@ export class Mustachio extends Player {
       return
     }
 
+    // FireBar is a special case since it rotates
+    if (gameObject instanceof FireBar) {
+      if (gameObject.hitDetection(this.rect.x, this.rect.y)) {
+        this.playerHit()
+      } else if (
+        gameObject.hitDetection(
+          this.rect.x + this.rect.width,
+          this.rect.y + this.rect.height,
+        )
+      ) {
+        this.playerHit()
+      }
+
+      return
+    }
+
     // If the gameObject isn't touching the player, skip it
     if (!collisionDetection(gameObject, this)) {
       return
@@ -184,7 +200,7 @@ export class Mustachio extends Player {
     // FireBar and Laser are projectiles that can hit the player
     // but only after a small amount of time
     // has passed since the player was hit
-    if (gameObject instanceof FireBar || gameObject instanceof Laser) {
+    if (gameObject instanceof Laser) {
       this.playerHit()
       return
     }
@@ -327,7 +343,6 @@ export class Mustachio extends Player {
   }
 
   customKeyPress(pressedKeys: string[]): void {
-    console.log(pressedKeys)
     if (pressedKeys.includes('')) {
       if (!this.isFire || !this.canFire) {
         return
