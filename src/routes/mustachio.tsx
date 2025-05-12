@@ -7,10 +7,14 @@ export const Route = createFileRoute('/mustachio')({
   component: MustachioGame,
 })
 
+let gc: GameContextMustachio | null = null
+
 function MustachioGame() {
   useEffect(() => {
-    const gc = new GameContextMustachio()
-    testLevelOne(gc)
+    if (!gc) {
+      gc = new GameContextMustachio()
+      testLevelOne(gc)
+    }
   }, [])
 
   return (

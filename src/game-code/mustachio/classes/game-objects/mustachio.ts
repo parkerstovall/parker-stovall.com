@@ -33,6 +33,7 @@ export class Mustachio extends Player {
   private warpPipe: WarpPipe | null = null
   private canFire = true
   private deathAnimationTimeout: number | null = null
+  private crouched = false
 
   constructor(gameContext: GameContext, objectId: number) {
     super(gameContext, objectId, {
@@ -316,6 +317,23 @@ export class Mustachio extends Player {
     }
   }
 
+  private toggleCrouch(crouch: boolean) {
+    if (this.crouched === crouch) {
+      return
+    }
+
+    this.crouched = crouch
+    let modifier: number
+    if (crouch) {
+      modifier = -(this.rect.height / 2)
+    } else {
+      modifier = this.rect.height
+    }
+
+    this.rect.y -= modifier
+    this.rect.height += modifier
+  }
+
   playerHit() {
     if (this.hitTimer !== null) {
       return
@@ -324,6 +342,7 @@ export class Mustachio extends Player {
     if (this.isFire) {
       this.changeFire(false)
     } else if (this.isBig) {
+      this.toggleCrouch(false)
       this.changeSize(false)
     } else {
       this.playerKill()
@@ -342,8 +361,8 @@ export class Mustachio extends Player {
     }, 1000)
   }
 
-  customKeyPress(pressedKeys: string[]): void {
-    if (pressedKeys.includes('')) {
+  customKeyDown(key: string): void {
+    if (key === '') {
       if (!this.isFire || !this.canFire) {
         return
       }
@@ -368,6 +387,14 @@ export class Mustachio extends Player {
       fire.speedY = 0
 
       this.gameContext.addGameObject(fire)
+    } else if (key === 'arrowdown' || key === 's') {
+      this.toggleCrouch(true)
+    }
+  }
+
+  customKeyUp(key: string): void {
+    if (key === 'arrowdown' || key === 's') {
+      this.toggleCrouch(false)
     }
   }
 }

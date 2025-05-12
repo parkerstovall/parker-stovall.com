@@ -25,6 +25,8 @@ export abstract class GameContext {
   // Temporary player object until initialized
   protected abstract player: Player
 
+  private readonly contextId: number
+
   constructor() {
     let result = this.setupCanvas('canvas#game-layer')
     this.gameArea = result.canvas
@@ -36,9 +38,13 @@ export abstract class GameContext {
 
     window.addEventListener('keydown', (event) => this.onKeyDown(event))
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
+
+    this.contextId = this.generateUniqueId()
+    console.log('GameContext initialized: ' + this.contextId)
   }
 
   startMainLoop() {
+    console.log('Starting main loop: ' + this.contextId)
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
     }
@@ -112,6 +118,7 @@ export abstract class GameContext {
   }
 
   private updateGameArea() {
+    console.log('Updating game area: ' + this.contextId)
     this.clear()
 
     const canMove = this.player.canMove(this.currentDir)
@@ -172,7 +179,8 @@ export abstract class GameContext {
     }
 
     this.pressedKeys.push(key)
-    this.player.customKeyPress(this.pressedKeys)
+    this.player.customKeyDown(key)
+
     if (key === 'arrowleft' || key === 'a') {
       this.currentDir = direction.LEFT
     } else if (key === 'arrowright' || key === 'd') {
@@ -191,6 +199,8 @@ export abstract class GameContext {
       this.pressedKeys.findIndex((pressedKey) => pressedKey === key),
       1,
     )
+
+    this.player.customKeyUp(key)
 
     if (
       key === 'arrowleft' ||

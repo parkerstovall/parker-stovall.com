@@ -50,5 +50,7 @@ export abstract class Player extends MovingGameObject {
 
   abstract playerKill(): void
 
-  abstract customKeyPress(pressedKeys: string[]): void
+  abstract customKeyDown(key: string): void
+
+  abstract customKeyUp(key: string): void
 }
