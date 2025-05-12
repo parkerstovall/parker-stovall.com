@@ -25,6 +25,10 @@ export abstract class Enemy extends PointItem {
   }
 
   enemyHit() {
+    if (this.isDead) {
+      return
+    }
+
     this.isDead = true
     this.speedX = 0
     this.speedY = 0

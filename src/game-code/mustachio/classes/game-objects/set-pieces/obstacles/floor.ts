@@ -9,9 +9,7 @@ export class Floor extends Obstacle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    const oldFill = ctx.fillStyle
-    ctx.fillStyle = 'rgba(0, 0, 0, 1.0)'
+    ctx.fillStyle = 'black'
     ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
-    ctx.fillStyle = oldFill
   }
 }

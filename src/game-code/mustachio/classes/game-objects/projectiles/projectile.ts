@@ -1,3 +1,3 @@
-import { GameObject } from '../../../../shared/game-object'
+import { MovingGameObject } from '@/game-code/shared/moving-game-object'
 
-export abstract class Projectile extends GameObject {}
+export abstract class Projectile extends MovingGameObject {}

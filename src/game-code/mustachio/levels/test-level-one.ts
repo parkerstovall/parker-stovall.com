@@ -6,6 +6,10 @@ import { Wall } from '../classes/game-objects/set-pieces/obstacles/wall'
 import { StacheStalker } from '../classes/game-objects/point-items/enemies/stache-stalker'
 import { ScoreDisplay } from '../classes/game-objects/ui-objects/score-display'
 import { TimerDisplay } from '../classes/game-objects/ui-objects/timer-display'
+import { StandingCoin } from '../classes/game-objects/point-items/items/standing-coin'
+import { CoinBlock } from '../classes/game-objects/set-pieces/blocks/item-blocks/coin-block'
+import { StacheroomBlock } from '../classes/game-objects/set-pieces/blocks/item-blocks/stacheroom-block'
+import { FireStacheBlock } from '../classes/game-objects/set-pieces/blocks/item-blocks/fire-stache-block'
 
 export function testLevelOne(gameContext: GameContext) {
   const gamePieces: gamePiece[] = [
@@ -41,6 +45,42 @@ export function testLevelOne(gameContext: GameContext) {
       rect: {
         x: gameContext.gameArea.width - 600,
         y: gameContext.gameArea.height - 150,
+        width: 40,
+        height: 40,
+      },
+    },
+    {
+      gameObject: StandingCoin,
+      rect: {
+        x: gameContext.gameArea.width - 600,
+        y: gameContext.gameArea.height - 200,
+        width: 40,
+        height: 40,
+      },
+    },
+    {
+      gameObject: CoinBlock,
+      rect: {
+        x: gameContext.gameArea.width - 850,
+        y: gameContext.gameArea.height - 200,
+        width: 40,
+        height: 40,
+      },
+    },
+    {
+      gameObject: StacheroomBlock,
+      rect: {
+        x: gameContext.gameArea.width - 920,
+        y: gameContext.gameArea.height - 200,
+        width: 40,
+        height: 40,
+      },
+    },
+    {
+      gameObject: FireStacheBlock,
+      rect: {
+        x: gameContext.gameArea.width - 990,
+        y: gameContext.gameArea.height - 200,
         width: 40,
         height: 40,
       },

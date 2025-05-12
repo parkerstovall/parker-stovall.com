@@ -5,7 +5,7 @@ import { StacheSeed } from './point-items/enemies/stache-seed'
 import { Flag } from './set-pieces/flag'
 import { FireStache } from './point-items/items/fire-stache'
 import { Item } from './point-items/items/item'
-import { Mustacheroom } from './point-items/items/mustacheroom'
+import { Stacheroom } from './point-items/items/stacheroom'
 import { FireBar } from './projectiles/fire-bar'
 import { Laser } from './projectiles/laser'
 import { FallingFloor } from './set-pieces/obstacles/falling-floor'
@@ -18,6 +18,7 @@ import { Player } from '@/game-code/shared/player'
 import { direction } from '@/game-code/shared/types'
 import type { GameObject } from '@/game-code/shared/game-object'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
+import { FireBall } from './projectiles/fire-ball'
 
 export class Mustachio extends Player {
   private readonly imageStraight = new Image()
@@ -30,7 +31,7 @@ export class Mustachio extends Player {
   private isBig = false
   private hitTimer: number | null = null
   private warpPipe: WarpPipe | null = null
-
+  private canFire = true
   private deathAnimationTimeout: number | null = null
 
   constructor(gameContext: GameContext, objectId: number) {
@@ -40,9 +41,6 @@ export class Mustachio extends Player {
       width: BLOCK_SIZE,
       height: BLOCK_SIZE,
     })
-
-    // this.target = { x: this.rect.x + this.rect.width / 2, y: this.rect.y + this.rect.height / 2 }
-    // this.offset= { x: (this.target.x - this.rect.x) / 300, y: (this.target.y - this.rect.y) / 300 }
 
     this.imageStraight.src = 'Images/Mustachio.png'
     this.imageLeft.src = 'Images/Mustachio_FacingLeft.png'
@@ -114,27 +112,57 @@ export class Mustachio extends Player {
     console.log('warp') // TODO: Implement warp
   }
 
-  private trySetBig() {
-    if (this.isBig) {
+  private changeSize(isBig: boolean) {
+    if (this.isBig === isBig) {
       return
     }
-    this.isBig = true
-    // TODO: Implement grow animation
-    // clearInterval(growID);
-    // growID = setInterval(grow, 115);
+
+    this.isBig = isBig
+
+    let runCount = 0
+    let changeID: number | null = null
+    const change = () => {
+      runCount++
+      if (runCount > 3 && changeID) {
+        clearInterval(changeID)
+      }
+      if (this.isBig) {
+        this.rect.height += 10
+        this.rect.width += 3
+      } else {
+        this.rect.height -= 10
+        this.rect.width -= 3
+      }
+    }
+
+    changeID = setInterval(change, 115)
   }
 
-  private trySetFire() {
-    if (this.isFire) {
+  private changeFire(isFire: boolean) {
+    if (this.isFire === isFire) {
       return
     }
-    this.isFire = true
-    this.isBig = true
-    // changeTrack = 0;
-    // changeID = setInterval(change, 115);
-    // clearInterval(shrinkID);
-    // clearInterval(growID);
-    // growID = setInterval(grow, 115);
+    this.isFire = isFire
+
+    if (this.isFire && !this.isBig) {
+      this.changeSize(true)
+    }
+
+    let runCount = 0
+    let changeID: number | null = null
+    const change = () => {
+      if (runCount < 6) {
+        runCount++
+        this.isFire = !this.isFire
+        return
+      }
+
+      if (changeID) {
+        clearInterval(changeID)
+      }
+    }
+
+    changeID = setInterval(change, 115)
   }
 
   private handleGameObject(gameObject: GameObject) {
@@ -178,10 +206,10 @@ export class Mustachio extends Player {
     this.gameContext.removeGameObject(item)
     this.gameContext.score += item.pointValue
 
-    if (item instanceof Mustacheroom) {
-      this.trySetBig()
+    if (item instanceof Stacheroom) {
+      this.changeSize(true)
     } else if (item instanceof FireStache) {
-      this.trySetFire()
+      this.changeFire(true)
     }
   }
 
@@ -278,9 +306,9 @@ export class Mustachio extends Player {
     }
 
     if (this.isFire) {
-      this.isFire = false
+      this.changeFire(false)
     } else if (this.isBig) {
-      this.isBig = false
+      this.changeSize(false)
     } else {
       this.playerKill()
     }
@@ -296,5 +324,35 @@ export class Mustachio extends Player {
       this.deathAnimationTimeout = null
       this.speedY = -5
     }, 1000)
+  }
+
+  customKeyPress(pressedKeys: string[]): void {
+    console.log(pressedKeys)
+    if (pressedKeys.includes('')) {
+      if (!this.isFire || !this.canFire) {
+        return
+      }
+
+      this.canFire = false
+      setTimeout(() => {
+        this.canFire = true
+      }, 250)
+
+      const fire = new FireBall(
+        this.gameContext,
+        this.gameContext.generateUniqueId(),
+        {
+          x: this.rect.x + this.rect.width + 5,
+          y: this.rect.y + this.rect.height / 2,
+          width: 8,
+          height: 8,
+        },
+      )
+
+      fire.speedX = this.gameContext.currentDir === direction.LEFT ? -5 : 5
+      fire.speedY = 0
+
+      this.gameContext.addGameObject(fire)
+    }
   }
 }

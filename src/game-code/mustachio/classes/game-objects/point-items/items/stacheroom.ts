@@ -2,7 +2,7 @@ import type { GameContext } from '@/game-code/shared/game-context'
 import type { rectangle } from '@/game-code/shared/types'
 import { Item } from './item'
 
-export class FireStache extends Item {
+export class Stacheroom extends Item {
   pointValue: number = 1000
   totalRaise: number = 20
   speedX = 1
@@ -21,7 +21,7 @@ export class FireStache extends Item {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = 'red'
+    ctx.fillStyle = 'blue'
     ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
   }
 

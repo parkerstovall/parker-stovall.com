@@ -4210,52 +4210,52 @@ function killMethod() {
 var frameHoldCount = 0
 var started = false
 
-function killMustachio() {
-  if (frameHoldCount < 200 && !started) {
-    frameHoldCount++
-    if (frameHoldCount >= 200) {
-      frameHoldCount = 0
-      started = true
-    }
-    return
-  }
-  if (frameHoldCount < 70 && deathSpeedY > 0.1) {
-    frameHoldCount++
-    return
-  }
-  mustachio.y += deathSpeedY
-  deathSpeedY += 0.06
+// function killMustachio() {
+//   if (frameHoldCount < 200 && !started) {
+//     frameHoldCount++
+//     if (frameHoldCount >= 200) {
+//       frameHoldCount = 0
+//       started = true
+//     }
+//     return
+//   }
+//   if (frameHoldCount < 70 && deathSpeedY > 0.1) {
+//     frameHoldCount++
+//     return
+//   }
+//   mustachio.y += deathSpeedY
+//   deathSpeedY += 0.06
 
-  myGameArea.clear()
-  for (i in stagePieces) {
-    stagePieces[i].update()
-  }
-  for (i in uiPieces) {
-    uiPieces[i].update()
-  }
-  mustachio.update()
+//   myGameArea.clear()
+//   for (i in stagePieces) {
+//     stagePieces[i].update()
+//   }
+//   for (i in uiPieces) {
+//     uiPieces[i].update()
+//   }
+//   mustachio.update()
 
-  if (mustachio.y >= 5 + myGameArea.canvas.height) {
-    clearInterval(killPlayerID)
-  }
-}
+//   if (mustachio.y >= 5 + myGameArea.canvas.height) {
+//     clearInterval(killPlayerID)
+//   }
+// }
 
-function killEnemy() {
-  var index = 0
-  for (i in myEnemies) {
-    if (myEnemies[i].dead) {
-      index = myEnemies[i].index
-      var k = stagePieces.indexOf(myEnemies[i])
-      stagePieces.splice(k, 1)
-      myEnemies.splice(i, 1)
-    }
-  }
-  for (i in myEnemies) {
-    if (myEnemies[i].index > index) {
-      myEnemies[i].index--
-    }
-  }
-}
+// function killEnemy() {
+//   var index = 0
+//   for (i in myEnemies) {
+//     if (myEnemies[i].dead) {
+//       index = myEnemies[i].index
+//       var k = stagePieces.indexOf(myEnemies[i])
+//       stagePieces.splice(k, 1)
+//       myEnemies.splice(i, 1)
+//     }
+//   }
+//   for (i in myEnemies) {
+//     if (myEnemies[i].index > index) {
+//       myEnemies[i].index--
+//     }
+//   }
+// }
 
 // function collisionDetection(obstacle, index, type) {
 //   if (type == "mustachio") {
@@ -4449,138 +4449,138 @@ function keyPress(e) {
   }
 }
 
-function fire() {
-  this.getPos = true
-  this.y = mustachio.y + playHei / 2
-  this.type = 'fire'
+// function fire() {
+//   this.getPos = true
+//   this.y = mustachio.y + playHei / 2
+//   this.type = 'fire'
 
-  this.width = 5
-  this.radius = 5
-  this.speedY = 3
-  if (mustachio.dir == 'left') {
-    this.speedX = -5
-    this.x = mustachio.x
-  } else {
-    this.speedX = 5
-    this.x = mustachio.x + playWid
-  }
+//   this.width = 5
+//   this.radius = 5
+//   this.speedY = 3
+//   if (mustachio.dir == 'left') {
+//     this.speedX = -5
+//     this.x = mustachio.x
+//   } else {
+//     this.speedX = 5
+//     this.x = mustachio.x + playWid
+//   }
 
-  this.update = function () {
-    ctx = myGameArea.context
-    ctx.beginPath()
-    ctx.lineWidth = 5
-    ctx.strokeStyle = 'red'
-    ctx.fillStyle = 'red'
-    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
-    ctx.stroke()
-    ctx.fill()
-  }
+//   this.update = function () {
+//     ctx = myGameArea.context
+//     ctx.beginPath()
+//     ctx.lineWidth = 5
+//     ctx.strokeStyle = 'red'
+//     ctx.fillStyle = 'red'
+//     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+//     ctx.stroke()
+//     ctx.fill()
+//   }
 
-  this.newPos = function () {
-    this.x += this.speedX
-    this.y += this.speedY
+//   this.newPos = function () {
+//     this.x += this.speedX
+//     this.y += this.speedY
 
-    this.speedY += gravity
+//     this.speedY += gravity
 
-    for (i in myEnemies) {
-      if (
-        !myEnemies[i].dead &&
-        RectCircleColliding(
-          myEnemies[i].x,
-          myEnemies[i].y,
-          myEnemies[i].width,
-          myEnemies[i].height,
-          this.x,
-          this.y,
-          this.radius,
-        )
-      ) {
-        enemyHit(i)
-        var j = stagePieces.indexOf(this)
-        stagePieces.splice(j, 1)
-      }
-    }
+//     for (i in myEnemies) {
+//       if (
+//         !myEnemies[i].dead &&
+//         RectCircleColliding(
+//           myEnemies[i].x,
+//           myEnemies[i].y,
+//           myEnemies[i].width,
+//           myEnemies[i].height,
+//           this.x,
+//           this.y,
+//           this.radius,
+//         )
+//       ) {
+//         enemyHit(i)
+//         var j = stagePieces.indexOf(this)
+//         stagePieces.splice(j, 1)
+//       }
+//     }
 
-    for (i in stagePieces) {
-      if (
-        RectCircleColliding(
-          stagePieces[i].x,
-          stagePieces[i].y,
-          stagePieces[i].width,
-          stagePieces[i].height,
-          this.x,
-          this.y,
-          this.radius,
-        )
-      ) {
-        if (
-          this.y - this.radius <= stagePieces[i].y &&
-          stagePieces[i].type != this.type
-        ) {
-          this.speedY = -5.5
-        } else if (
-          stagePieces[i].type != this.type &&
-          stagePieces[i].type != 'ground'
-        ) {
-          var i = stagePieces.indexOf(this)
-          stagePieces.splice(i, 1)
-          return
-        }
-      }
-    }
+//     for (i in stagePieces) {
+//       if (
+//         RectCircleColliding(
+//           stagePieces[i].x,
+//           stagePieces[i].y,
+//           stagePieces[i].width,
+//           stagePieces[i].height,
+//           this.x,
+//           this.y,
+//           this.radius,
+//         )
+//       ) {
+//         if (
+//           this.y - this.radius <= stagePieces[i].y &&
+//           stagePieces[i].type != this.type
+//         ) {
+//           this.speedY = -5.5
+//         } else if (
+//           stagePieces[i].type != this.type &&
+//           stagePieces[i].type != 'ground'
+//         ) {
+//           var i = stagePieces.indexOf(this)
+//           stagePieces.splice(i, 1)
+//           return
+//         }
+//       }
+//     }
 
-    if (this.y > floor.y) {
-      this.y = floor.y - 50
-      this.speedY = -5.5
-    }
-  }
-}
+//     if (this.y > floor.y) {
+//       this.y = floor.y - 50
+//       this.speedY = -5.5
+//     }
+//   }
+// }
 
-function jump() {
-  if (numJumps < 2) {
-    speedY = -5.5
-    numJumps++
-    blockedDirVert = 'none'
-    mustachio.y -= 5
-  }
-}
+// function jump() {
+//   if (numJumps < 2) {
+//     speedY = -5.5
+//     numJumps++
+//     blockedDirVert = 'none'
+//     mustachio.y -= 5
+//   }
+// }
 
-function grow() {
-  mustachio.dir = 'none'
-  if (tempHeight != 0) {
-    playHei = tempHeight
-    tempHeight = 0
-  }
-  if (playHei >= maxHeight) {
-    playHeight = maxHeight
-    mustachio.big = true
-    clearInterval(growID)
-    growID = 0
-    tempHeight = 0
-    return
-  }
-  playHei += 10
-  playWid += 3
-}
+// function grow() {
+//   mustachio.dir = 'none'
+//   if (tempHeight != 0) {
+//     playHei = tempHeight
+//     tempHeight = 0
+//   }
+//   if (playHei >= maxHeight) {
+//     playHeight = maxHeight
+//     mustachio.big = true
+//     clearInterval(growID)
+//     growID = 0
+//     tempHeight = 0
+//     return
+//   }
+//   playHei += 10
+//   playWid += 3
+// }
 
-function shrink() {
-  mustachio.dir = 'none'
-  if (tempHeight != 0) {
-    playHei = tempHeight
-    tempHeight = 0
-  }
-  if (playHei <= minHeight) {
-    playHei = minHeight
-    clearInterval(shrinkID)
-    mustachio.big = false
-    mustachio.beingHit = false
-    shrinkID = 0
-    tempHeight = 0
-    return
-  }
-  playHei -= 10
-  playWid -= 3
-}
+// function shrink() {
+//   mustachio.dir = 'none'
+//   if (tempHeight != 0) {
+//     playHei = tempHeight
+//     tempHeight = 0
+//   }
+//   if (playHei <= minHeight) {
+//     playHei = minHeight
+//     clearInterval(shrinkID)
+//     mustachio.big = false
+//     mustachio.beingHit = false
+//     shrinkID = 0
+//     tempHeight = 0
+//     return
+//   }
+//   playHei -= 10
+//   playWid -= 3
+// }
 
 function change() {
   if (changeTrack <= 6) {

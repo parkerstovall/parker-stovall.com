@@ -20,6 +20,7 @@ export abstract class GameContext {
   private xSpeed: number = 1.5
   private mainLoop: number | null = null
   private timerLoop: number | null = null
+  private readonly pressedKeys: string[] = []
 
   protected readonly levels: Level[] = []
 
@@ -68,9 +69,21 @@ export abstract class GameContext {
     }
   }
 
+  generateUniqueId(): number {
+    let id = Math.floor(Math.random() * 10000)
+    while (this.gameObjects.some((go) => go.objectId === id)) {
+      id = Math.floor(Math.random() * 10000)
+    }
+    return id
+  }
+
   // Assign a unique ID to the game object and add it to the gameObjects array
-  addGameObject(gameObject: GameObject) {
-    this.gameObjects.push(gameObject)
+  addGameObject(gameObject: GameObject, beginning: boolean = false) {
+    if (beginning) {
+      this.gameObjects.unshift(gameObject)
+    } else {
+      this.gameObjects.push(gameObject)
+    }
   }
 
   addUIObject(gameObject: GameObject) {
@@ -174,6 +187,12 @@ export abstract class GameContext {
     }
 
     const key = event.key.toLocaleLowerCase().trim()
+    if (this.pressedKeys.includes(key)) {
+      return
+    }
+
+    this.pressedKeys.push(key)
+    this.player.customKeyPress(this.pressedKeys)
     if (key === 'arrowleft' || key === 'a') {
       this.currentDir = direction.LEFT
     } else if (key === 'arrowright' || key === 'd') {
@@ -193,24 +212,34 @@ export abstract class GameContext {
 
   private onKeyUp(event: KeyboardEvent) {
     const key = event.key.toLocaleLowerCase()
+
+    this.pressedKeys.splice(
+      this.pressedKeys.findIndex((pressedKey) => pressedKey === key),
+      1,
+    )
+
     if (
       key === 'arrowleft' ||
       key === 'a' ||
       key === 'arrowright' ||
       key === 'd'
     ) {
-      this.currentDir = direction.NONE
+      if (
+        this.pressedKeys.includes('arrowleft') ||
+        this.pressedKeys.includes('a')
+      ) {
+        this.currentDir = direction.LEFT
+      } else if (
+        this.pressedKeys.includes('arrowright') ||
+        this.pressedKeys.includes('d')
+      ) {
+        this.currentDir = direction.RIGHT
+      } else {
+        this.currentDir = direction.NONE
+      }
     } else if (key === 'shift') {
       this.xSpeed = 1.5
     }
-  }
-
-  protected generateUniqueId(): number {
-    let id = Math.floor(Math.random() * 10000)
-    while (this.gameObjects.some((go) => go.objectId === id)) {
-      id = Math.floor(Math.random() * 10000)
-    }
-    return id
   }
 
   private setupCanvas(selector: string) {
