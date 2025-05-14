@@ -1,6 +1,6 @@
-import { Obstacle } from './obstacle'
+import { Block } from './block'
 
-export class FallingFloor extends Obstacle {
+export class FallingFloor extends Block {
   startFall() {
     // TODO: Implement the logic for falling
   }

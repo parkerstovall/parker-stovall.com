@@ -1,6 +1,6 @@
-import { Block } from './block'
+import { PunchableBlock } from './punchable-block'
 
-export class Brick extends Block {
+export class Brick extends PunchableBlock {
   protected punched = false
 
   punch() {

@@ -1,31 +1,37 @@
-import { outOfBounds } from '../mustachio/app-code'
-import type { GameObject } from './game-object'
-import { MovingGameObject } from './moving-game-object'
-import type { Player } from './player'
-import { direction } from './types'
+import {
+  collisionDetection,
+  getCollisionDirection,
+  getReverseDirection,
+  outOfBounds,
+} from './app-code'
+import type { GameObject } from './game-objects/game-object'
+import { Player } from './player'
+import { RotatingGameObject } from './game-objects/rotating-game-object'
+import { direction, type collision } from './types'
+import { UpdatingGameObject } from './game-objects/updating-game-object'
 
 export abstract class GameContext {
-  gameArea: HTMLCanvasElement
-  ui: HTMLCanvasElement
-  uiContext: CanvasRenderingContext2D
-  gameContext: CanvasRenderingContext2D
-
-  gameObjects: GameObject[] = []
-  uiObjects: GameObject[] = []
   score: number = 0
-  gravity: number = 0.12
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
+
+  readonly gravity: number = 0.12
+  readonly gameArea: HTMLCanvasElement
+  readonly ui: HTMLCanvasElement
+  readonly uiContext: CanvasRenderingContext2D
+  readonly gameContext: CanvasRenderingContext2D
+  readonly gameObjects: GameObject[] = []
+  readonly uiObjects: GameObject[] = []
 
   private xSpeed: number = 1.5
   private mainLoop: number | null = null
   private timerLoop: number | null = null
+  private isStatic: boolean = false
+
   private readonly pressedKeys: string[] = []
 
   // Temporary player object until initialized
   protected abstract player: Player
-
-  private readonly contextId: number
 
   constructor() {
     let result = this.setupCanvas('canvas#game-layer')
@@ -38,13 +44,9 @@ export abstract class GameContext {
 
     window.addEventListener('keydown', (event) => this.onKeyDown(event))
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
-
-    this.contextId = this.generateUniqueId()
-    console.log('GameContext initialized: ' + this.contextId)
   }
 
   startMainLoop() {
-    console.log('Starting main loop: ' + this.contextId)
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
     }
@@ -112,18 +114,30 @@ export abstract class GameContext {
     }
   }
 
+  restart(levelFunc: (gc: GameContext) => void) {
+    this.stopMainLoop()
+    this.gameObjects.splice(0, this.gameObjects.length)
+    this.uiObjects.splice(0, this.uiObjects.length)
+    levelFunc(this)
+  }
+
   private clear() {
     this.gameContext.clearRect(0, 0, this.gameArea.width, this.gameArea.height)
     this.uiContext.clearRect(0, 0, this.ui.width, this.ui.height)
   }
 
   private updateGameArea() {
-    console.log('Updating game area: ' + this.contextId)
     this.clear()
+    const gameObjectsInUpdateArea = this.getGameObjectsToUpdate()
+    const gameObjectCollisions = this.getGameObjectsWithCollisions(
+      gameObjectsInUpdateArea,
+    )
 
     const canMove = this.player.canMove(this.currentDir)
+
+    // Always move every game object according to player speed
     for (const gameObject of this.gameObjects) {
-      if (!gameObject.isStatic && canMove) {
+      if (!this.isStatic && canMove) {
         // We move the game object opposite to the player
         // to simulate the player moving
         if (this.currentDir === direction.LEFT) {
@@ -132,13 +146,17 @@ export abstract class GameContext {
           gameObject.rect.x -= this.xSpeed
         }
       }
+    }
 
-      if (!gameObject.isStatic && gameObject instanceof MovingGameObject) {
-        gameObject.update()
-      }
+    // Update the game objects in the game area
+    for (const gameObject of gameObjectsInUpdateArea) {
+      if (gameObject instanceof UpdatingGameObject) {
+        const collisions = gameObjectCollisions.filter(
+          (collision) =>
+            collision.gameObjectOne.objectId === gameObject.objectId,
+        )
 
-      if (outOfBounds(gameObject.rect, this)) {
-        continue
+        gameObject.update(collisions)
       }
 
       gameObject.draw(this.gameContext)
@@ -150,7 +168,14 @@ export abstract class GameContext {
     }
 
     if (!outOfBounds(this.player.rect, this)) {
-      this.player.update()
+      const playerCollisions: collision[] = []
+      this.getCollisionForGameObject(
+        this.player,
+        gameObjectsInUpdateArea,
+        playerCollisions,
+      )
+
+      this.player.update(playerCollisions)
       this.player.draw(this.gameContext)
     }
   }
@@ -232,8 +257,8 @@ export abstract class GameContext {
       throw new Error(`Canvas with selector ${selector} not found`)
     }
 
-    canvas.width = 1426
-    canvas.height = 810
+    canvas.width = 1920
+    canvas.height = 1080
     const context = canvas.getContext('2d') as CanvasRenderingContext2D
     return { canvas, context }
   }
@@ -246,11 +271,118 @@ export abstract class GameContext {
         this.timerLoop = null
       }
 
-      for (const gameObject of this.gameObjects) {
-        gameObject.isStatic = true
-      }
-
+      this.isStatic = true
       this.player.playerKill()
     }
+  }
+
+  // This function returns an array of game objects that are
+  // within the bounds of the game area
+  private getGameObjectsToUpdate() {
+    return this.gameObjects.filter((gameObject) => {
+      return !outOfBounds(gameObject.rect, this)
+    })
+  }
+
+  // This function checks for collisions between game objects
+  // and returns an array of collision objects
+  // Each collision object contains the two game objects involved in the collision
+  // and the direction of the collision
+  // This allows us to handle collisions between game objects without
+  // having to check for collisions more than once
+  private getGameObjectsWithCollisions(gameObjects: GameObject[]) {
+    const collisons: collision[] = []
+    for (const gameObject of gameObjects) {
+      this.getCollisionForGameObject(gameObject, gameObjects, collisons)
+    }
+
+    return collisons
+  }
+
+  private getCollisionForGameObject(
+    gameObject: GameObject,
+    gameObjects: GameObject[],
+    collisons: collision[],
+  ) {
+    for (const otherGameObject of gameObjects) {
+      this.getCollisionForGameObjects(gameObject, otherGameObject, collisons)
+    }
+  }
+
+  private getCollisionForGameObjects(
+    gameObject: GameObject,
+    otherGameObject: GameObject,
+    collisons: collision[],
+  ) {
+    if (gameObject.objectId === otherGameObject.objectId) {
+      return
+    }
+
+    const existingCollision = collisons.find(
+      (collision) =>
+        (collision.gameObjectOne.objectId === gameObject.objectId &&
+          collision.gameObjectTwo.objectId === otherGameObject.objectId) ||
+        (collision.gameObjectOne.objectId === otherGameObject.objectId &&
+          collision.gameObjectTwo.objectId === gameObject.objectId),
+    )
+
+    if (existingCollision) {
+      // Collision already exists, skip
+      return
+    }
+
+    const collisionDirection = this.getCollisionDirectionForGameObjects(
+      gameObject,
+      otherGameObject,
+    )
+
+    if (collisionDirection) {
+      // Add 2 collision objects to the array
+      // one for each game object
+      collisons.push(
+        {
+          gameObjectOne: gameObject,
+          gameObjectTwo: otherGameObject,
+          collisionDirection,
+        },
+        {
+          gameObjectOne: otherGameObject,
+          gameObjectTwo: gameObject,
+          collisionDirection: getReverseDirection(collisionDirection),
+        },
+      )
+    }
+  }
+
+  private getCollisionDirectionForGameObjects(
+    gameObject: GameObject,
+    otherGameObject: GameObject,
+  ) {
+    let collisionDirection: direction | null = null
+    if (gameObject instanceof RotatingGameObject) {
+      if (
+        otherGameObject instanceof Player &&
+        gameObject.hitDetection(otherGameObject.rect.x, otherGameObject.rect.y)
+      ) {
+        collisionDirection = gameObject.hitDirection(
+          otherGameObject.rect.x,
+          otherGameObject.rect.y,
+        )
+      }
+    } else if (otherGameObject instanceof RotatingGameObject) {
+      if (
+        gameObject instanceof Player &&
+        otherGameObject.hitDetection(gameObject.rect.x, gameObject.rect.y)
+      ) {
+        collisionDirection = otherGameObject.hitDirection(
+          gameObject.rect.x,
+          gameObject.rect.y,
+        )
+      }
+    } else if (collisionDetection(gameObject, otherGameObject)) {
+      collisionDirection = getCollisionDirection(gameObject, otherGameObject)
+    }
+
+    return collisionDirection
   }
 }

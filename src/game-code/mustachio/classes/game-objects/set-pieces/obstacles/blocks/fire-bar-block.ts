@@ -1,10 +1,8 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { rectangle } from '@/game-code/shared/types'
-import { Obstacle } from './obstacle'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { FireBar } from '../../projectiles/fire-bar'
+import { FireBar } from '../../../projectiles/fire-bar'
+import { Block } from './block'
 
-export class FireBarBlock extends Obstacle {
+export class FireBarBlock extends Block {
   private readonly image: HTMLImageElement = new Image()
   constructor(
     gameContext: GameContext,
@@ -12,14 +10,7 @@ export class FireBarBlock extends Obstacle {
     x: number,
     y: number,
   ) {
-    const rect: rectangle = {
-      x,
-      y,
-      width: BLOCK_SIZE,
-      height: BLOCK_SIZE,
-    }
-
-    super(gameContext, objectId, rect)
+    super(gameContext, objectId, x, y)
 
     this.image.src = 'Images/obstacleBrick.png'
     const fireBar = new FireBar(

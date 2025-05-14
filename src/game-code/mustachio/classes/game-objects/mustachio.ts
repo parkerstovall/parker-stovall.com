@@ -1,4 +1,4 @@
-import { collisionDetection, outOfBounds } from '../../app-code'
+import { collisionDetection, outOfBounds } from '../../../shared/app-code'
 import type { GameContext } from '../../../shared/game-context'
 import { Enemy } from './point-items/enemies/enemy'
 import { StacheSeed } from './point-items/enemies/stache-seed'
@@ -7,18 +7,19 @@ import { FireStache } from './point-items/items/fire-stache'
 import { Item } from './point-items/items/item'
 import { Stacheroom } from './point-items/items/stacheroom'
 import { Laser } from './projectiles/laser'
-import { FallingFloor } from './set-pieces/obstacles/falling-floor'
-import { Wall } from './set-pieces/obstacles/wall'
+import { FallingFloor } from './set-pieces/obstacles/blocks/falling-floor'
+import { Wall } from './set-pieces/obstacles/blocks/wall'
 import { WarpPipe } from './set-pieces/obstacles/warp-pipe'
 import { Obstacle } from './set-pieces/obstacles/obstacle'
-import { Block } from './set-pieces/blocks/block'
 import { SetPiece } from './set-pieces/set-piece'
 import { Player } from '@/game-code/shared/player'
-import { direction } from '@/game-code/shared/types'
-import type { GameObject } from '@/game-code/shared/game-object'
+import { direction, type collision } from '@/game-code/shared/types'
+import type { GameObject } from '@/game-code/shared/game-objects/game-object'
 import { FireBall } from './projectiles/fire-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBar } from './projectiles/fire-bar'
+import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-block/punchable-block'
+import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-block/item-block'
 
 export class Mustachio extends Player {
   private readonly imageStraight = new Image()
@@ -37,8 +38,8 @@ export class Mustachio extends Player {
 
   constructor(gameContext: GameContext, objectId: number) {
     super(gameContext, objectId, {
-      x: gameContext.gameArea.width / 4,
-      y: (gameContext.gameArea.height / 4) * 3,
+      x: BLOCK_SIZE * 4,
+      y: BLOCK_SIZE * 10,
       width: BLOCK_SIZE * 0.66,
       height: BLOCK_SIZE * 0.66,
     })
@@ -85,7 +86,7 @@ export class Mustachio extends Player {
     )
   }
 
-  update(): void {
+  update(collisions: collision[]): void {
     if (this.isDead) {
       if (this.deathAnimationTimeout === null) {
         this.rect.y += this.speedY
@@ -98,7 +99,8 @@ export class Mustachio extends Player {
     this.blockedDirVert = direction.NONE
 
     this.warpPipe = null
-    for (const gameObject of this.gameContext.gameObjects) {
+    for (const collision of collisions) {
+      const gameObject = collision.gameObjectTwo
       this.handleGameObject(gameObject)
     }
 
@@ -266,6 +268,10 @@ export class Mustachio extends Player {
     // If you are on top of a setPiece, set speedY to 0
     // and set the rect.y to the top of the setPiece
     if (setPiece.rect.y >= this.rect.y && this.speedY >= 0) {
+      if (setPiece instanceof ItemBlock && setPiece.hidden) {
+        return
+      }
+
       this.landOnGameObject(setPiece)
 
       if (setPiece instanceof Obstacle) {
@@ -277,7 +283,7 @@ export class Mustachio extends Player {
     ) {
       this.speedY = 1
       this.blockedDirVert = direction.UP
-      if (setPiece instanceof Block) {
+      if (setPiece instanceof PunchableBlock) {
         setPiece.punch()
       }
     }
@@ -375,12 +381,8 @@ export class Mustachio extends Player {
       const fire = new FireBall(
         this.gameContext,
         this.gameContext.generateUniqueId(),
-        {
-          x: this.rect.x + this.rect.width + 5,
-          y: this.rect.y + this.rect.height / 2,
-          width: 8,
-          height: 8,
-        },
+        this.rect.x + this.rect.width + 5,
+        this.rect.y + this.rect.height / 2,
       )
 
       fire.speedX = this.gameContext.currentDir === direction.LEFT ? -5 : 5

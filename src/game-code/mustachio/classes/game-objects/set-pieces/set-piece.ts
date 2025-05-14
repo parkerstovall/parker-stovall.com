@@ -1,3 +1,3 @@
-import { GameObject } from '../../../../shared/game-object'
+import { GameObject } from '../../../../shared/game-objects/game-object'
 
 export abstract class SetPiece extends GameObject {}

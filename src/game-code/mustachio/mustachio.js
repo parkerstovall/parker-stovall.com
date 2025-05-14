@@ -4295,7 +4295,7 @@ var started = false
 //   );
 // }
 
-function RectCircleColliding(rectX, rectY, rectW, rectH, x, y, radius) {
+function RectCircleColliding(rectXY, rectW, rectH, x, y, radius) {
   var dx = Math.abs(x - (rectX + rectW / 2))
   var dy = Math.abs(y - (rectY + rectH / 2))
 

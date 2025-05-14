@@ -1,12 +1,16 @@
-import type { rectangle } from '@/game-code/shared/types'
-import { Obstacle } from './obstacle'
 import type { GameContext } from '@/game-code/shared/game-context'
+import { Block } from './block'
 
-export class Wall extends Obstacle {
+export class Wall extends Block {
   private readonly image: HTMLImageElement = new Image()
 
-  constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
-    super(gameContext, objectId, rect)
+  constructor(
+    gameContext: GameContext,
+    objectId: number,
+    x: number,
+    y: number,
+  ) {
+    super(gameContext, objectId, x, y)
 
     this.image.src = 'Images/obstacleBrick.png'
   }

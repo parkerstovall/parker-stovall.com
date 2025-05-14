@@ -61,13 +61,11 @@ input {
   margin: auto;
   display: block;
   position: absolute;
-  width: 80vw;
-  height: 53.3vw;
+  width: 64vw;
   top: 50vh;
   left: 50vw;
+  height: 36vw;
   transform: translate(-50%, -50%);
-  max-width: 750px;
-  max-height: 500px;
 }
 
 hr {

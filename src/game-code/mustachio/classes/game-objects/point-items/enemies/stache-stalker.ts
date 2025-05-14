@@ -1,4 +1,4 @@
-import type { rectangle } from '@/game-code/shared/types'
+import type { collision, rectangle } from '@/game-code/shared/types'
 import { Enemy } from './enemy'
 import type { GameContext } from '@/game-code/shared/game-context'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
@@ -39,7 +39,7 @@ export class StacheStalker extends Enemy {
     )
   }
 
-  update() {
-    this.leftRightMovement()
+  update(collisions: collision[]): void {
+    this.leftRightMovement(collisions)
   }
 }

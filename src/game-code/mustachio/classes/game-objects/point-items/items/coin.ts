@@ -1,5 +1,5 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { rectangle } from '@/game-code/shared/types'
+import type { collision, rectangle } from '@/game-code/shared/types'
 import { Item } from './item'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
@@ -9,21 +9,32 @@ export class Coin extends Item {
   constructor(
     gameContext: GameContext,
     objectId: number,
-    rect: rectangle,
+    x: number,
+    y: number,
     fromItemBlock: boolean = false,
   ) {
+    const rect: rectangle = {
+      x,
+      y,
+      width: 15,
+      height: 15,
+    }
+
+    if (!fromItemBlock) {
+      rect.x += BLOCK_SIZE / 2 - rect.width / 2
+      rect.y += BLOCK_SIZE / 2 - rect.height / 2
+    }
+
     super(gameContext, objectId, rect, fromItemBlock)
 
     if (fromItemBlock) {
       this.speedY = -2
-      this.rect.width = 20
-      this.rect.height = 20
-      this.rect.x -= rect.width / 2
-      this.rect.y += BLOCK_SIZE
     }
   }
 
-  update(): void {
+  // The coin doesn't care about collisions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  update(_collisions: collision[]): void {
     // The animation only happens if the coin
     // is triggered from an item block
     if (!this.fromItemBlock) {
@@ -47,7 +58,7 @@ export class Coin extends Item {
     ctx.arc(
       this.rect.x + this.rect.width / 2,
       this.rect.y + this.rect.height / 2,
-      15,
+      this.rect.width,
       0,
       Math.PI * 2,
     )

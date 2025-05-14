@@ -1,6 +1,6 @@
 import type { GameContext } from './game-context'
-import { GameObject } from './game-object'
-import { MovingGameObject } from './moving-game-object'
+import { GameObject } from './game-objects/game-object'
+import { MovingGameObject } from './game-objects/moving-game-object'
 import { direction, type rectangle } from './types'
 
 export abstract class Player extends MovingGameObject {

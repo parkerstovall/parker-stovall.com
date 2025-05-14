@@ -1,7 +1,6 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { rectangle } from '@/game-code/shared/types'
+import type { collision, rectangle } from '@/game-code/shared/types'
 import { Item } from './item'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class FireStache extends Item {
   pointValue: number = 1000
@@ -11,13 +10,17 @@ export class FireStache extends Item {
   constructor(
     gameContext: GameContext,
     objectId: number,
-    rect: rectangle,
+    x: number,
+    y: number,
     fromItemBlock: boolean = false,
   ) {
-    rect.width = 20
-    rect.height = 20
-    rect.x -= rect.width / 2
-    rect.y += BLOCK_SIZE
+    const rect: rectangle = {
+      x,
+      y,
+      width: 20,
+      height: 20,
+    }
+
     super(gameContext, objectId, rect, fromItemBlock)
   }
 
@@ -26,7 +29,7 @@ export class FireStache extends Item {
     ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
   }
 
-  update(): void {
+  update(collisions: collision[]): void {
     // The animation only happens if the coin
     // is triggered from an item block
     if (this.fromItemBlock) {
@@ -37,6 +40,6 @@ export class FireStache extends Item {
       }
     }
 
-    this.leftRightMovement()
+    this.leftRightMovement(collisions)
   }
 }

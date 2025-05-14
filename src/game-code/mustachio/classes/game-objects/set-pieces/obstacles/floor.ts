@@ -1,11 +1,18 @@
 import type { rectangle } from '@/game-code/shared/types'
 import { Obstacle } from './obstacle'
 import type { GameContext } from '@/game-code/shared/game-context'
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Floor extends Obstacle {
-  constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
+  constructor(gameContext: GameContext, objectId: number) {
+    const rect: rectangle = {
+      x: 0,
+      y: gameContext.gameArea.height - BLOCK_SIZE,
+      width: gameContext.gameArea.width,
+      height: gameContext.gameArea.height,
+    }
+
     super(gameContext, objectId, rect)
-    this.isStatic = true
   }
 
   draw(ctx: CanvasRenderingContext2D) {

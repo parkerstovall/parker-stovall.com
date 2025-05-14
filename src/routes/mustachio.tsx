@@ -7,14 +7,17 @@ export const Route = createFileRoute('/mustachio')({
   component: MustachioGame,
 })
 
-let gc: GameContextMustachio | null = null
-
 function MustachioGame() {
   useEffect(() => {
-    if (!gc) {
-      gc = new GameContextMustachio()
-      testLevelOne(gc)
+    const gc = new GameContextMustachio()
+
+    if (import.meta.hot) {
+      import.meta.hot.on('vite:afterUpdate', () => {
+        gc.restart(testLevelOne)
+      })
     }
+
+    gc.restart(testLevelOne)
   }, [])
 
   return (

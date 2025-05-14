@@ -1,6 +1,6 @@
-import { GameObject } from '@/game-code/shared/game-object'
+import { UIObject } from './ui-objects'
 
-export class TimerDisplay extends GameObject {
+export class TimerDisplay extends UIObject {
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = 'white'
     ctx.font = '40px Arial'

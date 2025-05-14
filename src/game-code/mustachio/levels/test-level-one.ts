@@ -1,146 +1,120 @@
 import type { GameContext } from '../../shared/game-context'
 import { Floor } from '../classes/game-objects/set-pieces/obstacles/floor'
 
-import { Wall } from '../classes/game-objects/set-pieces/obstacles/wall'
+import { Wall } from '../classes/game-objects/set-pieces/obstacles/blocks/wall'
 import { StacheStalker } from '../classes/game-objects/point-items/enemies/stache-stalker'
 import { ScoreDisplay } from '../classes/game-objects/ui-objects/score-display'
 import { TimerDisplay } from '../classes/game-objects/ui-objects/timer-display'
 import { Coin } from '../classes/game-objects/point-items/items/coin'
-import { ItemBlock } from '../classes/game-objects/set-pieces/blocks/item-block'
+import { ItemBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/punchable-block/item-block'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { FireBarBlock } from '../classes/game-objects/set-pieces/obstacles/fire-bar-block'
+import { FireBarBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/fire-bar-block'
 
 export function testLevelOne(gameContext: GameContext) {
-  const floorRect = {
-    x: 0,
-    y: gameContext.gameArea.height - BLOCK_SIZE,
-    width: gameContext.gameArea.width,
-    height: BLOCK_SIZE,
-  }
-
   gameContext.addGameObject(
-    new Floor(gameContext, gameContext.generateUniqueId(), floorRect),
+    new Floor(gameContext, gameContext.generateUniqueId()),
   )
 
-  const wallRect = {
-    x: gameContext.gameArea.width - 200,
-    y: gameContext.gameArea.height - BLOCK_SIZE * 2,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
+  // The game canvas is 32 blocks wide
+  // and 18 blocks tall
+
+  const touchingFloor = BLOCK_SIZE * 16
 
   gameContext.addGameObject(
-    new Wall(gameContext, gameContext.generateUniqueId(), wallRect),
+    new Wall(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 14,
+      touchingFloor,
+    ),
   )
 
-  const wall2Rect = {
-    x: gameContext.gameArea.width - 800,
-    y: gameContext.gameArea.height - BLOCK_SIZE * 2,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
-
   gameContext.addGameObject(
-    new Wall(gameContext, gameContext.generateUniqueId(), wall2Rect),
+    new Wall(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 22,
+      touchingFloor,
+    ),
   )
 
   gameContext.addGameObject(
     new StacheStalker(
       gameContext,
       gameContext.generateUniqueId(),
-      gameContext.gameArea.width - 600,
-      gameContext.gameArea.height - 150,
+      BLOCK_SIZE * 16,
+      BLOCK_SIZE * 15,
     ),
   )
 
-  const coin1Rect = {
-    x: gameContext.gameArea.width - 600,
-    y: gameContext.gameArea.height - 200,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
+  gameContext.addGameObject(
+    new Coin(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 18,
+      BLOCK_SIZE * 14,
+    ),
+  )
 
   gameContext.addGameObject(
-    new Coin(gameContext, gameContext.generateUniqueId(), coin1Rect),
+    new ItemBlock(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 12,
+      BLOCK_SIZE * 14,
+      false,
+      'coin',
+    ),
   )
 
-  const itemBlockCoinRect = {
-    x: gameContext.gameArea.width - 900,
-    y: gameContext.gameArea.height - 250,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
-  const itemBlockCoin = new ItemBlock(
-    gameContext,
-    gameContext.generateUniqueId(),
-    itemBlockCoinRect,
-    false,
-    'coin',
+  gameContext.addGameObject(
+    new ItemBlock(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 10,
+      BLOCK_SIZE * 14,
+      false,
+      'stacheroom',
+    ),
   )
 
-  gameContext.addGameObject(itemBlockCoin)
-  const itemBlockStacheroomRect = {
-    x: gameContext.gameArea.width - 1020,
-    y: gameContext.gameArea.height - 250,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
-  const itemBlockStacheroom = new ItemBlock(
-    gameContext,
-    gameContext.generateUniqueId(),
-    itemBlockStacheroomRect,
-    false,
-    'stacheroom',
+  gameContext.addGameObject(
+    new ItemBlock(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 10,
+      BLOCK_SIZE * 11,
+      true,
+      'fire-stache',
+    ),
   )
-  gameContext.addGameObject(itemBlockStacheroom)
-  const itemBlockFireStacheRect = {
-    x: gameContext.gameArea.width - 1020,
-    y: gameContext.gameArea.height - 450,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
-  const itemBlockFireStache = new ItemBlock(
-    gameContext,
-    gameContext.generateUniqueId(),
-    itemBlockFireStacheRect,
-    true,
-    'fire-stache',
-  )
-  gameContext.addGameObject(itemBlockFireStache)
 
-  const fireBarBlock = new FireBarBlock(
-    gameContext,
-    gameContext.generateUniqueId(),
-    gameContext.gameArea.width - 500,
-    gameContext.gameArea.height - 350,
+  gameContext.addGameObject(
+    new FireBarBlock(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 18,
+      BLOCK_SIZE * 12,
+    ),
   )
-  gameContext.addGameObject(fireBarBlock)
 
-  const scoreRect = {
-    x: BLOCK_SIZE,
-    y: BLOCK_SIZE,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
-  const scoreDisplay = new ScoreDisplay(
-    gameContext,
-    gameContext.generateUniqueId(),
-    scoreRect,
+  gameContext.addUIObject(
+    new ScoreDisplay(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE,
+      BLOCK_SIZE,
+    ),
   )
-  gameContext.addUIObject(scoreDisplay)
 
-  const timerRect = {
-    x: gameContext.gameArea.width - 200,
-    y: BLOCK_SIZE,
-    width: BLOCK_SIZE,
-    height: BLOCK_SIZE,
-  }
-  const timerDisplay = new TimerDisplay(
-    gameContext,
-    gameContext.generateUniqueId(),
-    timerRect,
+  gameContext.addUIObject(
+    new TimerDisplay(
+      gameContext,
+      gameContext.generateUniqueId(),
+      BLOCK_SIZE * 28,
+      BLOCK_SIZE,
+    ),
   )
-  gameContext.addUIObject(timerDisplay)
 
   gameContext.startMainLoop()
 }

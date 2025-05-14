@@ -1,9 +1,8 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import { SetPiece } from './set-piece'
+import { GameObject } from '@/game-code/shared/game-objects/game-object'
 import type { rectangle } from '@/game-code/shared/types'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
-export class Flag extends SetPiece {
+export abstract class UIObject extends GameObject {
   constructor(
     gameContext: GameContext,
     objectId: number,
@@ -13,15 +12,10 @@ export class Flag extends SetPiece {
     const rect: rectangle = {
       x,
       y,
-      width: BLOCK_SIZE,
-      height: BLOCK_SIZE * 8,
+      width: 0,
+      height: 0,
     }
 
     super(gameContext, objectId, rect)
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    console.log(ctx)
-    throw new Error('Method not implemented.')
   }
 }

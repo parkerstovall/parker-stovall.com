@@ -1,14 +1,13 @@
-import type { rectangle } from '@/game-code/shared/types'
-import { Block } from './block'
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { Item } from '../../point-items/items/item'
-import { Coin } from '../../point-items/items/coin'
-import { Stacheroom } from '../../point-items/items/stacheroom'
-import { FireStache } from '../../point-items/items/fire-stache'
+import type { Item } from '../../../../point-items/items/item'
+import { Coin } from '../../../../point-items/items/coin'
+import { Stacheroom } from '../../../../point-items/items/stacheroom'
+import { FireStache } from '../../../../point-items/items/fire-stache'
+import { PunchableBlock } from './punchable-block'
 
-export class ItemBlock extends Block {
+export class ItemBlock extends PunchableBlock {
   protected punched = false
-  private hidden: boolean
+  hidden: boolean
 
   private readonly image: HTMLImageElement = new Image()
   private readonly imageSource: string = 'Images/itemBlock.png'
@@ -17,18 +16,20 @@ export class ItemBlock extends Block {
   protected item: new (
     gameContext: GameContext,
     objectId: number,
-    rect: rectangle,
+    x: number,
+    y: number,
     fromItemBlock?: boolean,
   ) => Item
 
   constructor(
     gameContext: GameContext,
     objectId: number,
-    rect: rectangle,
+    x: number,
+    y: number,
     hidden: boolean,
     itemType: string,
   ) {
-    super(gameContext, objectId, rect)
+    super(gameContext, objectId, x, y)
     this.image.src = this.imageSource
     this.hidden = hidden
 
@@ -58,12 +59,8 @@ export class ItemBlock extends Block {
     const newItem = new this.item(
       this.gameContext,
       this.gameContext.generateUniqueId(),
-      {
-        x: this.rect.x + this.rect.width / 2,
-        y: this.rect.y - this.rect.height,
-        width: this.rect.width,
-        height: this.rect.height,
-      },
+      this.rect.x + this.rect.width / 2,
+      this.rect.y - this.rect.height,
       true,
     )
 

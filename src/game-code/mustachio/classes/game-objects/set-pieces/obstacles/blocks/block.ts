@@ -1,9 +1,9 @@
-import type { GameContext } from '@/game-code/shared/game-context'
-import { SetPiece } from './set-piece'
-import type { rectangle } from '@/game-code/shared/types'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
+import type { GameContext } from '@/game-code/shared/game-context'
+import type { rectangle } from '@/game-code/shared/types'
+import { Obstacle } from '../obstacle'
 
-export class Flag extends SetPiece {
+export abstract class Block extends Obstacle {
   constructor(
     gameContext: GameContext,
     objectId: number,
@@ -14,14 +14,9 @@ export class Flag extends SetPiece {
       x,
       y,
       width: BLOCK_SIZE,
-      height: BLOCK_SIZE * 8,
+      height: BLOCK_SIZE,
     }
 
     super(gameContext, objectId, rect)
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    console.log(ctx)
-    throw new Error('Method not implemented.')
   }
 }

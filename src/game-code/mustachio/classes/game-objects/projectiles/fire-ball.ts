@@ -1,10 +1,28 @@
-import { collisionDetection, outOfBounds } from '@/game-code/mustachio/app-code'
+import { collisionDetection, outOfBounds } from '@/game-code/shared/app-code'
 import { Enemy } from '../point-items/enemies/enemy'
 import { Projectile } from './projectile'
+import type { GameContext } from '@/game-code/shared/game-context'
+import type { collision, rectangle } from '@/game-code/shared/types'
 
 export class FireBall extends Projectile {
-  update(): void {
-    this.leftRightMovement()
+  constructor(
+    gameContext: GameContext,
+    objectId: number,
+    x: number,
+    y: number,
+  ) {
+    const rect: rectangle = {
+      x,
+      y,
+      width: 8,
+      height: 8,
+    }
+
+    super(gameContext, objectId, rect)
+  }
+
+  update(collisions: collision[]): void {
+    this.leftRightMovement(collisions)
 
     if (this.onGround) {
       this.speedY = -4

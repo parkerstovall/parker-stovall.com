@@ -1,11 +1,9 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { rectangle } from '@/game-code/shared/types'
-import type { FireBarBlock } from '../set-pieces/obstacles/fire-bar-block'
-import { Projectile } from './projectile'
+import type { collision, rectangle } from '@/game-code/shared/types'
+import type { FireBarBlock } from '../set-pieces/obstacles/blocks/fire-bar-block'
+import { RotatingGameObject } from '@/game-code/shared/game-objects/rotating-game-object'
 
-export class FireBar extends Projectile {
-  private rotation: number = 0
-  private readonly rotationSpeed: number = 0.01
+export class FireBar extends RotatingGameObject {
   private readonly anchorBlock: FireBarBlock
 
   constructor(
@@ -26,7 +24,7 @@ export class FireBar extends Projectile {
     this.anchorBlock = anchorBlock
   }
 
-  update(): void {
+  update(collisions: collision[]): void {
     this.rotation += this.rotationSpeed
     this.rotation %= Math.PI * 2
 
@@ -62,30 +60,5 @@ export class FireBar extends Projectile {
     )
 
     ctx.restore()
-  }
-
-  hitDetection(playerX: number, playerY: number) {
-    // 1. Move player point into firebar's local space (rotated frame)
-    const pivotX = this.rect.x + this.rect.width / 2
-    const pivotY = this.rect.y + this.rect.height
-
-    // Translate to pivot
-    const dx = playerX - pivotX
-    const dy = playerY - pivotY
-
-    // Unrotate the point (rotate opposite direction)
-    const sin = Math.sin(-this.rotation)
-    const cos = Math.cos(-this.rotation)
-
-    const localX = dx * cos - dy * sin
-    const localY = dx * sin + dy * cos
-
-    // 2. Check against firebar's axis-aligned box in local space
-    const halfW = this.rect.width / 2
-    const height = this.rect.height
-
-    return (
-      localX >= -halfW && localX <= halfW && localY >= -height && localY <= 0
-    )
   }
 }
