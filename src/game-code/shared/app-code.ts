@@ -17,19 +17,32 @@ export function collisionDetection(go1: GameObject, go2: GameObject) {
 export function getCollisionDirection(
   go1: GameObject,
   go2: GameObject,
-): number {
+): direction | null {
+  if (!collisionDetection(go1, go2)) {
+    return null
+  }
+
   const rect1 = go1.rect
   const rect2 = go2.rect
 
-  if (rect1.x + rect1.width < rect2.x) {
-    return direction.RIGHT
-  } else if (rect1.x > rect2.x + rect2.width) {
-    return direction.LEFT
-  } else if (rect1.y < rect2.y) {
-    return direction.DOWN
-  } else {
-    return direction.UP
+  const dx = rect1.x + rect1.width / 2 - (rect2.x + rect2.width / 2)
+  const dy = rect1.y + rect1.height / 2 - (rect2.y + rect2.height / 2)
+
+  const width = (rect1.width + rect2.width) / 2
+  const height = (rect1.height + rect2.height) / 2
+
+  const crossWidth = width * dy
+  const crossHeight = height * dx
+
+  if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+    if (crossWidth > crossHeight) {
+      return crossWidth > -crossHeight ? direction.UP : direction.LEFT
+    } else {
+      return crossWidth > -crossHeight ? direction.RIGHT : direction.DOWN
+    }
   }
+
+  return null
 }
 
 export function getReverseDirection(dir: direction) {

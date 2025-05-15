@@ -22,9 +22,7 @@ export abstract class Player extends MovingGameObject {
   canMove(dir: direction) {
     return (
       !this.isDead &&
-      (this.blockedDirHor === direction.NONE ||
-        this.blockedDirVert === direction.NONE ||
-        (this.blockedDirHor !== dir && this.blockedDirVert !== dir))
+      (this.blockedDirHor === direction.NONE || this.blockedDirHor !== dir)
     )
   }
 

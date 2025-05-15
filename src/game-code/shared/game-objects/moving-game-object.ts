@@ -36,11 +36,11 @@ export abstract class MovingGameObject extends UpdatingGameObject {
         collision.gameObject.rect.y + collision.gameObject.rect.height
     } else if (collision.collisionDirection === direction.LEFT) {
       this.rect.x = collision.gameObject.rect.x - this.rect.width
-      this.speedX = Math.abs(this.speedX)
+      this.speedX = -Math.abs(this.speedX)
     } else if (collision.collisionDirection === direction.RIGHT) {
       this.rect.x =
         collision.gameObject.rect.x + collision.gameObject.rect.width
-      this.speedX = -Math.abs(this.speedX)
+      this.speedX = Math.abs(this.speedX)
     }
   }
 }

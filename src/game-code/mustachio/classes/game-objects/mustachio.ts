@@ -36,7 +36,7 @@ export class Mustachio extends Player {
   constructor(gameContext: GameContext, objectId: number) {
     super(gameContext, objectId, {
       x: BLOCK_SIZE * 4,
-      y: BLOCK_SIZE * 10,
+      y: BLOCK_SIZE * 13,
       width: BLOCK_SIZE * 0.66,
       height: BLOCK_SIZE * 0.66,
     })
@@ -54,17 +54,17 @@ export class Mustachio extends Player {
 
     if (!this.isDead) {
       if (!this.isFire) {
-        if (this.gameContext.currentDir === direction.RIGHT) {
+        if (this.gameContext.currentDir === direction.LEFT) {
           image = this.imageRight
-        } else if (this.gameContext.currentDir === direction.LEFT) {
+        } else if (this.gameContext.currentDir === direction.RIGHT) {
           image = this.imageLeft
         } else {
           image = this.imageStraight
         }
       } else {
-        if (this.gameContext.currentDir === direction.RIGHT) {
+        if (this.gameContext.currentDir === direction.LEFT) {
           image = this.imageRightFire
-        } else if (this.gameContext.currentDir === direction.LEFT) {
+        } else if (this.gameContext.currentDir === direction.RIGHT) {
           image = this.imageLeftFire
         } else {
           image = this.imageStraightFire
@@ -98,7 +98,6 @@ export class Mustachio extends Player {
     this.warpPipe = null
     for (const collision of collisions) {
       this.handleCollision(collision)
-      //this.handleCollisionGameObject(collision)
     }
 
     this.handleGravity()
@@ -128,10 +127,14 @@ export class Mustachio extends Player {
 
       if (this.isBig) {
         this.rect.height += 10
+        this.rect.y -= 10
         this.rect.width += 3
+        this.rect.x -= 1.5
       } else {
         this.rect.height -= 10
+        this.rect.y += 10
         this.rect.width -= 3
+        this.rect.x += 1.5
       }
     }
 
@@ -166,13 +169,12 @@ export class Mustachio extends Player {
   }
 
   protected handleCollision(collision: collision) {
-    this.handleCollisionDirection(collision)
     this.handleCollisionGameObject(collision)
+    this.handleCollisionDirection(collision)
   }
 
   private handleCollisionDirection(collision: collision) {
     if (
-      collision.collisionDirection !== direction.UP &&
       collision.gameObject instanceof ItemBlock &&
       collision.gameObject.hidden
     ) {
@@ -180,25 +182,25 @@ export class Mustachio extends Player {
     }
 
     if (collision.collisionDirection === direction.DOWN) {
-      console.log('down')
       this.blockedDirVert = direction.DOWN
       this.landOnGameObject(collision.gameObject)
     } else if (collision.collisionDirection === direction.UP) {
-      console.log('up')
-      this.speedY = 1
-      this.rect.y =
-        collision.gameObject.rect.y + collision.gameObject.rect.height
-      this.blockedDirVert = direction.UP
+      if (!(collision.gameObject instanceof Item)) {
+        this.speedY = 1
+        this.rect.y =
+          collision.gameObject.rect.y + collision.gameObject.rect.height - 1
+        this.blockedDirVert = direction.UP
+      }
     } else if (collision.collisionDirection === direction.LEFT) {
       console.log('left')
       this.speedX = 0
-      this.rect.x = collision.gameObject.rect.x - this.rect.width
+      this.rect.x = collision.gameObject.rect.x - this.rect.width + 1
       this.blockedDirHor = direction.LEFT
     } else if (collision.collisionDirection === direction.RIGHT) {
       console.log('right')
       this.speedX = 0
       this.rect.x =
-        collision.gameObject.rect.x + collision.gameObject.rect.width
+        collision.gameObject.rect.x + collision.gameObject.rect.width - 1
       this.blockedDirHor = direction.RIGHT
     }
   }
@@ -265,8 +267,13 @@ export class Mustachio extends Player {
     // and set the rect.y to the top of the setPiece
     if (dir === direction.DOWN && setPiece instanceof Obstacle) {
       this.handleCollisionObstacle(setPiece)
-    } else if (dir === direction.UP && setPiece instanceof PunchableBlock) {
+    } else if (
+      this.speedY <= 0 &&
+      dir === direction.UP &&
+      setPiece instanceof PunchableBlock
+    ) {
       setPiece.punch()
+      this.speedY = 1
     }
   }
 

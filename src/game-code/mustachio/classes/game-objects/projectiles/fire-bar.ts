@@ -24,7 +24,8 @@ export class FireBar extends RotatingGameObject {
     this.anchorBlock = anchorBlock
   }
 
-  update(collisions: collision[]): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  update(_: collision[]): void {
     this.rotation += this.rotationSpeed
     this.rotation %= Math.PI * 2
 

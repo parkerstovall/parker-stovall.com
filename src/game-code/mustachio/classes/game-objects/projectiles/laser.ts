@@ -20,6 +20,7 @@ export class Laser extends Projectile {
   }
 
   update(collisions: collision[]): void {
+    console.log(collisions)
     throw new Error('Method not implemented.')
   }
 

@@ -1,5 +1,4 @@
 import {
-  collisionDetection,
   getCollisionDirection,
   getReverseDirection,
   outOfBounds,
@@ -140,9 +139,9 @@ export abstract class GameContext {
       if (!this.isStatic && canMove) {
         // We move the game object opposite to the player
         // to simulate the player moving
-        if (this.currentDir === direction.LEFT) {
+        if (this.currentDir === direction.RIGHT) {
           gameObject.rect.x += this.xSpeed
-        } else if (this.currentDir === direction.RIGHT) {
+        } else if (this.currentDir === direction.LEFT) {
           gameObject.rect.x -= this.xSpeed
         }
       }
@@ -204,9 +203,9 @@ export abstract class GameContext {
     this.player.customKeyDown(key)
 
     if (key === 'arrowleft' || key === 'a') {
-      this.currentDir = direction.LEFT
-    } else if (key === 'arrowright' || key === 'd') {
       this.currentDir = direction.RIGHT
+    } else if (key === 'arrowright' || key === 'd') {
+      this.currentDir = direction.LEFT
     } else if (key === 'arrowup' || key === 'w') {
       this.player.jump()
     } else if (key === 'shift') {
@@ -234,12 +233,12 @@ export abstract class GameContext {
         this.pressedKeys.includes('arrowleft') ||
         this.pressedKeys.includes('a')
       ) {
-        this.currentDir = direction.LEFT
+        this.currentDir = direction.RIGHT
       } else if (
         this.pressedKeys.includes('arrowright') ||
         this.pressedKeys.includes('d')
       ) {
-        this.currentDir = direction.RIGHT
+        this.currentDir = direction.LEFT
       } else {
         this.currentDir = direction.NONE
       }
@@ -381,7 +380,7 @@ export abstract class GameContext {
       ) {
         collisionDirection = direction.NONE
       }
-    } else if (collisionDetection(gameObject, otherGameObject)) {
+    } else {
       collisionDirection = getCollisionDirection(gameObject, otherGameObject)
     }
 

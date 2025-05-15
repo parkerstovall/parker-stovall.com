@@ -23,6 +23,7 @@ export class StacheSeed extends Enemy {
   }
 
   update(collisions: collision[]): void {
+    console.log(collisions)
     throw new Error('Method not implemented.')
   }
 
