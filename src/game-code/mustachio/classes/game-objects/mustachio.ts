@@ -1,4 +1,3 @@
-import { collisionDetection, outOfBounds } from '../../../shared/app-code'
 import type { GameContext } from '../../../shared/game-context'
 import { Enemy } from './point-items/enemies/enemy'
 import { StacheSeed } from './point-items/enemies/stache-seed'
@@ -8,13 +7,11 @@ import { Item } from './point-items/items/item'
 import { Stacheroom } from './point-items/items/stacheroom'
 import { Laser } from './projectiles/laser'
 import { FallingFloor } from './set-pieces/obstacles/blocks/falling-floor'
-import { Wall } from './set-pieces/obstacles/blocks/wall'
 import { WarpPipe } from './set-pieces/obstacles/warp-pipe'
 import { Obstacle } from './set-pieces/obstacles/obstacle'
 import { SetPiece } from './set-pieces/set-piece'
 import { Player } from '@/game-code/shared/player'
 import { direction, type collision } from '@/game-code/shared/types'
-import type { GameObject } from '@/game-code/shared/game-objects/game-object'
 import { FireBall } from './projectiles/fire-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBar } from './projectiles/fire-bar'
@@ -100,8 +97,8 @@ export class Mustachio extends Player {
 
     this.warpPipe = null
     for (const collision of collisions) {
-      const gameObject = collision.gameObjectTwo
-      this.handleGameObject(gameObject)
+      this.handleCollision(collision)
+      //this.handleCollisionGameObject(collision)
     }
 
     this.handleGravity()
@@ -168,49 +165,61 @@ export class Mustachio extends Player {
     changeID = setInterval(change, 115)
   }
 
-  private handleGameObject(gameObject: GameObject) {
-    // If the gameObject isn't in the canvas, skip it
-    if (outOfBounds(gameObject.rect, this.gameContext)) {
+  protected handleCollision(collision: collision) {
+    this.handleCollisionDirection(collision)
+    this.handleCollisionGameObject(collision)
+  }
+
+  private handleCollisionDirection(collision: collision) {
+    if (
+      collision.collisionDirection !== direction.UP &&
+      collision.gameObject instanceof ItemBlock &&
+      collision.gameObject.hidden
+    ) {
       return
     }
+
+    if (collision.collisionDirection === direction.DOWN) {
+      console.log('down')
+      this.blockedDirVert = direction.DOWN
+      this.landOnGameObject(collision.gameObject)
+    } else if (collision.collisionDirection === direction.UP) {
+      console.log('up')
+      this.speedY = 1
+      this.rect.y =
+        collision.gameObject.rect.y + collision.gameObject.rect.height
+      this.blockedDirVert = direction.UP
+    } else if (collision.collisionDirection === direction.LEFT) {
+      console.log('left')
+      this.speedX = 0
+      this.rect.x = collision.gameObject.rect.x - this.rect.width
+      this.blockedDirHor = direction.LEFT
+    } else if (collision.collisionDirection === direction.RIGHT) {
+      console.log('right')
+      this.speedX = 0
+      this.rect.x =
+        collision.gameObject.rect.x + collision.gameObject.rect.width
+      this.blockedDirHor = direction.RIGHT
+    }
+  }
+
+  private handleCollisionGameObject(collision: collision) {
+    const gameObject = collision.gameObject
 
     // FireBar is a special case since it rotates
-    if (gameObject instanceof FireBar) {
-      if (gameObject.hitDetection(this.rect.x, this.rect.y)) {
-        this.playerHit()
-      } else if (
-        gameObject.hitDetection(
-          this.rect.x + this.rect.width,
-          this.rect.y + this.rect.height,
-        )
-      ) {
-        this.playerHit()
-      }
-
-      return
-    }
-
-    // If the gameObject isn't touching the player, skip it
-    if (!collisionDetection(gameObject, this)) {
+    if (gameObject instanceof FireBar || gameObject instanceof Laser) {
+      this.playerHit()
       return
     }
 
     if (gameObject instanceof SetPiece) {
-      this.handleCollisionSetPiece(gameObject)
-      return
-    }
-
-    // FireBar and Laser are projectiles that can hit the player
-    // but only after a small amount of time
-    // has passed since the player was hit
-    if (gameObject instanceof Laser) {
-      this.playerHit()
+      this.handleCollisionSetPiece(collision.collisionDirection, gameObject)
       return
     }
 
     // If the gameObject is an enemy
     if (gameObject instanceof Enemy) {
-      this.handleCollisionEnemy(gameObject)
+      this.handleCollisionEnemy(collision.collisionDirection, gameObject)
       return
     }
 
@@ -222,8 +231,7 @@ export class Mustachio extends Player {
   }
 
   private handleCollisionItem(item: Item) {
-    this.gameContext.removeGameObject(item)
-    this.gameContext.score += item.pointValue
+    item.collect()
 
     if (item instanceof Stacheroom) {
       this.changeSize(true)
@@ -232,32 +240,20 @@ export class Mustachio extends Player {
     }
   }
 
-  private handleCollisionEnemy(enemy: Enemy) {
-    const bottomY = this.rect.y + this.rect.height - 10
-    // Theres a small amount of time between the player hitting
-    // the enemy and the enemy leaving the screen
-
-    let stacheSeed: StacheSeed | null = null
-    if (enemy instanceof StacheSeed) {
-      stacheSeed = enemy
-    }
-
-    // You can jump on any enemy except for the StacheSeed
-    if (bottomY <= enemy.rect.y && stacheSeed === null) {
+  private handleCollisionEnemy(dir: direction, enemy: Enemy) {
+    if (
+      dir !== direction.DOWN &&
+      (!(enemy instanceof StacheSeed) || !enemy.inPipe)
+    ) {
       if (!enemy.isDead) {
-        enemy.enemyHit()
+        this.playerHit()
       }
 
-      this.landOnGameObject(enemy)
-
-      // If the enemy is a StacheSeed OR if the player hits from
-      // the side or below, then the player is hit
-    } else if (stacheSeed === null || !stacheSeed.inPipe) {
-      this.playerHit()
+      return
     }
   }
 
-  private handleCollisionSetPiece(setPiece: SetPiece) {
+  private handleCollisionSetPiece(dir: direction, setPiece: SetPiece) {
     // The Flag is the goal
     if (setPiece instanceof Flag) {
       // win(); // TODO: Implement win
@@ -267,35 +263,10 @@ export class Mustachio extends Player {
 
     // If you are on top of a setPiece, set speedY to 0
     // and set the rect.y to the top of the setPiece
-    if (setPiece.rect.y >= this.rect.y && this.speedY >= 0) {
-      if (setPiece instanceof ItemBlock && setPiece.hidden) {
-        return
-      }
-
-      this.landOnGameObject(setPiece)
-
-      if (setPiece instanceof Obstacle) {
-        this.handleCollisionObstacle(setPiece)
-      }
-    } else if (
-      setPiece.rect.y + setPiece.rect.height - 10 <= this.rect.y &&
-      !(setPiece instanceof Wall)
-    ) {
-      this.speedY = 1
-      this.blockedDirVert = direction.UP
-      if (setPiece instanceof PunchableBlock) {
-        setPiece.punch()
-      }
-    }
-
-    // Left and Right
-    else {
-      if (setPiece.rect.x > this.rect.x) {
-        this.blockedDirHor = direction.RIGHT
-      }
-      if (setPiece.rect.x < this.rect.x) {
-        this.blockedDirHor = direction.LEFT
-      }
+    if (dir === direction.DOWN && setPiece instanceof Obstacle) {
+      this.handleCollisionObstacle(setPiece)
+    } else if (dir === direction.UP && setPiece instanceof PunchableBlock) {
+      setPiece.punch()
     }
   }
 
@@ -306,9 +277,7 @@ export class Mustachio extends Player {
 
       // Fall off the screen
       if (this.rect.y + this.rect.height >= this.gameContext.gameArea.height) {
-        this.isBig = false
-        this.isFire = false
-        // killMethod(); // TODO: Implement killMethod
+        this.playerKill()
       }
     }
   }

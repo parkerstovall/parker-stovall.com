@@ -14,22 +14,7 @@ export abstract class MovingGameObject extends UpdatingGameObject {
 
     this.onGround = outOfBounds(this.rect, this.gameContext)
     for (const collision of collisions) {
-      if (collision.collisionDirection === direction.LEFT) {
-        this.speedX = Math.abs(this.speedX)
-        this.rect.x =
-          collision.gameObjectTwo.rect.x + collision.gameObjectTwo.rect.width
-      } else if (collision.collisionDirection === direction.RIGHT) {
-        this.speedX = -Math.abs(this.speedX)
-        this.rect.x = collision.gameObjectTwo.rect.x - this.rect.width
-      } else if (collision.collisionDirection === direction.DOWN) {
-        this.onGround = true
-        this.speedY = 0
-        this.rect.y = collision.gameObjectTwo.rect.y - this.rect.height
-      } else if (collision.collisionDirection === direction.UP) {
-        this.speedY = 0
-        this.rect.y =
-          collision.gameObjectTwo.rect.y + collision.gameObjectTwo.rect.height
-      }
+      this.handleCollision(collision)
     }
 
     this.rect.x += this.speedX
@@ -37,6 +22,25 @@ export abstract class MovingGameObject extends UpdatingGameObject {
     if (!this.onGround) {
       this.rect.y += this.speedY
       this.speedY += this.gameContext.gravity
+    }
+  }
+
+  protected handleCollision(collision: collision) {
+    if (collision.collisionDirection === direction.DOWN) {
+      this.onGround = true
+      this.rect.y = collision.gameObject.rect.y - this.rect.height
+      this.speedY = 0
+    } else if (collision.collisionDirection === direction.UP) {
+      this.speedY = 1
+      this.rect.y =
+        collision.gameObject.rect.y + collision.gameObject.rect.height
+    } else if (collision.collisionDirection === direction.LEFT) {
+      this.rect.x = collision.gameObject.rect.x - this.rect.width
+      this.speedX = Math.abs(this.speedX)
+    } else if (collision.collisionDirection === direction.RIGHT) {
+      this.rect.x =
+        collision.gameObject.rect.x + collision.gameObject.rect.width
+      this.speedX = -Math.abs(this.speedX)
     }
   }
 }

@@ -151,12 +151,8 @@ export abstract class GameContext {
     // Update the game objects in the game area
     for (const gameObject of gameObjectsInUpdateArea) {
       if (gameObject instanceof UpdatingGameObject) {
-        const collisions = gameObjectCollisions.filter(
-          (collision) =>
-            collision.gameObjectOne.objectId === gameObject.objectId,
-        )
-
-        gameObject.update(collisions)
+        const collisions = gameObjectCollisions.get(gameObject.objectId)
+        gameObject.update(collisions ?? [])
       }
 
       gameObject.draw(this.gameContext)
@@ -168,14 +164,15 @@ export abstract class GameContext {
     }
 
     if (!outOfBounds(this.player.rect, this)) {
-      const playerCollisions: collision[] = []
       this.getCollisionForGameObject(
         this.player,
         gameObjectsInUpdateArea,
-        playerCollisions,
+        gameObjectCollisions,
       )
 
-      this.player.update(playerCollisions)
+      const playerCollisions = gameObjectCollisions.get(this.player.objectId)
+
+      this.player.update(playerCollisions ?? [])
       this.player.draw(this.gameContext)
     }
   }
@@ -291,7 +288,7 @@ export abstract class GameContext {
   // This allows us to handle collisions between game objects without
   // having to check for collisions more than once
   private getGameObjectsWithCollisions(gameObjects: GameObject[]) {
-    const collisons: collision[] = []
+    const collisons: Map<number, collision[]> = new Map()
     for (const gameObject of gameObjects) {
       this.getCollisionForGameObject(gameObject, gameObjects, collisons)
     }
@@ -302,7 +299,7 @@ export abstract class GameContext {
   private getCollisionForGameObject(
     gameObject: GameObject,
     gameObjects: GameObject[],
-    collisons: collision[],
+    collisons: Map<number, collision[]>,
   ) {
     for (const otherGameObject of gameObjects) {
       this.getCollisionForGameObjects(gameObject, otherGameObject, collisons)
@@ -312,23 +309,25 @@ export abstract class GameContext {
   private getCollisionForGameObjects(
     gameObject: GameObject,
     otherGameObject: GameObject,
-    collisons: collision[],
+    collisions: Map<number, collision[]>,
   ) {
     if (gameObject.objectId === otherGameObject.objectId) {
       return
     }
 
-    const existingCollision = collisons.find(
-      (collision) =>
-        (collision.gameObjectOne.objectId === gameObject.objectId &&
-          collision.gameObjectTwo.objectId === otherGameObject.objectId) ||
-        (collision.gameObjectOne.objectId === otherGameObject.objectId &&
-          collision.gameObjectTwo.objectId === gameObject.objectId),
-    )
-
-    if (existingCollision) {
-      // Collision already exists, skip
-      return
+    if (!collisions.has(gameObject.objectId)) {
+      collisions.set(gameObject.objectId, [])
+    } else {
+      // If the game object has already been added to the collisions map
+      // we don't need to check for collisions again
+      const goCollisions = collisions.get(gameObject.objectId)
+      if (goCollisions) {
+        for (const collision of goCollisions) {
+          if (collision.gameObject.objectId === otherGameObject.objectId) {
+            return
+          }
+        }
+      }
     }
 
     const collisionDirection = this.getCollisionDirectionForGameObjects(
@@ -336,21 +335,30 @@ export abstract class GameContext {
       otherGameObject,
     )
 
-    if (collisionDirection) {
+    if (collisionDirection !== null) {
       // Add 2 collision objects to the array
       // one for each game object
-      collisons.push(
-        {
-          gameObjectOne: gameObject,
-          gameObjectTwo: otherGameObject,
-          collisionDirection,
-        },
-        {
-          gameObjectOne: otherGameObject,
-          gameObjectTwo: gameObject,
-          collisionDirection: getReverseDirection(collisionDirection),
-        },
-      )
+      const collision = {
+        gameObject: otherGameObject,
+        collisionDirection,
+      }
+
+      const reversedCollision = {
+        gameObject: gameObject,
+        collisionDirection: getReverseDirection(collisionDirection),
+      }
+
+      const goCollisions = collisions.get(gameObject.objectId)
+      if (goCollisions) {
+        goCollisions.push(collision)
+        collisions.set(gameObject.objectId, goCollisions)
+      }
+
+      const otherGoCollisions = collisions.get(otherGameObject.objectId)
+      if (otherGoCollisions) {
+        otherGoCollisions.push(reversedCollision)
+        collisions.set(otherGameObject.objectId, otherGoCollisions)
+      }
     }
   }
 
@@ -364,20 +372,14 @@ export abstract class GameContext {
         otherGameObject instanceof Player &&
         gameObject.hitDetection(otherGameObject.rect.x, otherGameObject.rect.y)
       ) {
-        collisionDirection = gameObject.hitDirection(
-          otherGameObject.rect.x,
-          otherGameObject.rect.y,
-        )
+        collisionDirection = direction.NONE
       }
     } else if (otherGameObject instanceof RotatingGameObject) {
       if (
         gameObject instanceof Player &&
         otherGameObject.hitDetection(gameObject.rect.x, gameObject.rect.y)
       ) {
-        collisionDirection = otherGameObject.hitDirection(
-          gameObject.rect.x,
-          gameObject.rect.y,
-        )
+        collisionDirection = direction.NONE
       }
     } else if (collisionDetection(gameObject, otherGameObject)) {
       collisionDirection = getCollisionDirection(gameObject, otherGameObject)

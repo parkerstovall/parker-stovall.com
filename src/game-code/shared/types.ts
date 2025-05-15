@@ -16,7 +16,6 @@ export type rectangle = {
 }
 
 export type collision = {
-  gameObjectOne: GameObject
-  gameObjectTwo: GameObject
+  gameObject: GameObject
   collisionDirection: direction
 }

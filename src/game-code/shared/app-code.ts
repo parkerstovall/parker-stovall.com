@@ -21,13 +21,14 @@ export function getCollisionDirection(
   const rect1 = go1.rect
   const rect2 = go2.rect
 
-  const dx = rect1.x + rect1.width / 2 - (rect2.x + rect2.width / 2)
-  const dy = rect1.y + rect1.height / 2 - (rect2.y + rect2.height / 2)
-
-  if (Math.abs(dx) > Math.abs(dy)) {
-    return dx > 0 ? direction.LEFT : direction.RIGHT
+  if (rect1.x + rect1.width < rect2.x) {
+    return direction.RIGHT
+  } else if (rect1.x > rect2.x + rect2.width) {
+    return direction.LEFT
+  } else if (rect1.y < rect2.y) {
+    return direction.DOWN
   } else {
-    return dy > 0 ? direction.UP : direction.DOWN
+    return direction.UP
   }
 }
 
