@@ -32,11 +32,12 @@ export class Mustachio extends Player {
   private canFire = true
   private deathAnimationTimeout: number | null = null
   private crouched = false
+  private goingDownPipe = false
 
-  constructor(gameContext: GameContext) {
+  constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, {
-      x: BLOCK_SIZE * 4,
-      y: BLOCK_SIZE * 13,
+      x,
+      y,
       width: BLOCK_SIZE * 0.66,
       height: BLOCK_SIZE * 0.66,
     })
@@ -84,6 +85,10 @@ export class Mustachio extends Player {
   }
 
   update(collisions: collision[]): void {
+    if (this.goingDownPipe) {
+      return // Let the goDownPipe method handle the update
+    }
+
     if (this.isDead) {
       if (this.deathAnimationTimeout === null) {
         this.rect.y += this.speedY
@@ -109,7 +114,34 @@ export class Mustachio extends Player {
       return
     }
 
-    console.log('warp') // TODO: Implement warp
+    this.goingDownPipe = true
+    this.rect.x =
+      this.warpPipe.rect.x + this.warpPipe.rect.width / 2 - this.rect.width / 2
+    this.rect.y = this.warpPipe.rect.y - this.rect.height
+
+    let downAnimationID: number | null = null
+    const downAnimation = () => {
+      if (!this.warpPipe) {
+        if (downAnimationID) {
+          clearInterval(downAnimationID)
+        }
+        return
+      }
+
+      this.rect.y += 5
+
+      if (this.rect.y >= this.warpPipe.rect.y + this.warpPipe.rect.height) {
+        if (downAnimationID) {
+          clearInterval(downAnimationID)
+        }
+
+        this.warpPipe.enter()
+        this.warpPipe = null
+        this.goingDownPipe = false
+      }
+    }
+
+    downAnimationID = setInterval(downAnimation, 50)
   }
 
   private changeSize(isBig: boolean) {
@@ -377,7 +409,11 @@ export class Mustachio extends Player {
 
       this.gameContext.addGameObject(fire)
     } else if (key === 'arrowdown' || key === 's') {
-      this.toggleCrouch(true)
+      if (this.warpPipe) {
+        this.goDownPipe()
+      } else {
+        this.toggleCrouch(true)
+      }
     }
   }
 

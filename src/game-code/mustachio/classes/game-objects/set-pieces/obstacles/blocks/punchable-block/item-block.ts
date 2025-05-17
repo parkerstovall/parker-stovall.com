@@ -15,7 +15,6 @@ export class ItemBlock extends PunchableBlock {
 
   protected item: new (
     gameContext: GameContext,
-
     x: number,
     y: number,
     fromItemBlock?: boolean,
@@ -23,11 +22,10 @@ export class ItemBlock extends PunchableBlock {
 
   constructor(
     gameContext: GameContext,
-
     x: number,
     y: number,
     hidden: boolean,
-    itemType: string,
+    itemType: 'coin' | 'stacheroom' | 'fire-stache',
   ) {
     super(gameContext, x, y)
     this.image.src = this.imageSource

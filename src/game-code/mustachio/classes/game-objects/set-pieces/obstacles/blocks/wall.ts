@@ -4,12 +4,7 @@ import { Block } from './block'
 export class Wall extends Block {
   private readonly image: HTMLImageElement = new Image()
 
-  constructor(
-    gameContext: GameContext,
-
-    x: number,
-    y: number,
-  ) {
+  constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, x, y)
 
     this.image.src = 'Images/obstacleBrick.png'

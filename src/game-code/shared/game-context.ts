@@ -28,6 +28,7 @@ export class GameContext {
   private readonly pressedKeys: string[] = []
   private readonly gameObjects: GameObject[] = []
   private readonly uiObjects: GameObject[] = []
+  private readonly contextId: number = Math.floor(Math.random() * 1000000)
 
   // Temporary player object until initialized
   private player: Player | undefined
@@ -50,7 +51,16 @@ export class GameContext {
     this.gameObjects.push(player)
   }
 
+  setPlayerLocation(x: number, y: number) {
+    if (this.player) {
+      this.player.rect.x = x
+      this.player.rect.y = y
+    }
+  }
+
   startMainLoop() {
+    console.log('Main loop started: ' + this.contextId)
+
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
     }
@@ -68,6 +78,7 @@ export class GameContext {
   }
 
   stopMainLoop() {
+    console.log('Main loop stopped: ' + this.contextId)
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
       this.mainLoop = null
@@ -77,6 +88,13 @@ export class GameContext {
       clearInterval(this.timerLoop)
       this.timerLoop = null
     }
+  }
+
+  clearLevel() {
+    this.stopMainLoop()
+    this.gameObjects.splice(0, this.gameObjects.length)
+    this.uiObjects.splice(0, this.uiObjects.length)
+    this.isStatic = false
   }
 
   // Assign a unique ID to the game object and add it to the gameObjects array
@@ -135,7 +153,6 @@ export class GameContext {
     )
 
     const canMove = this.player?.canMove(this.currentDir)
-    console.log('canMove', canMove)
 
     // Always move every game object according to player speed
     for (const gameObject of this.gameObjects) {

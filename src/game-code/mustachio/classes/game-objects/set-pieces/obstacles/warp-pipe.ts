@@ -5,27 +5,32 @@ import type { GameContext } from '@/game-code/shared/game-context'
 
 export class WarpPipe extends Obstacle {
   readonly objectId = 0
-  readonly destination: string
+  readonly setNewLevel: (gameContext: GameContext) => void
 
-  constructor(gameContext: GameContext, destination: string) {
+  constructor(
+    gameContext: GameContext,
+    x: number,
+    y: number,
+    setNewLevel: (gameContext: GameContext) => void,
+  ) {
     const rect: rectangle = {
-      x: 0,
-      y: 0,
+      x,
+      y,
       width: BLOCK_SIZE * 2,
       height: BLOCK_SIZE * 2,
     }
 
     super(gameContext, rect)
 
-    this.destination = destination
+    this.setNewLevel = setNewLevel
   }
 
   enter() {
-    // TODO: Implement the logic for entering the warp pipe
+    this.setNewLevel(this.gameContext)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    console.log(ctx)
-    throw new Error('Method not implemented.')
+    ctx.fillStyle = 'green'
+    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
   }
 }

@@ -12,13 +12,16 @@ import { FireBarBlock } from '../classes/game-objects/set-pieces/obstacles/block
 import { Mustachio } from '../classes/game-objects/mustachio'
 
 export function testLevelOne(gameContext: GameContext) {
-  const floorRect = {
-    x: 0,
-    y: BLOCK_SIZE * 17,
-    width: BLOCK_SIZE * 32,
-    height: BLOCK_SIZE,
-  }
-  gameContext.addGameObject(new Floor(gameContext, floorRect))
+  gameContext.clearLevel()
+
+  gameContext.addGameObject(
+    new Floor(gameContext, {
+      x: 0,
+      y: BLOCK_SIZE * 17,
+      width: BLOCK_SIZE * 32,
+      height: BLOCK_SIZE,
+    }),
+  )
 
   // The game canvas is 32 blocks wide
   // and 18 blocks tall
@@ -26,56 +29,28 @@ export function testLevelOne(gameContext: GameContext) {
   const touchingFloor = BLOCK_SIZE * 16
 
   gameContext.addGameObject(
-    new Wall(
-      gameContext,
-
-      BLOCK_SIZE * 14,
-      touchingFloor,
-    ),
+    new Wall(gameContext, BLOCK_SIZE * 14, touchingFloor),
   )
 
   gameContext.addGameObject(
-    new Wall(
-      gameContext,
-
-      BLOCK_SIZE * 22,
-      touchingFloor,
-    ),
+    new Wall(gameContext, BLOCK_SIZE * 22, touchingFloor),
   )
 
   gameContext.addGameObject(
-    new StacheStalker(
-      gameContext,
-
-      BLOCK_SIZE * 16,
-      BLOCK_SIZE * 15,
-    ),
+    new StacheStalker(gameContext, BLOCK_SIZE * 16, BLOCK_SIZE * 15),
   )
 
   gameContext.addGameObject(
-    new Coin(
-      gameContext,
+    new Coin(gameContext, BLOCK_SIZE * 18, BLOCK_SIZE * 14),
+  )
 
-      BLOCK_SIZE * 18,
-      BLOCK_SIZE * 14,
-    ),
+  gameContext.addGameObject(
+    new ItemBlock(gameContext, BLOCK_SIZE * 12, BLOCK_SIZE * 14, false, 'coin'),
   )
 
   gameContext.addGameObject(
     new ItemBlock(
       gameContext,
-
-      BLOCK_SIZE * 12,
-      BLOCK_SIZE * 14,
-      false,
-      'coin',
-    ),
-  )
-
-  gameContext.addGameObject(
-    new ItemBlock(
-      gameContext,
-
       BLOCK_SIZE * 10,
       BLOCK_SIZE * 14,
       false,
@@ -86,7 +61,6 @@ export function testLevelOne(gameContext: GameContext) {
   gameContext.addGameObject(
     new ItemBlock(
       gameContext,
-
       BLOCK_SIZE * 10,
       BLOCK_SIZE * 11,
       true,
@@ -95,33 +69,16 @@ export function testLevelOne(gameContext: GameContext) {
   )
 
   gameContext.addGameObject(
-    new FireBarBlock(
-      gameContext,
-
-      BLOCK_SIZE * 18,
-      BLOCK_SIZE * 12,
-    ),
+    new FireBarBlock(gameContext, BLOCK_SIZE * 18, BLOCK_SIZE * 12),
   )
+
+  gameContext.addUIObject(new ScoreDisplay(gameContext, BLOCK_SIZE, BLOCK_SIZE))
 
   gameContext.addUIObject(
-    new ScoreDisplay(
-      gameContext,
-
-      BLOCK_SIZE,
-      BLOCK_SIZE,
-    ),
+    new TimerDisplay(gameContext, BLOCK_SIZE * 28, BLOCK_SIZE),
   )
 
-  gameContext.addUIObject(
-    new TimerDisplay(
-      gameContext,
-
-      BLOCK_SIZE * 28,
-      BLOCK_SIZE,
-    ),
-  )
-
-  const mustachio = new Mustachio(gameContext)
+  const mustachio = new Mustachio(gameContext, BLOCK_SIZE * 4, BLOCK_SIZE * 13)
   gameContext.setPlayer(mustachio)
 
   gameContext.startMainLoop()
