@@ -5,7 +5,7 @@ import { Flag } from './set-pieces/flag'
 import { FireStache } from './point-items/items/fire-stache'
 import { Item } from './point-items/items/item'
 import { Stacheroom } from './point-items/items/stacheroom'
-import { Laser } from './projectiles/laser'
+import { EnemyProjectile } from './projectiles/enemy-projectiles/enemy-projectile'
 import { FallingFloor } from './set-pieces/obstacles/blocks/falling-floor'
 import { WarpPipe } from './set-pieces/obstacles/warp-pipe'
 import { Obstacle } from './set-pieces/obstacles/obstacle'
@@ -14,7 +14,7 @@ import { Player } from '@/game-code/shared/player'
 import { direction, type collision } from '@/game-code/shared/types'
 import { FireBall } from './projectiles/fire-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { FireBar } from './projectiles/fire-bar'
+import { FireBar } from './projectiles/enemy-projectiles/fire-bar'
 import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-block/punchable-block'
 import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-block/item-block'
 
@@ -33,8 +33,8 @@ export class Mustachio extends Player {
   private deathAnimationTimeout: number | null = null
   private crouched = false
 
-  constructor(gameContext: GameContext, objectId: number) {
-    super(gameContext, objectId, {
+  constructor(gameContext: GameContext) {
+    super(gameContext, {
       x: BLOCK_SIZE * 4,
       y: BLOCK_SIZE * 13,
       width: BLOCK_SIZE * 0.66,
@@ -92,10 +92,11 @@ export class Mustachio extends Player {
 
       return
     }
+
     this.blockedDirHor = direction.NONE
     this.blockedDirVert = direction.NONE
-
     this.warpPipe = null
+
     for (const collision of collisions) {
       this.handleCollision(collision)
     }
@@ -191,12 +192,17 @@ export class Mustachio extends Player {
           collision.gameObject.rect.y + collision.gameObject.rect.height - 1
         this.blockedDirVert = direction.UP
       }
-    } else if (collision.collisionDirection === direction.LEFT) {
-      console.log('left')
+    } else if (
+      collision.collisionDirection === direction.LEFT &&
+      this.gameContext.currentDir === direction.LEFT
+    ) {
       this.speedX = 0
       this.rect.x = collision.gameObject.rect.x - this.rect.width + 1
       this.blockedDirHor = direction.LEFT
-    } else if (collision.collisionDirection === direction.RIGHT) {
+    } else if (
+      collision.collisionDirection === direction.RIGHT &&
+      this.gameContext.currentDir === direction.RIGHT
+    ) {
       console.log('right')
       this.speedX = 0
       this.rect.x =
@@ -209,7 +215,10 @@ export class Mustachio extends Player {
     const gameObject = collision.gameObject
 
     // FireBar is a special case since it rotates
-    if (gameObject instanceof FireBar || gameObject instanceof Laser) {
+    if (
+      gameObject instanceof FireBar ||
+      gameObject instanceof EnemyProjectile
+    ) {
       this.playerHit()
       return
     }
@@ -252,6 +261,9 @@ export class Mustachio extends Player {
       }
 
       return
+    } else if (dir === direction.DOWN) {
+      this.landOnGameObject(enemy)
+      enemy.enemyHit()
     }
   }
 
@@ -356,7 +368,6 @@ export class Mustachio extends Player {
 
       const fire = new FireBall(
         this.gameContext,
-        this.gameContext.generateUniqueId(),
         this.rect.x + this.rect.width + 5,
         this.rect.y + this.rect.height / 2,
       )

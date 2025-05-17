@@ -5,7 +5,7 @@ import type { rectangle } from '@/game-code/shared/types'
 export abstract class UIObject extends GameObject {
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
@@ -16,6 +16,6 @@ export abstract class UIObject extends GameObject {
       height: 0,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
   }
 }

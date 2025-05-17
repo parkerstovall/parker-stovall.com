@@ -8,7 +8,7 @@ export class StacheStalker extends Enemy {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
@@ -18,7 +18,7 @@ export class StacheStalker extends Enemy {
       width: BLOCK_SIZE * 0.75,
       height: BLOCK_SIZE * 0.75,
     }
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
 
     this.imageSources.push(
       'Images/stacheStalker.png',

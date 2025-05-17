@@ -8,7 +8,7 @@ export class Coin extends Item {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
     fromItemBlock: boolean = false,
@@ -25,7 +25,7 @@ export class Coin extends Item {
       rect.y += BLOCK_SIZE / 2 - rect.height / 2
     }
 
-    super(gameContext, objectId, rect, fromItemBlock)
+    super(gameContext, rect, fromItemBlock)
 
     if (fromItemBlock) {
       this.speedY = -2

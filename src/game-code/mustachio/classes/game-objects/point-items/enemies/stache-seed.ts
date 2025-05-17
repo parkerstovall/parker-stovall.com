@@ -9,7 +9,7 @@ export class StacheSeed extends Enemy {
   inPipe: boolean = false
   goingUp: boolean = false
 
-  constructor(gameContext: GameContext, objectId: number, parent: GameObject) {
+  constructor(gameContext: GameContext, parent: GameObject) {
     const rect: rectangle = {
       x: parent.rect.x + BLOCK_SIZE / 2,
       y: parent.rect.y + BLOCK_SIZE / 2,
@@ -17,7 +17,7 @@ export class StacheSeed extends Enemy {
       height: parent.rect.height * 2,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
 
     this.imageSources.push('Images/stacheSeed1.png', 'Images/stacheSeed2.png')
   }

@@ -7,7 +7,7 @@ export class WarpPipe extends Obstacle {
   readonly objectId = 0
   readonly destination: string
 
-  constructor(gameContext: GameContext, objectId: number, destination: string) {
+  constructor(gameContext: GameContext, destination: string) {
     const rect: rectangle = {
       x: 0,
       y: 0,
@@ -15,7 +15,7 @@ export class WarpPipe extends Obstacle {
       height: BLOCK_SIZE * 2,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
 
     this.destination = destination
   }

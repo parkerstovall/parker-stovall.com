@@ -1,11 +1,11 @@
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { collision, rectangle } from '@/game-code/shared/types'
-import { Projectile } from './projectile'
+import { EnemyProjectile } from './enemy-projectile'
 
-export class Laser extends Projectile {
+export class Laser extends EnemyProjectile {
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
@@ -16,7 +16,7 @@ export class Laser extends Projectile {
       height: 8,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
   }
 
   update(collisions: collision[]): void {

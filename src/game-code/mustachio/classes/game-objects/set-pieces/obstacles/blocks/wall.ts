@@ -6,11 +6,11 @@ export class Wall extends Block {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
-    super(gameContext, objectId, x, y)
+    super(gameContext, x, y)
 
     this.image.src = 'Images/obstacleBrick.png'
   }

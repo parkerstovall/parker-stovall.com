@@ -7,11 +7,20 @@ export abstract class GameObject {
 
   protected readonly gameContext: GameContext
 
-  constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
+  constructor(gameContext: GameContext, rect: rectangle) {
     this.gameContext = gameContext
-    this.objectId = objectId
+    this.objectId = this.generateUniqueId()
     this.rect = rect
   }
 
   abstract draw(ctx: CanvasRenderingContext2D): void
+
+  private generateUniqueId() {
+    let id = Math.floor(Math.random() * 10000)
+    while (!this.gameContext.validateNewObjectId(id)) {
+      id = Math.floor(Math.random() * 10000)
+    }
+
+    return id
+  }
 }

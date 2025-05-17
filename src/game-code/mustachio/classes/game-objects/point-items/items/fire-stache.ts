@@ -9,7 +9,7 @@ export class FireStache extends Item {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
     fromItemBlock: boolean = false,
@@ -21,7 +21,7 @@ export class FireStache extends Item {
       height: 20,
     }
 
-    super(gameContext, objectId, rect, fromItemBlock)
+    super(gameContext, rect, fromItemBlock)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -32,12 +32,10 @@ export class FireStache extends Item {
   update(collisions: collision[]): void {
     // The animation only happens if the coin
     // is triggered from an item block
-    if (this.fromItemBlock) {
-      if (this.totalRaise > 0) {
-        this.rect.y += this.speedY
-        this.totalRaise += this.speedY
-        return
-      }
+    if (this.fromItemBlock && this.totalRaise > 0) {
+      this.rect.y += this.speedY
+      this.totalRaise += this.speedY
+      return
     }
 
     this.leftRightMovement(collisions)

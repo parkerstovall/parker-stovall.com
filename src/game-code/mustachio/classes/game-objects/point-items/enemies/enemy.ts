@@ -8,8 +8,8 @@ export abstract class Enemy extends PointItem {
   protected imageSources: string[] = []
   protected imageSourceIndex: number = 0
 
-  constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
-    super(gameContext, objectId, rect)
+  constructor(gameContext: GameContext, rect: rectangle) {
+    super(gameContext, rect)
 
     setInterval(() => {
       this.setNextImage()

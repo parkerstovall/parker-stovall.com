@@ -6,7 +6,7 @@ import { Obstacle } from '../obstacle'
 export abstract class Block extends Obstacle {
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
@@ -17,6 +17,6 @@ export abstract class Block extends Obstacle {
       height: BLOCK_SIZE,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
   }
 }

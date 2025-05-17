@@ -1,22 +1,43 @@
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
+import type { GameContext } from '@/game-code/shared/game-context'
 import type { rectangle } from '@/game-code/shared/types'
 import { Obstacle } from './obstacle'
-import type { GameContext } from '@/game-code/shared/game-context'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Floor extends Obstacle {
-  constructor(gameContext: GameContext, objectId: number) {
-    const rect: rectangle = {
-      x: 0,
-      y: gameContext.gameArea.height - BLOCK_SIZE,
-      width: gameContext.gameArea.width,
-      height: gameContext.gameArea.height,
+  private readonly grassRect: rectangle
+  private readonly dirtRect: rectangle
+  constructor(gameContext: GameContext, rect: rectangle) {
+    super(gameContext, rect)
+
+    this.grassRect = {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: BLOCK_SIZE / 3,
     }
 
-    super(gameContext, objectId, rect)
+    this.dirtRect = {
+      x: rect.x,
+      y: rect.y + BLOCK_SIZE / 3,
+      width: rect.width,
+      height: BLOCK_SIZE - BLOCK_SIZE / 3,
+    }
   }
-
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = 'black'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillStyle = 'YellowGreen'
+    ctx.fillRect(
+      this.grassRect.x,
+      this.grassRect.y,
+      this.grassRect.width,
+      this.grassRect.height,
+    )
+
+    ctx.fillStyle = 'SaddleBrown'
+    ctx.fillRect(
+      this.dirtRect.x,
+      this.dirtRect.y,
+      this.dirtRect.width,
+      this.dirtRect.height,
+    )
   }
 }

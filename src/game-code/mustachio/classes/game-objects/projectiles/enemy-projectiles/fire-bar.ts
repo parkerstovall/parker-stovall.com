@@ -1,6 +1,6 @@
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { collision, rectangle } from '@/game-code/shared/types'
-import type { FireBarBlock } from '../set-pieces/obstacles/blocks/fire-bar-block'
+import type { FireBarBlock } from '../../set-pieces/obstacles/blocks/fire-bar-block'
 import { RotatingGameObject } from '@/game-code/shared/game-objects/rotating-game-object'
 
 export class FireBar extends RotatingGameObject {
@@ -8,7 +8,7 @@ export class FireBar extends RotatingGameObject {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
     anchorBlock: FireBarBlock,
@@ -20,7 +20,7 @@ export class FireBar extends RotatingGameObject {
       height: 250,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
     this.anchorBlock = anchorBlock
   }
 

@@ -9,7 +9,7 @@ import { RotatingGameObject } from './game-objects/rotating-game-object'
 import { direction, type collision } from './types'
 import { UpdatingGameObject } from './game-objects/updating-game-object'
 
-export abstract class GameContext {
+export class GameContext {
   score: number = 0
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
@@ -19,8 +19,6 @@ export abstract class GameContext {
   readonly ui: HTMLCanvasElement
   readonly uiContext: CanvasRenderingContext2D
   readonly gameContext: CanvasRenderingContext2D
-  readonly gameObjects: GameObject[] = []
-  readonly uiObjects: GameObject[] = []
 
   private xSpeed: number = 1.5
   private mainLoop: number | null = null
@@ -28,9 +26,11 @@ export abstract class GameContext {
   private isStatic: boolean = false
 
   private readonly pressedKeys: string[] = []
+  private readonly gameObjects: GameObject[] = []
+  private readonly uiObjects: GameObject[] = []
 
   // Temporary player object until initialized
-  protected abstract player: Player
+  private player: Player | undefined
 
   constructor() {
     let result = this.setupCanvas('canvas#game-layer')
@@ -43,6 +43,11 @@ export abstract class GameContext {
 
     window.addEventListener('keydown', (event) => this.onKeyDown(event))
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
+  }
+
+  setPlayer(player: Player) {
+    this.player = player
+    this.gameObjects.push(player)
   }
 
   startMainLoop() {
@@ -72,14 +77,6 @@ export abstract class GameContext {
       clearInterval(this.timerLoop)
       this.timerLoop = null
     }
-  }
-
-  generateUniqueId(): number {
-    let id = Math.floor(Math.random() * 10000)
-    while (this.gameObjects.some((go) => go.objectId === id)) {
-      id = Math.floor(Math.random() * 10000)
-    }
-    return id
   }
 
   // Assign a unique ID to the game object and add it to the gameObjects array
@@ -120,6 +117,11 @@ export abstract class GameContext {
     levelFunc(this)
   }
 
+  validateNewObjectId(objectId: number) {
+    const gameObject = this.gameObjects.find((go) => go.objectId === objectId)
+    return gameObject === undefined
+  }
+
   private clear() {
     this.gameContext.clearRect(0, 0, this.gameArea.width, this.gameArea.height)
     this.uiContext.clearRect(0, 0, this.ui.width, this.ui.height)
@@ -132,11 +134,16 @@ export abstract class GameContext {
       gameObjectsInUpdateArea,
     )
 
-    const canMove = this.player.canMove(this.currentDir)
+    const canMove = this.player?.canMove(this.currentDir)
+    console.log('canMove', canMove)
 
     // Always move every game object according to player speed
     for (const gameObject of this.gameObjects) {
-      if (!this.isStatic && canMove) {
+      if (
+        !this.isStatic &&
+        canMove &&
+        gameObject.objectId !== this.player?.objectId
+      ) {
         // We move the game object opposite to the player
         // to simulate the player moving
         if (this.currentDir === direction.RIGHT) {
@@ -160,19 +167,6 @@ export abstract class GameContext {
     // The ui layer is never out of bounds
     for (const uiObject of this.uiObjects) {
       uiObject.draw(this.uiContext)
-    }
-
-    if (!outOfBounds(this.player.rect, this)) {
-      this.getCollisionForGameObject(
-        this.player,
-        gameObjectsInUpdateArea,
-        gameObjectCollisions,
-      )
-
-      const playerCollisions = gameObjectCollisions.get(this.player.objectId)
-
-      this.player.update(playerCollisions ?? [])
-      this.player.draw(this.gameContext)
     }
   }
 
@@ -200,14 +194,14 @@ export abstract class GameContext {
     }
 
     this.pressedKeys.push(key)
-    this.player.customKeyDown(key)
+    this.player?.customKeyDown(key)
 
     if (key === 'arrowleft' || key === 'a') {
       this.currentDir = direction.RIGHT
     } else if (key === 'arrowright' || key === 'd') {
       this.currentDir = direction.LEFT
     } else if (key === 'arrowup' || key === 'w') {
-      this.player.jump()
+      this.player?.jump()
     } else if (key === 'shift') {
       this.xSpeed = 3
     }
@@ -221,7 +215,7 @@ export abstract class GameContext {
       1,
     )
 
-    this.player.customKeyUp(key)
+    this.player?.customKeyUp(key)
 
     if (
       key === 'arrowleft' ||
@@ -268,7 +262,7 @@ export abstract class GameContext {
       }
 
       this.isStatic = true
-      this.player.playerKill()
+      this.player?.playerKill()
     }
   }
 

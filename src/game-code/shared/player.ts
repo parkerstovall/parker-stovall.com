@@ -13,8 +13,8 @@ export abstract class Player extends MovingGameObject {
 
   protected readonly gameContext: GameContext
 
-  constructor(gameContext: GameContext, objectId: number, rect: rectangle) {
-    super(gameContext, objectId, rect)
+  constructor(gameContext: GameContext, rect: rectangle) {
+    super(gameContext, rect)
 
     this.gameContext = gameContext
   }

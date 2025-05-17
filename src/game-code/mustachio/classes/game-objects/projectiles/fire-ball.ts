@@ -1,4 +1,3 @@
-import { collisionDetection, outOfBounds } from '@/game-code/shared/app-code'
 import { Enemy } from '../point-items/enemies/enemy'
 import { Projectile } from './projectile'
 import type { GameContext } from '@/game-code/shared/game-context'
@@ -7,7 +6,7 @@ import type { collision, rectangle } from '@/game-code/shared/types'
 export class FireBall extends Projectile {
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
@@ -18,7 +17,7 @@ export class FireBall extends Projectile {
       height: 8,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
   }
 
   update(collisions: collision[]): void {
@@ -28,22 +27,14 @@ export class FireBall extends Projectile {
       this.speedY = -4
     }
 
-    if (outOfBounds(this.rect, this.gameContext)) {
+    if (this.rect.x < 0 || this.rect.x > this.gameContext.gameArea.width) {
       this.gameContext.removeGameObject(this)
       return
     }
 
-    for (const gameObject of this.gameContext.gameObjects) {
-      if (gameObject.objectId === this.objectId) {
-        continue
-      }
-
-      if (!collisionDetection(gameObject, this)) {
-        continue
-      }
-
-      if (gameObject instanceof Enemy) {
-        gameObject.enemyHit()
+    for (const collision of collisions) {
+      if (collision.gameObject instanceof Enemy) {
+        collision.gameObject.enemyHit()
         this.gameContext.removeGameObject(this)
         return
       }

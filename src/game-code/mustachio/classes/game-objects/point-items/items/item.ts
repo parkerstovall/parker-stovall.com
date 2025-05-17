@@ -8,7 +8,7 @@ export abstract class Item extends PointItem {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     rect: rectangle,
     fromItemBlock: boolean = false,
   ) {
@@ -17,7 +17,7 @@ export abstract class Item extends PointItem {
       rect.y += BLOCK_SIZE
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
 
     this.fromItemBlock = fromItemBlock
     if (fromItemBlock) {

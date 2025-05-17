@@ -15,7 +15,7 @@ export class ItemBlock extends PunchableBlock {
 
   protected item: new (
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
     fromItemBlock?: boolean,
@@ -23,13 +23,13 @@ export class ItemBlock extends PunchableBlock {
 
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
     hidden: boolean,
     itemType: string,
   ) {
-    super(gameContext, objectId, x, y)
+    super(gameContext, x, y)
     this.image.src = this.imageSource
     this.hidden = hidden
 
@@ -58,7 +58,6 @@ export class ItemBlock extends PunchableBlock {
     this.image.src = this.imageSourcePunched
     const newItem = new this.item(
       this.gameContext,
-      this.gameContext.generateUniqueId(),
       this.rect.x + this.rect.width / 2,
       this.rect.y - this.rect.height,
       true,

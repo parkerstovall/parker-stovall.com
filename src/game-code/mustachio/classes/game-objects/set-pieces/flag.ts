@@ -6,7 +6,7 @@ import { BLOCK_SIZE } from '@/game-code/shared/constants'
 export class Flag extends SetPiece {
   constructor(
     gameContext: GameContext,
-    objectId: number,
+
     x: number,
     y: number,
   ) {
@@ -17,7 +17,7 @@ export class Flag extends SetPiece {
       height: BLOCK_SIZE * 8,
     }
 
-    super(gameContext, objectId, rect)
+    super(gameContext, rect)
   }
 
   draw(ctx: CanvasRenderingContext2D) {

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { GameContextMustachio } from '@/game-code/mustachio/game-context-mustachio'
 import { testLevelOne } from '@/game-code/mustachio/levels/test-level-one'
+import { GameContext } from '@/game-code/shared/game-context'
 
 export const Route = createFileRoute('/mustachio')({
   component: MustachioGame,
@@ -9,14 +9,7 @@ export const Route = createFileRoute('/mustachio')({
 
 function MustachioGame() {
   useEffect(() => {
-    const gc = new GameContextMustachio()
-
-    if (import.meta.hot) {
-      import.meta.hot.on('vite:afterUpdate', () => {
-        gc.restart(testLevelOne)
-      })
-    }
-
+    const gc = new GameContext()
     gc.restart(testLevelOne)
   }, [])
 
