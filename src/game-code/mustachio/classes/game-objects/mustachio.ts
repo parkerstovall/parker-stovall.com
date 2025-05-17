@@ -214,16 +214,18 @@ export class Mustachio extends Player {
       return
     }
 
+    if (collision.gameObject instanceof Item) {
+      return
+    }
+
     if (collision.collisionDirection === direction.DOWN) {
       this.blockedDirVert = direction.DOWN
       this.landOnGameObject(collision.gameObject)
     } else if (collision.collisionDirection === direction.UP) {
-      if (!(collision.gameObject instanceof Item)) {
-        this.speedY = 1
-        this.rect.y =
-          collision.gameObject.rect.y + collision.gameObject.rect.height - 1
-        this.blockedDirVert = direction.UP
-      }
+      this.speedY = 1
+      this.rect.y =
+        collision.gameObject.rect.y + collision.gameObject.rect.height - 1
+      this.blockedDirVert = direction.UP
     } else if (
       collision.collisionDirection === direction.LEFT &&
       this.gameContext.currentDir === direction.LEFT
@@ -235,7 +237,6 @@ export class Mustachio extends Player {
       collision.collisionDirection === direction.RIGHT &&
       this.gameContext.currentDir === direction.RIGHT
     ) {
-      console.log('right')
       this.speedX = 0
       this.rect.x =
         collision.gameObject.rect.x + collision.gameObject.rect.width - 1
@@ -318,18 +319,6 @@ export class Mustachio extends Player {
     ) {
       setPiece.punch()
       this.speedY = 1
-    }
-  }
-
-  private handleGravity() {
-    if (this.blockedDirVert !== direction.DOWN) {
-      this.speedY += this.gameContext.gravity
-      this.rect.y += this.speedY
-
-      // Fall off the screen
-      if (this.rect.y + this.rect.height >= this.gameContext.gameArea.height) {
-        this.playerKill()
-      }
     }
   }
 

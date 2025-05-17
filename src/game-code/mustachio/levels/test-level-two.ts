@@ -6,12 +6,21 @@ import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { Mustachio } from '../classes/game-objects/mustachio'
 import { WarpPipe } from '../classes/game-objects/set-pieces/obstacles/warp-pipe'
 import { caveOne } from './cave-one'
+import { Pipe } from '../classes/game-objects/set-pieces/obstacles/pipe'
 
-export function testLevelTwo(gameContext: GameContext) {
+export function testLevelTwo(gameContext: GameContext, previousLevel?: string) {
   gameContext.clearLevel()
 
-  const mustachio = new Mustachio(gameContext, BLOCK_SIZE * 4, BLOCK_SIZE * 13)
-  gameContext.setPlayer(mustachio)
+  if (previousLevel === 'caveOne') {
+    gameContext.setPlayerLocation(BLOCK_SIZE * 18.5, BLOCK_SIZE * 2.5)
+  } else {
+    const mustachio = new Mustachio(
+      gameContext,
+      BLOCK_SIZE * 4,
+      BLOCK_SIZE * 13,
+    )
+    gameContext.setPlayer(mustachio)
+  }
 
   gameContext.addGameObject(
     new Floor(gameContext, {
@@ -30,6 +39,8 @@ export function testLevelTwo(gameContext: GameContext) {
   gameContext.addGameObject(
     new WarpPipe(gameContext, BLOCK_SIZE * 10, touchingFloor, caveOne),
   )
+
+  gameContext.addGameObject(new Pipe(gameContext, BLOCK_SIZE * 18, 0))
 
   gameContext.addUIObject(new ScoreDisplay(gameContext, BLOCK_SIZE, BLOCK_SIZE))
 

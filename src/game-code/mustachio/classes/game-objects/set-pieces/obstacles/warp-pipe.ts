@@ -1,9 +1,7 @@
-import type { rectangle } from '@/game-code/shared/types'
-import { Obstacle } from './obstacle'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import type { GameContext } from '@/game-code/shared/game-context'
+import { Pipe } from './pipe'
 
-export class WarpPipe extends Obstacle {
+export class WarpPipe extends Pipe {
   readonly objectId = 0
   readonly setNewLevel: (gameContext: GameContext) => void
 
@@ -13,24 +11,11 @@ export class WarpPipe extends Obstacle {
     y: number,
     setNewLevel: (gameContext: GameContext) => void,
   ) {
-    const rect: rectangle = {
-      x,
-      y,
-      width: BLOCK_SIZE * 2,
-      height: BLOCK_SIZE * 2,
-    }
-
-    super(gameContext, rect)
-
+    super(gameContext, x, y)
     this.setNewLevel = setNewLevel
   }
 
   enter() {
     this.setNewLevel(this.gameContext)
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = 'green'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
   }
 }

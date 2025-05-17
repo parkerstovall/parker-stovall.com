@@ -14,7 +14,7 @@ export class GameContext {
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
 
-  readonly gravity: number = 0.12
+  readonly gravity: number = 0.1
   readonly gameArea: HTMLCanvasElement
   readonly ui: HTMLCanvasElement
   readonly uiContext: CanvasRenderingContext2D
@@ -47,8 +47,12 @@ export class GameContext {
   }
 
   setPlayer(player: Player) {
+    if (this.player) {
+      return
+    }
+
     this.player = player
-    this.gameObjects.push(player)
+    this.addGameObject(player, true)
   }
 
   setPlayerLocation(x: number, y: number) {
@@ -95,10 +99,31 @@ export class GameContext {
     this.gameObjects.splice(0, this.gameObjects.length)
     this.uiObjects.splice(0, this.uiObjects.length)
     this.isStatic = false
+
+    if (this.player) {
+      this.addGameObject(this.player)
+    }
+  }
+
+  setStatic(isStatic: boolean) {
+    this.isStatic = isStatic
   }
 
   // Assign a unique ID to the game object and add it to the gameObjects array
   addGameObject(gameObject: GameObject, beginning: boolean = false) {
+    const gameObjectInList = this.gameObjects.find(
+      (go) => go.objectId === gameObject.objectId,
+    )
+
+    if (gameObject instanceof Player) {
+      console.log(gameObjectInList)
+    }
+
+    if (gameObjectInList) {
+      // If the game object is already in the list, we don't need to add it again
+      return
+    }
+
     if (beginning) {
       this.gameObjects.unshift(gameObject)
     } else {
@@ -156,17 +181,21 @@ export class GameContext {
 
     // Always move every game object according to player speed
     for (const gameObject of this.gameObjects) {
-      if (
-        !this.isStatic &&
-        canMove &&
-        gameObject.objectId !== this.player?.objectId
-      ) {
-        // We move the game object opposite to the player
-        // to simulate the player moving
-        if (this.currentDir === direction.RIGHT) {
-          gameObject.rect.x += this.xSpeed
-        } else if (this.currentDir === direction.LEFT) {
-          gameObject.rect.x -= this.xSpeed
+      if (canMove) {
+        if (!this.isStatic && !(gameObject instanceof Player)) {
+          // We move the game object opposite to the player
+          // to simulate the player moving
+          if (this.currentDir === direction.RIGHT) {
+            gameObject.rect.x += this.xSpeed
+          } else if (this.currentDir === direction.LEFT) {
+            gameObject.rect.x -= this.xSpeed
+          }
+        } else if (this.isStatic && gameObject instanceof Player) {
+          if (this.currentDir === direction.RIGHT) {
+            gameObject.rect.x -= this.xSpeed
+          } else if (this.currentDir === direction.LEFT) {
+            gameObject.rect.x += this.xSpeed
+          }
         }
       }
     }

@@ -19,6 +19,18 @@ export abstract class Player extends MovingGameObject {
     this.gameContext = gameContext
   }
 
+  protected handleGravity() {
+    if (this.blockedDirVert !== direction.DOWN) {
+      this.speedY += this.gameContext.gravity
+      this.rect.y += this.speedY
+
+      // Fall off the screen
+      if (this.rect.y + this.rect.height >= this.gameContext.gameArea.height) {
+        this.playerKill()
+      }
+    }
+  }
+
   canMove(dir: direction) {
     return (
       !this.isDead &&

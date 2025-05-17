@@ -40,6 +40,8 @@ export class StacheStalker extends Enemy {
   }
 
   update(collisions: collision[]): void {
-    this.leftRightMovement(collisions)
+    if (!this.isDead) {
+      this.leftRightMovement(collisions)
+    }
   }
 }

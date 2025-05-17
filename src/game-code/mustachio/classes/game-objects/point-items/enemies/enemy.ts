@@ -32,8 +32,8 @@ export abstract class Enemy extends PointItem {
     this.isDead = true
     this.speedX = 0
     this.speedY = 0
-    this.rect.height /= 2
     this.rect.y += this.rect.height / 2
+    this.rect.height /= 2
     this.gameContext.score += this.pointValue
 
     setTimeout(() => {
