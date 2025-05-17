@@ -28,7 +28,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "cpy": "^11.1.0",
+    "cpy-cli": "^5.0.0",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.4.0",
