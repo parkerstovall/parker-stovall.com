@@ -33,10 +33,10 @@ jobs:
         with:
           cache: 'npm'
 
-      - name: Build app
+      - name: Prepare app for deploy
         run: |
           npm ci
-          npm run build
+          npm run deploy
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
