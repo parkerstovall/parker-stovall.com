@@ -4,12 +4,7 @@ import type { rectangle } from '@/game-code/shared/types'
 import { Obstacle } from '../obstacle'
 
 export abstract class Block extends Obstacle {
-  constructor(
-    gameContext: GameContext,
-
-    x: number,
-    y: number,
-  ) {
+  constructor(gameContext: GameContext, x: number, y: number) {
     const rect: rectangle = {
       x,
       y,
