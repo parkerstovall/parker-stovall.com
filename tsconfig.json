@@ -2,7 +2,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "src/game-code/mustachio/classes/game-objects/set-pieces/obstacles/blocks/punchable-block"
+    "src/game-code/mustachio/classes/game-objects/set-pieces/obstacles/blocks/punchable-blockS"
   ],
   "compilerOptions": {
     "target": "ES2022",

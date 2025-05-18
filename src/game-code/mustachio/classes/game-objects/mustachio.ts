@@ -15,8 +15,9 @@ import { direction, type collision } from '@/game-code/shared/types'
 import { StacheBall } from './projectiles/stache-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBar } from './projectiles/enemy-projectiles/fire-bar'
-import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-block/punchable-block'
-import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-block/item-block'
+import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-blockS/punchable-block'
+import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-block'
+import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
 
 export class Mustachio extends Player {
   private readonly imageStraight = new Image()
@@ -318,7 +319,10 @@ export class Mustachio extends Player {
       dir === direction.UP &&
       setPiece instanceof PunchableBlock
     ) {
-      setPiece.punch()
+      if (!(setPiece instanceof Brick) || this.isBig) {
+        setPiece.punch()
+      }
+
       this.speedY = 1
     }
   }

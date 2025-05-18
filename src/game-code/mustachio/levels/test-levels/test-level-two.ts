@@ -1,11 +1,11 @@
-import type { GameContext } from '../../shared/game-context'
-import { Floor } from '../classes/game-objects/set-pieces/obstacles/floor'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { WarpPipe } from '../classes/game-objects/set-pieces/obstacles/warp-pipe'
-import { caveOne } from './cave-one'
-import { Pipe } from '../classes/game-objects/set-pieces/obstacles/pipe'
-import { StacheSlinger } from '../classes/game-objects/point-objects/enemies/stache-slinger'
-import { StacheStreaker } from '../classes/game-objects/point-objects/enemies/stache-streaker'
+import type { GameContext } from '@/game-code/shared/game-context'
+import { StacheSlinger } from '../../classes/game-objects/point-objects/enemies/stache-slinger'
+import { StacheStreaker } from '../../classes/game-objects/point-objects/enemies/stache-streaker'
+import { Floor } from '../../classes/game-objects/set-pieces/obstacles/floor'
+import { Pipe } from '../../classes/game-objects/set-pieces/obstacles/pipe'
+import { WarpPipe } from '../../classes/game-objects/set-pieces/obstacles/warp-pipe'
+import { caveOne } from '../caves/cave-one'
 
 export function testLevelTwo(
   gameContext: GameContext,

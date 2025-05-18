@@ -127,10 +127,6 @@ export class GameContext {
       (go) => go.objectId === gameObject.objectId,
     )
 
-    if (gameObject instanceof Player) {
-      console.log(gameObjectInList)
-    }
-
     if (gameObjectInList) {
       // If the game object is already in the list, we don't need to add it again
       return
@@ -354,6 +350,13 @@ export class GameContext {
   private getGameObjectsWithCollisions(gameObjects: GameObject[]) {
     const collisons: Map<number, collision[]> = new Map()
     for (const gameObject of gameObjects) {
+      if (
+        gameObject instanceof UpdatingGameObject &&
+        !gameObject.acceptsCollision
+      ) {
+        continue
+      }
+
       this.getCollisionForGameObject(gameObject, gameObjects, collisons)
     }
 
