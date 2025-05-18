@@ -31,10 +31,14 @@ export function testLevelTwo(
 
   let pipe: Pipe
   if (previousLevels.includes('caveOne')) {
-    pipe = new Pipe(gameContext, BLOCK_SIZE * 10, touchingFloor)
+    pipe = new Pipe(gameContext, BLOCK_SIZE * 10, touchingFloor, true)
   } else {
-    pipe = new WarpPipe(gameContext, BLOCK_SIZE * 10, touchingFloor, (gc) =>
-      caveOne(gc, [...previousLevels, 'testLevelTwo']),
+    pipe = new WarpPipe(
+      gameContext,
+      BLOCK_SIZE * 10,
+      touchingFloor,
+      (gc) => caveOne(gc, [...previousLevels, 'testLevelTwo']),
+      true,
     )
   }
 

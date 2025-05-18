@@ -1,13 +1,20 @@
-import type { collision, rectangle } from '@/game-code/shared/types'
+import {
+  direction,
+  type collision,
+  type rectangle,
+} from '@/game-code/shared/types'
 import { Enemy } from './enemy'
 import type { GameContext } from '@/game-code/shared/game-context'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import type { GameObject } from '@/game-code/shared/game-objects/game-object'
 
 export class StacheSeed extends Enemy {
-  pointValue: number = 100
+  readonly pointValue: number = 100
   inPipe: boolean = false
-  goingUp: boolean = false
+
+  private direction: direction = direction.UP
+  private readonly parent: GameObject
+  private readonly waitTime: number = 2500
 
   constructor(gameContext: GameContext, parent: GameObject) {
     const rect: rectangle = {
@@ -19,12 +26,41 @@ export class StacheSeed extends Enemy {
 
     super(gameContext, rect)
 
+    this.parent = parent
+    this.speedY = 0.5
     this.imageSources.push('Images/stacheSeed1.png', 'Images/stacheSeed2.png')
   }
 
-  update(collisions: collision[]): void {
-    console.log(collisions)
-    throw new Error('Method not implemented.')
+  // collisions with this enemy are handled by the player class
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  update(_: collision[]): void {
+    if (this.direction === direction.UP) {
+      this.rect.y -= this.speedY
+
+      if (this.rect.y + this.rect.height < this.parent.rect.y) {
+        this.direction = direction.NONE
+
+        setTimeout(() => {
+          this.direction = direction.DOWN
+        }, this.waitTime)
+      }
+    } else if (this.direction === direction.DOWN) {
+      this.rect.y += this.speedY
+
+      if (this.rect.y > this.parent.rect.y) {
+        this.direction = direction.NONE
+        this.inPipe = true
+
+        setTimeout(() => {
+          this.inPipe = false
+          this.direction = direction.UP
+        }, this.waitTime)
+      }
+    }
+
+    if (this.rect.y < 0) {
+      this.isDead = true
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -35,7 +71,5 @@ export class StacheSeed extends Enemy {
       this.rect.width,
       this.rect.height,
     )
-
-    this.setNextImage()
   }
 }

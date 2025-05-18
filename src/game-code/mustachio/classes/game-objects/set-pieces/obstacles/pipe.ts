@@ -2,9 +2,15 @@ import type { rectangle } from '@/game-code/shared/types'
 import { Obstacle } from './obstacle'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import type { GameContext } from '@/game-code/shared/game-context'
+import { StacheSeed } from '../../point-objects/enemies/stache-seed'
 
 export class Pipe extends Obstacle {
-  constructor(gameContext: GameContext, x: number, y: number) {
+  constructor(
+    gameContext: GameContext,
+    x: number,
+    y: number,
+    hasStacheSeed: boolean = false,
+  ) {
     const rect: rectangle = {
       x,
       y,
@@ -13,6 +19,10 @@ export class Pipe extends Obstacle {
     }
 
     super(gameContext, rect)
+
+    if (hasStacheSeed) {
+      gameContext.addGameObject(new StacheSeed(gameContext, this))
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D) {

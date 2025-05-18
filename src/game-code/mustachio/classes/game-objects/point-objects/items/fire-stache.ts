@@ -3,7 +3,7 @@ import type { collision, rectangle } from '@/game-code/shared/types'
 import { Item } from './item'
 
 export class FireStache extends Item {
-  pointValue: number = 1000
+  readonly pointValue: number = 1000
   totalRaise: number = 20
   speedX = 1
 
