@@ -1,8 +1,8 @@
 import type { rectangle } from '@/game-code/shared/types'
-import { PointItem } from '../point-item'
+import { PointObject } from '../point-item'
 import type { GameContext } from '@/game-code/shared/game-context'
 
-export abstract class Enemy extends PointItem {
+export abstract class Enemy extends PointObject {
   isDead: boolean = false
   protected image: HTMLImageElement = new Image()
   protected imageSources: string[] = []

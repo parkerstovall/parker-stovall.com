@@ -1,9 +1,9 @@
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { rectangle } from '@/game-code/shared/types'
-import { PointItem } from '../point-item'
+import { PointObject } from '../point-item'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
-export abstract class Item extends PointItem {
+export abstract class Item extends PointObject {
   protected readonly fromItemBlock: boolean
 
   constructor(
