@@ -1,11 +1,6 @@
-import {
-  direction,
-  type collision,
-  type rectangle,
-} from '@/game-code/shared/types'
+import { direction, type collision } from '@/game-code/shared/types'
 import { Enemy } from './enemy'
 import type { GameContext } from '@/game-code/shared/game-context'
-import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import type { GameObject } from '@/game-code/shared/game-objects/game-object'
 
 export class StacheSeed extends Enemy {
@@ -18,14 +13,26 @@ export class StacheSeed extends Enemy {
   private readonly reversed: boolean
 
   constructor(gameContext: GameContext, parent: GameObject, reversed: boolean) {
-    const rect: rectangle = {
-      x: parent.rect.x + BLOCK_SIZE / 2,
-      y: parent.rect.y + BLOCK_SIZE / 2,
-      width: parent.rect.width / 2,
-      height: parent.rect.height * 2,
+    const width = parent.rect.width / 2
+    const height = parent.rect.height * 2
+
+    let x: number
+    let y: number
+
+    if (reversed) {
+      x = parent.rect.x + parent.rect.width / 2 - width / 2
+      y = parent.rect.y + parent.rect.height - height
+    } else {
+      x = parent.rect.x + parent.rect.width / 2 - width / 2
+      y = parent.rect.y
     }
 
-    super(gameContext, rect)
+    super(gameContext, {
+      x,
+      y,
+      width,
+      height,
+    })
 
     this.reversed = reversed
     this.parent = parent
@@ -34,7 +41,7 @@ export class StacheSeed extends Enemy {
       this.direction = direction.DOWN
       this.imageSources.push(
         'Images/stacheSeedReversed1.png',
-        'Images/stacheSeedReversed.png',
+        'Images/stacheSeedReversed2.png',
       )
     } else {
       this.direction = direction.UP
@@ -48,7 +55,7 @@ export class StacheSeed extends Enemy {
     if (this.direction === direction.UP) {
       this.rect.y -= this.speedY
 
-      if (this.rect.y + this.rect.height < this.parent.rect.y) {
+      if (this.shouldChangeDirection()) {
         this.direction = direction.NONE
         if (this.reversed) {
           this.inPipe = true
@@ -62,7 +69,7 @@ export class StacheSeed extends Enemy {
     } else if (this.direction === direction.DOWN) {
       this.rect.y += this.speedY
 
-      if (this.rect.y > this.parent.rect.y) {
+      if (this.shouldChangeDirection()) {
         this.direction = direction.NONE
         if (!this.reversed) {
           this.inPipe = true
@@ -88,5 +95,28 @@ export class StacheSeed extends Enemy {
       this.rect.width,
       this.rect.height,
     )
+  }
+
+  private shouldChangeDirection(): boolean {
+    if (this.reversed) {
+      if (this.direction === direction.UP) {
+        return (
+          this.rect.y + this.rect.height <
+          this.parent.rect.y + this.parent.rect.height
+        )
+      }
+      if (this.direction === direction.DOWN) {
+        return this.rect.y > this.parent.rect.y + this.parent.rect.height
+      }
+    } else {
+      if (this.direction === direction.UP) {
+        return this.rect.y + this.rect.height < this.parent.rect.y
+      }
+      if (this.direction === direction.DOWN) {
+        return this.rect.y > this.parent.rect.y
+      }
+    }
+
+    return false
   }
 }

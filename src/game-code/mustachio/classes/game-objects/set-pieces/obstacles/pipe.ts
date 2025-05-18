@@ -10,6 +10,7 @@ export class Pipe extends Obstacle {
     x: number,
     y: number,
     hasStacheSeed: boolean = false,
+    reversed: boolean = false,
   ) {
     const rect: rectangle = {
       x,
@@ -21,7 +22,7 @@ export class Pipe extends Obstacle {
     super(gameContext, rect)
 
     if (hasStacheSeed) {
-      gameContext.addGameObject(new StacheSeed(gameContext, this))
+      gameContext.addGameObject(new StacheSeed(gameContext, this, reversed))
     }
   }
 

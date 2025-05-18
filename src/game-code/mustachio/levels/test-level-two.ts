@@ -46,6 +46,10 @@ export function testLevelTwo(
 
   gameContext.addGameObject(pipe)
 
+  gameContext.addGameObject(
+    new Pipe(gameContext, BLOCK_SIZE * 12, 0, true, true),
+  )
+
   gameContext.addGameObject(new Pipe(gameContext, BLOCK_SIZE * 18, 0))
 
   gameContext.addGameObject(
