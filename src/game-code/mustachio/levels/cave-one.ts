@@ -7,7 +7,10 @@ import { WarpPipe } from '../classes/game-objects/set-pieces/obstacles/warp-pipe
 import { testLevelTwo } from './test-level-two'
 import { ItemBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/punchable-block/item-block'
 
-export function caveOne(gameContext: GameContext) {
+export function caveOne(
+  gameContext: GameContext,
+  previousLevels: string[] = [],
+) {
   gameContext.clearLevel()
   gameContext.setStatic(true)
 
@@ -54,7 +57,7 @@ export function caveOne(gameContext: GameContext) {
 
   gameContext.addGameObject(
     new WarpPipe(gameContext, BLOCK_SIZE * 26, BLOCK_SIZE * 14, (gc) => {
-      testLevelTwo(gc, 'caveOne')
+      testLevelTwo(gc, [...previousLevels, 'caveOne'])
     }),
   )
 

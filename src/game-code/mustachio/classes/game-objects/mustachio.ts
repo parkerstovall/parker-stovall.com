@@ -370,6 +370,7 @@ export class Mustachio extends Player {
 
   playerKill() {
     this.isDead = true
+    this.gameContext.stopTimer()
     this.deathAnimationTimeout = setTimeout(() => {
       this.deathAnimationTimeout = null
       this.speedY = -5
