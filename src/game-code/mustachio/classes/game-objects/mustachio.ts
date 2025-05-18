@@ -248,6 +248,7 @@ export class Mustachio extends Player {
     const gameObject = collision.gameObject
 
     // FireBar is a special case since it rotates
+    // so it isnt an EnemyProjectile technically
     if (
       gameObject instanceof FireBar ||
       gameObject instanceof EnemyProjectile
@@ -374,6 +375,10 @@ export class Mustachio extends Player {
     this.deathAnimationTimeout = setTimeout(() => {
       this.deathAnimationTimeout = null
       this.speedY = -5
+      if (this.rect.y > this.gameContext.gameArea.height) {
+        this.gameContext.removeGameObject(this)
+        this.gameContext.stopMainLoop()
+      }
     }, 1000)
   }
 

@@ -4,6 +4,7 @@ import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FallingFloor } from '../classes/game-objects/set-pieces/obstacles/blocks/falling-floor'
 import { StacheCannon } from '../classes/game-objects/set-pieces/obstacles/blocks/stache-cannon'
 import { direction } from '@/game-code/shared/types'
+import { FireCrossBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/fire-cross-block'
 
 export function testLevelThree(gameContext: GameContext) {
   gameContext.clearLevel()
@@ -30,14 +31,14 @@ export function testLevelThree(gameContext: GameContext) {
     }),
   )
 
-  gameContext.addGameObject(
-    new StacheCannon(
-      gameContext,
-      BLOCK_SIZE * 16,
-      BLOCK_SIZE * 16,
-      direction.LEFT,
-    ),
-  )
+  // gameContext.addGameObject(
+  //   new StacheCannon(
+  //     gameContext,
+  //     BLOCK_SIZE * 16,
+  //     BLOCK_SIZE * 16,
+  //     direction.LEFT,
+  //   ),
+  // )
 
   gameContext.addGameObject(
     new StacheCannon(
@@ -59,6 +60,15 @@ export function testLevelThree(gameContext: GameContext) {
 
   gameContext.addGameObject(
     new StacheCannon(gameContext, BLOCK_SIZE * 15, 0, direction.DOWN),
+  )
+
+  gameContext.addGameObject(
+    new FireCrossBlock(gameContext, BLOCK_SIZE * 8, BLOCK_SIZE * 12, [
+      direction.UP,
+      direction.DOWN,
+      direction.LEFT,
+      direction.RIGHT,
+    ]),
   )
 
   gameContext.startMainLoop()
