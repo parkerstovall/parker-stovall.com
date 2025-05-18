@@ -1,10 +1,10 @@
 import type { GameContext } from '../../../shared/game-context'
-import { Enemy } from './point-items/enemies/enemy'
-import { StacheSeed } from './point-items/enemies/stache-seed'
+import { Enemy } from './point-objects/enemies/enemy'
+import { StacheSeed } from './point-objects/enemies/stache-seed'
 import { Flag } from './set-pieces/flag'
-import { FireStache } from './point-items/items/fire-stache'
-import { Item } from './point-items/items/item'
-import { Stacheroom } from './point-items/items/stacheroom'
+import { FireStache } from './point-objects/items/fire-stache'
+import { Item } from './point-objects/items/item'
+import { Stacheroom } from './point-objects/items/stacheroom'
 import { EnemyProjectile } from './projectiles/enemy-projectiles/enemy-projectile'
 import { FallingFloor } from './set-pieces/obstacles/blocks/falling-floor'
 import { WarpPipe } from './set-pieces/obstacles/warp-pipe'
@@ -12,7 +12,7 @@ import { Obstacle } from './set-pieces/obstacles/obstacle'
 import { SetPiece } from './set-pieces/set-piece'
 import { Player } from '@/game-code/shared/player'
 import { direction, type collision } from '@/game-code/shared/types'
-import { FireBall } from './projectiles/fire-ball'
+import { StacheBall } from './projectiles/stache-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBar } from './projectiles/enemy-projectiles/fire-bar'
 import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-block/punchable-block'
@@ -248,6 +248,7 @@ export class Mustachio extends Player {
     const gameObject = collision.gameObject
 
     // FireBar is a special case since it rotates
+    // so it isnt an EnemyProjectile technically
     if (
       gameObject instanceof FireBar ||
       gameObject instanceof EnemyProjectile
@@ -370,9 +371,14 @@ export class Mustachio extends Player {
 
   playerKill() {
     this.isDead = true
+    this.gameContext.stopTimer()
     this.deathAnimationTimeout = setTimeout(() => {
       this.deathAnimationTimeout = null
       this.speedY = -5
+      if (this.rect.y > this.gameContext.gameArea.height) {
+        this.gameContext.removeGameObject(this)
+        this.gameContext.stopMainLoop()
+      }
     }, 1000)
   }
 
@@ -387,7 +393,7 @@ export class Mustachio extends Player {
         this.canFire = true
       }, 250)
 
-      const fire = new FireBall(
+      const fire = new StacheBall(
         this.gameContext,
         this.rect.x + this.rect.width + 5,
         this.rect.y + this.rect.height / 2,

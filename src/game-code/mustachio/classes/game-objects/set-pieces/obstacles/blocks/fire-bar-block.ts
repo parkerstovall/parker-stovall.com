@@ -4,12 +4,7 @@ import { FireBar } from '../../../projectiles/enemy-projectiles/fire-bar'
 
 export class FireBarBlock extends Block {
   private readonly image: HTMLImageElement = new Image()
-  constructor(
-    gameContext: GameContext,
-
-    x: number,
-    y: number,
-  ) {
+  constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, x, y)
 
     this.image.src = 'Images/obstacleBrick.png'

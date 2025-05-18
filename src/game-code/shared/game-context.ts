@@ -46,13 +46,17 @@ export class GameContext {
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
   }
 
-  setPlayer(player: Player) {
+  protected setPlayer(player: Player) {
     if (this.player) {
       return
     }
 
     this.player = player
     this.addGameObject(player, true)
+  }
+
+  getPlayer() {
+    return this.player
   }
 
   setPlayerLocation(x: number, y: number) {
@@ -95,10 +99,18 @@ export class GameContext {
   }
 
   clearLevel() {
-    this.stopMainLoop()
-    this.gameObjects.splice(0, this.gameObjects.length)
-    this.uiObjects.splice(0, this.uiObjects.length)
     this.isStatic = false
+    this.stopMainLoop()
+
+    for (const gameObject of this.gameObjects) {
+      // JS doesn't support interfaces
+      // so we have to check if the object has a dispose method
+      if ('dispose' in gameObject && typeof gameObject.dispose === 'function') {
+        gameObject.dispose()
+      }
+    }
+
+    this.gameObjects.splice(0, this.gameObjects.length)
 
     if (this.player) {
       this.addGameObject(this.player)
@@ -156,13 +168,19 @@ export class GameContext {
   restart(levelFunc: (gc: GameContext) => void) {
     this.stopMainLoop()
     this.gameObjects.splice(0, this.gameObjects.length)
-    this.uiObjects.splice(0, this.uiObjects.length)
     levelFunc(this)
   }
 
   validateNewObjectId(objectId: number) {
     const gameObject = this.gameObjects.find((go) => go.objectId === objectId)
     return gameObject === undefined
+  }
+
+  stopTimer() {
+    if (this.timerLoop) {
+      clearInterval(this.timerLoop)
+      this.timerLoop = null
+    }
   }
 
   private clear() {
@@ -177,32 +195,13 @@ export class GameContext {
       gameObjectsInUpdateArea,
     )
 
-    const canMove = this.player?.canMove(this.currentDir)
-
-    // Always move every game object according to player speed
-    for (const gameObject of this.gameObjects) {
-      if (canMove) {
-        if (!this.isStatic && !(gameObject instanceof Player)) {
-          // We move the game object opposite to the player
-          // to simulate the player moving
-          if (this.currentDir === direction.RIGHT) {
-            gameObject.rect.x += this.xSpeed
-          } else if (this.currentDir === direction.LEFT) {
-            gameObject.rect.x -= this.xSpeed
-          }
-        } else if (this.isStatic && gameObject instanceof Player) {
-          if (this.currentDir === direction.RIGHT) {
-            gameObject.rect.x -= this.xSpeed
-          } else if (this.currentDir === direction.LEFT) {
-            gameObject.rect.x += this.xSpeed
-          }
-        }
-      }
+    if (this.player?.isDead) {
+      this.player.update([])
     }
 
     // Update the game objects in the game area
     for (const gameObject of gameObjectsInUpdateArea) {
-      if (gameObject instanceof UpdatingGameObject) {
+      if (!this.player?.isDead && gameObject instanceof UpdatingGameObject) {
         const collisions = gameObjectCollisions.get(gameObject.objectId)
         gameObject.update(collisions ?? [])
       }
@@ -213,6 +212,32 @@ export class GameContext {
     // The ui layer is never out of bounds
     for (const uiObject of this.uiObjects) {
       uiObject.draw(this.uiContext)
+    }
+
+    const canMove = this.player?.canMove(this.currentDir)
+    if (!canMove) {
+      return
+    }
+
+    if (!this.isStatic) {
+      // Always move every game object according to player speed
+      for (const gameObject of this.gameObjects) {
+        if (!(gameObject instanceof Player)) {
+          // We move the game object opposite to the player
+          // to simulate the player moving
+          if (this.currentDir === direction.RIGHT) {
+            gameObject.rect.x += this.xSpeed
+          } else if (this.currentDir === direction.LEFT) {
+            gameObject.rect.x -= this.xSpeed
+          }
+        }
+      }
+    } else if (this.player) {
+      if (this.currentDir === direction.RIGHT) {
+        this.player.rect.x -= this.xSpeed
+      } else if (this.currentDir === direction.LEFT) {
+        this.player.rect.x += this.xSpeed
+      }
     }
   }
 

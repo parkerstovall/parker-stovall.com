@@ -4,7 +4,7 @@ import { Item } from './item'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Coin extends Item {
-  pointValue: number = 100
+  readonly pointValue: number = 100
 
   constructor(
     gameContext: GameContext,

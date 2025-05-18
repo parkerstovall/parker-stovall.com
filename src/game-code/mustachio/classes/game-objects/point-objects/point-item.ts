@@ -1,6 +1,6 @@
 import { MovingGameObject } from '@/game-code/shared/game-objects/moving-game-object'
 
-export abstract class PointItem extends MovingGameObject {
+export abstract class PointObject extends MovingGameObject {
   abstract pointValue: number
 
   collect() {

@@ -2,14 +2,11 @@ import type { GameContext } from '../../shared/game-context'
 import { Floor } from '../classes/game-objects/set-pieces/obstacles/floor'
 
 import { Wall } from '../classes/game-objects/set-pieces/obstacles/blocks/wall'
-import { StacheStalker } from '../classes/game-objects/point-items/enemies/stache-stalker'
-import { ScoreDisplay } from '../classes/game-objects/ui-objects/score-display'
-import { TimerDisplay } from '../classes/game-objects/ui-objects/timer-display'
-import { Coin } from '../classes/game-objects/point-items/items/coin'
+import { StacheStalker } from '../classes/game-objects/point-objects/enemies/stache-stalker'
+import { Coin } from '../classes/game-objects/point-objects/items/coin'
 import { ItemBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/punchable-block/item-block'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBarBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/fire-bar-block'
-import { Mustachio } from '../classes/game-objects/mustachio'
 
 export function testLevelOne(gameContext: GameContext) {
   gameContext.clearLevel()
@@ -71,15 +68,6 @@ export function testLevelOne(gameContext: GameContext) {
   gameContext.addGameObject(
     new FireBarBlock(gameContext, BLOCK_SIZE * 18, BLOCK_SIZE * 12),
   )
-
-  gameContext.addUIObject(new ScoreDisplay(gameContext, BLOCK_SIZE, BLOCK_SIZE))
-
-  gameContext.addUIObject(
-    new TimerDisplay(gameContext, BLOCK_SIZE * 28, BLOCK_SIZE),
-  )
-
-  const mustachio = new Mustachio(gameContext, BLOCK_SIZE * 4, BLOCK_SIZE * 13)
-  gameContext.setPlayer(mustachio)
 
   gameContext.startMainLoop()
 }

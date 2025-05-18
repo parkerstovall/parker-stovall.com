@@ -1,8 +1,8 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { Item } from '../../../../point-items/items/item'
-import { Coin } from '../../../../point-items/items/coin'
-import { Stacheroom } from '../../../../point-items/items/stacheroom'
-import { FireStache } from '../../../../point-items/items/fire-stache'
+import type { Item } from '../../../../point-objects/items/item'
+import { Coin } from '../../../../point-objects/items/coin'
+import { Stacheroom } from '../../../../point-objects/items/stacheroom'
+import { FireStache } from '../../../../point-objects/items/fire-stache'
 import { PunchableBlock } from './punchable-block'
 
 export class ItemBlock extends PunchableBlock {

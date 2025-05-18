@@ -1,25 +1,20 @@
 import type { GameContext } from '../../shared/game-context'
 import { Floor } from '../classes/game-objects/set-pieces/obstacles/floor'
-import { ScoreDisplay } from '../classes/game-objects/ui-objects/score-display'
-import { TimerDisplay } from '../classes/game-objects/ui-objects/timer-display'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { Mustachio } from '../classes/game-objects/mustachio'
 import { WarpPipe } from '../classes/game-objects/set-pieces/obstacles/warp-pipe'
 import { caveOne } from './cave-one'
 import { Pipe } from '../classes/game-objects/set-pieces/obstacles/pipe'
+import { StacheSlinger } from '../classes/game-objects/point-objects/enemies/stache-slinger'
+import { StacheStreaker } from '../classes/game-objects/point-objects/enemies/stache-streaker'
 
-export function testLevelTwo(gameContext: GameContext, previousLevel?: string) {
+export function testLevelTwo(
+  gameContext: GameContext,
+  previousLevels: string[] = [],
+) {
   gameContext.clearLevel()
 
-  if (previousLevel === 'caveOne') {
+  if (previousLevels.includes('caveOne')) {
     gameContext.setPlayerLocation(BLOCK_SIZE * 18.5, BLOCK_SIZE * 2.5)
-  } else {
-    const mustachio = new Mustachio(
-      gameContext,
-      BLOCK_SIZE * 4,
-      BLOCK_SIZE * 13,
-    )
-    gameContext.setPlayer(mustachio)
   }
 
   gameContext.addGameObject(
@@ -36,16 +31,33 @@ export function testLevelTwo(gameContext: GameContext, previousLevel?: string) {
 
   const touchingFloor = BLOCK_SIZE * 16
 
+  let pipe: Pipe
+  if (previousLevels.includes('caveOne')) {
+    pipe = new Pipe(gameContext, BLOCK_SIZE * 10, touchingFloor, true)
+  } else {
+    pipe = new WarpPipe(
+      gameContext,
+      BLOCK_SIZE * 10,
+      touchingFloor,
+      (gc) => caveOne(gc, [...previousLevels, 'testLevelTwo']),
+      true,
+    )
+  }
+
+  gameContext.addGameObject(pipe)
+
   gameContext.addGameObject(
-    new WarpPipe(gameContext, BLOCK_SIZE * 10, touchingFloor, caveOne),
+    new Pipe(gameContext, BLOCK_SIZE * 12, 0, true, true),
   )
 
   gameContext.addGameObject(new Pipe(gameContext, BLOCK_SIZE * 18, 0))
 
-  gameContext.addUIObject(new ScoreDisplay(gameContext, BLOCK_SIZE, BLOCK_SIZE))
+  gameContext.addGameObject(
+    new StacheSlinger(gameContext, BLOCK_SIZE * 5, BLOCK_SIZE * 2),
+  )
 
-  gameContext.addUIObject(
-    new TimerDisplay(gameContext, BLOCK_SIZE * 28, BLOCK_SIZE),
+  gameContext.addGameObject(
+    new StacheStreaker(gameContext, BLOCK_SIZE * 10, BLOCK_SIZE * 2),
   )
 
   gameContext.startMainLoop()
