@@ -18,6 +18,7 @@ import { FireBar } from './projectiles/enemy-projectiles/fire-bar'
 import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-blockS/punchable-block'
 import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-block'
 import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
+import { Floor } from './set-pieces/obstacles/floor'
 
 export class Mustachio extends Player {
   private readonly image = new Image()
@@ -41,28 +42,6 @@ export class Mustachio extends Player {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    // if (!this.isDead) {
-    //   if (!this.isFire) {
-    //     if (this.gameContext.currentDir === direction.LEFT) {
-    //       this.image.src = 'Images/Mustachio_FacingRight.png'
-    //     } else if (this.gameContext.currentDir === direction.RIGHT) {
-    //       this.image.src = 'Images/Mustachio_FacingLeft.png'
-    //     } else {
-    //       this.image.src = 'Images/Mustachio.png'
-    //     }
-    //   } else {
-    //     if (this.gameContext.currentDir === direction.LEFT) {
-    //       this.image.src = 'Images/Mustachio_FacingRight_Fire.png'
-    //     } else if (this.gameContext.currentDir === direction.RIGHT) {
-    //       this.image.src = 'Images/Mustachio_FacingLeft_Fire.png'
-    //     } else {
-    //       this.image.src = 'Images/Mustachio_Fire.png'
-    //     }
-    //   }
-    // } else {
-    //   this.image.src = 'Images/Mustachio.png'
-    // }
-
     ctx.drawImage(
       this.image,
       this.rect.x,
@@ -197,10 +176,27 @@ export class Mustachio extends Player {
       return
     }
 
-    if (collision.collisionDirection === direction.DOWN) {
+    if (collision.gameObject instanceof Floor) {
+      if (this.rect.x + this.rect.width < collision.gameObject.rect.x) {
+        collision.collisionDirection = direction.LEFT
+      } else if (
+        this.rect.x >
+        collision.gameObject.rect.x + collision.gameObject.rect.width
+      ) {
+        collision.collisionDirection = direction.RIGHT
+      } else {
+        collision.collisionDirection = direction.DOWN
+      }
+    }
+
+    const cRect = collision.gameObject.rect
+    let allowVert = this.rect.x + this.rect.width > cRect.x + 10
+    allowVert = allowVert && this.rect.x < cRect.x + cRect.width - 10
+
+    if (allowVert && collision.collisionDirection === direction.DOWN) {
       this.blockedDirVert = direction.DOWN
       this.landOnGameObject(collision.gameObject)
-    } else if (collision.collisionDirection === direction.UP) {
+    } else if (allowVert && collision.collisionDirection === direction.UP) {
       this.speedY = 1
       this.rect.y =
         collision.gameObject.rect.y + collision.gameObject.rect.height - 1

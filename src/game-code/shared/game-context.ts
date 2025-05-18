@@ -397,10 +397,14 @@ export abstract class GameContext {
       // we don't need to check for collisions again
       const goCollisions = collisions.get(gameObject.objectId)
       if (goCollisions) {
-        for (const collision of goCollisions) {
-          if (collision.gameObject.objectId === otherGameObject.objectId) {
-            return
-          }
+        const existingCollision = goCollisions.find(
+          (collision) =>
+            collision.gameObject.objectId === otherGameObject.objectId,
+        )
+
+        if (existingCollision) {
+          // If the collision already exists, we don't need to check for collisions again
+          return
         }
       }
     }
@@ -427,12 +431,16 @@ export abstract class GameContext {
       if (goCollisions) {
         goCollisions.push(collision)
         collisions.set(gameObject.objectId, goCollisions)
+      } else {
+        collisions.set(gameObject.objectId, [collision])
       }
 
       const otherGoCollisions = collisions.get(otherGameObject.objectId)
       if (otherGoCollisions) {
         otherGoCollisions.push(reversedCollision)
         collisions.set(otherGameObject.objectId, otherGoCollisions)
+      } else {
+        collisions.set(otherGameObject.objectId, [reversedCollision])
       }
     }
   }
