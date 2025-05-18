@@ -15,11 +15,10 @@ function MustachioGame() {
   useEffect(() => {
     if (!gc) {
       gc = new MustachioGameContext()
+      //gc.restart(testLevelOne)
+      //gc.restart(caveOne)
+      gc.restart(testLevelTwo)
     }
-
-    //gc.restart(testLevelOne)
-    gc.restart(testLevelTwo)
-    //gc.restart(caveOne)
   }, [])
 
   return (

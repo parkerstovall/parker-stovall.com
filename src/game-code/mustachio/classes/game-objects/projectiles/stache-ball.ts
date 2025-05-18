@@ -3,7 +3,7 @@ import { Projectile } from './projectile'
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { collision, rectangle } from '@/game-code/shared/types'
 
-export class FireBall extends Projectile {
+export class StacheBall extends Projectile {
   constructor(
     gameContext: GameContext,
 

@@ -12,7 +12,7 @@ import { Obstacle } from './set-pieces/obstacles/obstacle'
 import { SetPiece } from './set-pieces/set-piece'
 import { Player } from '@/game-code/shared/player'
 import { direction, type collision } from '@/game-code/shared/types'
-import { FireBall } from './projectiles/fire-ball'
+import { StacheBall } from './projectiles/stache-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBar } from './projectiles/enemy-projectiles/fire-bar'
 import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-block/punchable-block'
@@ -388,7 +388,7 @@ export class Mustachio extends Player {
         this.canFire = true
       }, 250)
 
-      const fire = new FireBall(
+      const fire = new StacheBall(
         this.gameContext,
         this.rect.x + this.rect.width + 5,
         this.rect.y + this.rect.height / 2,

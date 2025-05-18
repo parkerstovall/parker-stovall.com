@@ -4,6 +4,7 @@ import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { WarpPipe } from '../classes/game-objects/set-pieces/obstacles/warp-pipe'
 import { caveOne } from './cave-one'
 import { Pipe } from '../classes/game-objects/set-pieces/obstacles/pipe'
+import { StacheSlinger } from '../classes/game-objects/point-objects/enemies/stache-slinger'
 
 export function testLevelTwo(
   gameContext: GameContext,
@@ -45,6 +46,10 @@ export function testLevelTwo(
   gameContext.addGameObject(pipe)
 
   gameContext.addGameObject(new Pipe(gameContext, BLOCK_SIZE * 18, 0))
+
+  gameContext.addGameObject(
+    new StacheSlinger(gameContext, BLOCK_SIZE * 5, BLOCK_SIZE * 2),
+  )
 
   gameContext.startMainLoop()
 }

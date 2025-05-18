@@ -55,6 +55,10 @@ export class GameContext {
     this.addGameObject(player, true)
   }
 
+  getPlayer() {
+    return this.player
+  }
+
   setPlayerLocation(x: number, y: number) {
     if (this.player) {
       this.player.rect.x = x
