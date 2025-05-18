@@ -70,7 +70,12 @@ export class FireBall extends EnemyProjectile {
     const dy = this.target.rect.y - this.rect.y
     const angle = Math.atan2(dy, dx)
 
-    this.speedX = Math.cos(angle) * 2
-    this.speedY = Math.sin(angle) * 2
+    if (this.tracking) {
+      this.speedX = Math.cos(angle) * 1.25
+      this.speedY = Math.sin(angle) * 1.25
+    } else {
+      this.speedX = Math.cos(angle) * 2
+      this.speedY = Math.sin(angle) * 2
+    }
   }
 }

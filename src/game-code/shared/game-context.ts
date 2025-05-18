@@ -8,6 +8,7 @@ import { Player } from './player'
 import { RotatingGameObject } from './game-objects/rotating-game-object'
 import { direction, type collision } from './types'
 import { UpdatingGameObject } from './game-objects/updating-game-object'
+import { Enemy } from '../mustachio/classes/game-objects/point-objects/enemies/enemy'
 
 export class GameContext {
   score: number = 0
@@ -101,6 +102,13 @@ export class GameContext {
   clearLevel() {
     this.isStatic = false
     this.stopMainLoop()
+
+    for (const gameObject of this.gameObjects) {
+      if (gameObject instanceof Enemy) {
+        gameObject.dispose()
+      }
+    }
+
     this.gameObjects.splice(0, this.gameObjects.length)
 
     if (this.player) {

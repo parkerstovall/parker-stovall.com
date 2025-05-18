@@ -1,31 +1,36 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import type { collision, rectangle } from '@/game-code/shared/types'
+import type { collision } from '@/game-code/shared/types'
 import { EnemyProjectile } from './enemy-projectile'
+import type { Enemy } from '../../point-objects/enemies/enemy'
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Laser extends EnemyProjectile {
-  constructor(
-    gameContext: GameContext,
+  constructor(gameContext: GameContext, parent: Enemy, shotTime: number) {
+    const width = BLOCK_SIZE * 0.5
+    const height = gameContext.gameArea.height
+    const x = parent.rect.x + parent.rect.width / 2 - width / 2
+    const y = parent.rect.y + parent.rect.height
 
-    x: number,
-    y: number,
-  ) {
-    const rect: rectangle = {
+    super(gameContext, {
       x,
       y,
-      width: 8,
-      height: 8,
-    }
+      width,
+      height,
+    })
 
-    super(gameContext, rect)
+    setTimeout(() => {
+      this.gameContext.removeGameObject(this)
+    }, shotTime)
   }
 
-  update(collisions: collision[]): void {
-    console.log(collisions)
-    throw new Error('Method not implemented.')
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  update(_: collision[]): void {}
 
   draw(ctx: CanvasRenderingContext2D) {
-    console.log(ctx)
-    throw new Error('Method not implemented.')
+    ctx.fillStyle = 'blue'
+    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.strokeStyle = 'black'
+    ctx.lineWidth = 2
+    ctx.strokeRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
   }
 }

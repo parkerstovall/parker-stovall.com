@@ -7,13 +7,21 @@ export abstract class Enemy extends PointObject {
   protected image: HTMLImageElement = new Image()
   protected imageSources: string[] = []
   protected imageSourceIndex: number = 0
+  protected shotTimer: number | null = null
+  private imageTimer: number | null = null
 
-  constructor(gameContext: GameContext, rect: rectangle) {
+  constructor(
+    gameContext: GameContext,
+    rect: rectangle,
+    useBothImages: boolean = true,
+  ) {
     super(gameContext, rect)
 
-    setInterval(() => {
-      this.setNextImage()
-    }, 250)
+    if (useBothImages) {
+      this.imageTimer = setInterval(() => {
+        this.setNextImage()
+      }, 250)
+    }
   }
 
   setNextImage() {
@@ -39,5 +47,18 @@ export abstract class Enemy extends PointObject {
     setTimeout(() => {
       this.gameContext.removeGameObject(this)
     }, 500)
+  }
+
+  dispose() {
+    if (this.shotTimer) {
+      clearTimeout(this.shotTimer)
+      clearInterval(this.shotTimer)
+      this.shotTimer = null
+    }
+
+    if (this.imageTimer) {
+      clearInterval(this.imageTimer)
+      this.imageTimer = null
+    }
   }
 }
