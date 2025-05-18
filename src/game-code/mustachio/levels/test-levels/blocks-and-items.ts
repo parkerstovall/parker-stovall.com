@@ -8,7 +8,7 @@ import { Wall } from '../../classes/game-objects/set-pieces/obstacles/blocks/wal
 import { Floor } from '../../classes/game-objects/set-pieces/obstacles/floor'
 import { Brick } from '../../classes/game-objects/set-pieces/obstacles/blocks/punchable-blockS/brick'
 
-export function testLevelOne(gameContext: GameContext) {
+export function testLevelBlocksAndItems(gameContext: GameContext) {
   gameContext.clearLevel()
 
   gameContext.addGameObject(

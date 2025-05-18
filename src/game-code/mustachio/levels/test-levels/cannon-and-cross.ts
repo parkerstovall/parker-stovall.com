@@ -6,7 +6,7 @@ import { FireCrossBlock } from '../../classes/game-objects/set-pieces/obstacles/
 import { StacheCannon } from '../../classes/game-objects/set-pieces/obstacles/blocks/stache-cannon'
 import { Floor } from '../../classes/game-objects/set-pieces/obstacles/floor'
 
-export function testLevelThree(gameContext: GameContext) {
+export function testLevelCannonAndCross(gameContext: GameContext) {
   gameContext.clearLevel()
 
   gameContext.addGameObject(

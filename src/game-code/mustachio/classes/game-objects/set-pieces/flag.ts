@@ -1,27 +1,32 @@
 import type { GameContext } from '@/game-code/shared/game-context'
 import { SetPiece } from './set-piece'
-import type { rectangle } from '@/game-code/shared/types'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class Flag extends SetPiece {
-  constructor(
-    gameContext: GameContext,
+  private readonly image = new Image()
 
-    x: number,
-    y: number,
-  ) {
-    const rect: rectangle = {
+  constructor(gameContext: GameContext, x: number, y: number) {
+    super(gameContext, {
       x,
       y,
-      width: BLOCK_SIZE,
+      width: BLOCK_SIZE * 8,
       height: BLOCK_SIZE * 8,
-    }
+    })
 
-    super(gameContext, rect)
+    this.image.src = 'Images/homestead.png'
+  }
+
+  closeDoor() {
+    this.image.src = 'Images/homesteadClosed.png'
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    console.log(ctx)
-    throw new Error('Method not implemented.')
+    ctx.drawImage(
+      this.image,
+      this.rect.x,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
   }
 }

@@ -7,7 +7,7 @@ import { Pipe } from '../../classes/game-objects/set-pieces/obstacles/pipe'
 import { WarpPipe } from '../../classes/game-objects/set-pieces/obstacles/warp-pipe'
 import { caveOne } from '../caves/cave-one'
 
-export function testLevelTwo(
+export function testLevelCaveAndEnemies(
   gameContext: GameContext,
   previousLevels: string[] = [],
 ) {

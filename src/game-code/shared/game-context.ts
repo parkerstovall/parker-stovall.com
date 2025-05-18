@@ -8,8 +8,9 @@ import { Player } from './player'
 import { RotatingGameObject } from './game-objects/rotating-game-object'
 import { direction, type collision } from './types'
 import { UpdatingGameObject } from './game-objects/updating-game-object'
+import { WinDisplay } from '../mustachio/classes/game-objects/ui-objects/win-display'
 
-export class GameContext {
+export abstract class GameContext {
   score: number = 0
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
@@ -24,14 +25,16 @@ export class GameContext {
   private mainLoop: number | null = null
   private timerLoop: number | null = null
   private isStatic: boolean = false
+  private gameOver: boolean = false
 
   private readonly pressedKeys: string[] = []
   private readonly gameObjects: GameObject[] = []
   private readonly uiObjects: GameObject[] = []
   private readonly contextId: number = Math.floor(Math.random() * 1000000)
+  protected abstract readonly gameName: string
 
   // Temporary player object until initialized
-  private player: Player | undefined
+  protected abstract readonly player: Player
 
   constructor() {
     let result = this.setupCanvas('canvas#game-layer')
@@ -44,15 +47,6 @@ export class GameContext {
 
     window.addEventListener('keydown', (event) => this.onKeyDown(event))
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
-  }
-
-  protected setPlayer(player: Player) {
-    if (this.player) {
-      return
-    }
-
-    this.player = player
-    this.addGameObject(player, true)
   }
 
   getPlayer() {
@@ -119,6 +113,12 @@ export class GameContext {
 
   setStatic(isStatic: boolean) {
     this.isStatic = isStatic
+  }
+
+  setGameOver() {
+    this.currentDir = direction.NONE
+    this.gameOver = true
+    this.stopTimer()
   }
 
   // Assign a unique ID to the game object and add it to the gameObjects array
@@ -191,13 +191,13 @@ export class GameContext {
       gameObjectsInUpdateArea,
     )
 
-    if (this.player?.isDead) {
+    if (this.gameOver && this.player) {
       this.player.update([])
     }
 
     // Update the game objects in the game area
     for (const gameObject of gameObjectsInUpdateArea) {
-      if (!this.player?.isDead && gameObject instanceof UpdatingGameObject) {
+      if (!this.gameOver && gameObject instanceof UpdatingGameObject) {
         const collisions = gameObjectCollisions.get(gameObject.objectId)
         gameObject.update(collisions ?? [])
       }
@@ -212,6 +212,10 @@ export class GameContext {
 
     const canMove = this.player?.canMove(this.currentDir)
     if (!canMove) {
+      return
+    }
+
+    if (this.gameOver) {
       return
     }
 
@@ -238,7 +242,7 @@ export class GameContext {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    if (event.repeat) {
+    if (this.gameOver || event.repeat) {
       return
     }
 
@@ -275,6 +279,10 @@ export class GameContext {
   }
 
   private onKeyUp(event: KeyboardEvent) {
+    if (this.gameOver) {
+      return
+    }
+
     const key = event.key.toLocaleLowerCase()
 
     this.pressedKeys.splice(
@@ -453,5 +461,9 @@ export class GameContext {
     }
 
     return collisionDirection
+  }
+
+  win() {
+    this.addUIObject(new WinDisplay(this))
   }
 }

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { MustachioGameContext } from '@/game-code/mustachio/mustachi-game-context'
-import { testLevelOne } from '@/game-code/mustachio/levels/test-levels/test-level-one'
+import { testLevelWinGame } from '@/game-code/mustachio/levels/test-levels/win-game'
 
 export const Route = createFileRoute('/mustachio')({
   component: MustachioGame,
@@ -13,7 +13,7 @@ function MustachioGame() {
   useEffect(() => {
     if (!gc) {
       gc = new MustachioGameContext()
-      gc.restart(testLevelOne)
+      gc.restart(testLevelWinGame)
     }
   }, [])
 

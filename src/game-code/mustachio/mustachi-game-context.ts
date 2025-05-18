@@ -5,11 +5,15 @@ import { ScoreDisplay } from './classes/game-objects/ui-objects/score-display'
 import { TimerDisplay } from './classes/game-objects/ui-objects/timer-display'
 
 export class MustachioGameContext extends GameContext {
+  protected readonly gameName = 'Mustachio'
+  protected readonly player: Mustachio
+
   constructor() {
     super()
 
     // Start mustachio with default position
-    this.setPlayer(new Mustachio(this, BLOCK_SIZE * 4, BLOCK_SIZE * 13))
+    this.player = new Mustachio(this, BLOCK_SIZE * 4, BLOCK_SIZE * 13)
+    this.addGameObject(this.player)
 
     // Add score and timer displays
     this.addUIObject(new ScoreDisplay(this, BLOCK_SIZE, BLOCK_SIZE))
