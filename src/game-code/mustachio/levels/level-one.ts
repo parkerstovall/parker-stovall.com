@@ -10,6 +10,12 @@ import { StacheStalker } from '../classes/game-objects/point-objects/enemies/sta
 export function levelOne(gameContext: GameContext) {
   gameContext.clearLevel()
 
+  sectionOne(gameContext)
+
+  gameContext.startMainLoop()
+}
+
+function sectionOne(gameContext: GameContext) {
   // Floor
   gameContext.addGameObject(
     new Floor(gameContext, {
@@ -48,7 +54,7 @@ export function levelOne(gameContext: GameContext) {
     new ItemBlock(gameContext, BLOCK_SIZE * 10, BLOCK_SIZE * 14, false, 'coin'),
   )
 
-  createPyramid(gameContext, 16, 16, 11)
+  createPyramid(gameContext, 16, 16, 12)
 
   gameContext.addGameObject(
     new Wall(gameContext, BLOCK_SIZE * 39, BLOCK_SIZE * 16),
@@ -61,6 +67,4 @@ export function levelOne(gameContext: GameContext) {
   gameContext.addGameObject(
     new StacheStalker(gameContext, BLOCK_SIZE * 37.5, BLOCK_SIZE * 14),
   )
-
-  gameContext.startMainLoop()
 }
