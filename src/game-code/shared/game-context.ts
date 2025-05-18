@@ -8,7 +8,6 @@ import { Player } from './player'
 import { RotatingGameObject } from './game-objects/rotating-game-object'
 import { direction, type collision } from './types'
 import { UpdatingGameObject } from './game-objects/updating-game-object'
-import { Enemy } from '../mustachio/classes/game-objects/point-objects/enemies/enemy'
 
 export class GameContext {
   score: number = 0
@@ -104,7 +103,9 @@ export class GameContext {
     this.stopMainLoop()
 
     for (const gameObject of this.gameObjects) {
-      if (gameObject instanceof Enemy) {
+      // JS doesn't support interfaces
+      // so we have to check if the object has a dispose method
+      if ('dispose' in gameObject && typeof gameObject.dispose === 'function') {
         gameObject.dispose()
       }
     }
@@ -194,9 +195,13 @@ export class GameContext {
       gameObjectsInUpdateArea,
     )
 
+    if (this.player?.isDead) {
+      this.player.update([])
+    }
+
     // Update the game objects in the game area
     for (const gameObject of gameObjectsInUpdateArea) {
-      if (gameObject instanceof UpdatingGameObject) {
+      if (!this.player?.isDead && gameObject instanceof UpdatingGameObject) {
         const collisions = gameObjectCollisions.get(gameObject.objectId)
         gameObject.update(collisions ?? [])
       }
