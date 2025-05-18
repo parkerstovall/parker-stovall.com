@@ -12,11 +12,12 @@ export class StacheSeed extends Enemy {
   readonly pointValue: number = 100
   inPipe: boolean = false
 
-  private direction: direction = direction.UP
+  private direction: direction
   private readonly parent: GameObject
   private readonly waitTime: number = 2500
+  private readonly reversed: boolean
 
-  constructor(gameContext: GameContext, parent: GameObject) {
+  constructor(gameContext: GameContext, parent: GameObject, reversed: boolean) {
     const rect: rectangle = {
       x: parent.rect.x + BLOCK_SIZE / 2,
       y: parent.rect.y + BLOCK_SIZE / 2,
@@ -26,9 +27,19 @@ export class StacheSeed extends Enemy {
 
     super(gameContext, rect)
 
+    this.reversed = reversed
     this.parent = parent
     this.speedY = 0.5
-    this.imageSources.push('Images/stacheSeed1.png', 'Images/stacheSeed2.png')
+    if (reversed) {
+      this.direction = direction.DOWN
+      this.imageSources.push(
+        'Images/stacheSeedReversed1.png',
+        'Images/stacheSeedReversed.png',
+      )
+    } else {
+      this.direction = direction.UP
+      this.imageSources.push('Images/stacheSeed1.png', 'Images/stacheSeed2.png')
+    }
   }
 
   // collisions with this enemy are handled by the player class
@@ -39,8 +50,12 @@ export class StacheSeed extends Enemy {
 
       if (this.rect.y + this.rect.height < this.parent.rect.y) {
         this.direction = direction.NONE
+        if (this.reversed) {
+          this.inPipe = true
+        }
 
         setTimeout(() => {
+          this.inPipe = false
           this.direction = direction.DOWN
         }, this.waitTime)
       }
@@ -49,7 +64,9 @@ export class StacheSeed extends Enemy {
 
       if (this.rect.y > this.parent.rect.y) {
         this.direction = direction.NONE
-        this.inPipe = true
+        if (!this.reversed) {
+          this.inPipe = true
+        }
 
         setTimeout(() => {
           this.inPipe = false
