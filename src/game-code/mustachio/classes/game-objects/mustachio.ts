@@ -19,6 +19,7 @@ import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-blockS/p
 import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-block'
 import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
 import { Floor } from './set-pieces/obstacles/floor'
+import { UpdatingGameObject } from '@/game-code/shared/game-objects/updating-game-object'
 
 export class Mustachio extends Player {
   private readonly image = new Image()
@@ -160,6 +161,13 @@ export class Mustachio extends Player {
   }
 
   protected handleCollision(collision: collision) {
+    if (
+      collision.gameObject instanceof UpdatingGameObject &&
+      !collision.gameObject.acceptsCollision
+    ) {
+      return
+    }
+
     this.handleCollisionGameObject(collision)
     this.handleCollisionDirection(collision)
   }

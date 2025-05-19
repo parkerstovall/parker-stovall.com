@@ -54,9 +54,17 @@ export abstract class GameContext {
   }
 
   setPlayerLocation(x: number, y: number) {
-    if (this.player) {
+    this.player.rect.y = y
+
+    if (this.isStatic) {
       this.player.rect.x = x
-      this.player.rect.y = y
+    } else {
+      for (const gameObject of this.gameObjects) {
+        if (!(gameObject instanceof Player)) {
+          gameObject.rect.x -= x
+          console.log(gameObject.rect.x)
+        }
+      }
     }
   }
 
@@ -105,10 +113,7 @@ export abstract class GameContext {
     }
 
     this.gameObjects.splice(0, this.gameObjects.length)
-
-    if (this.player) {
-      this.addGameObject(this.player)
-    }
+    this.addGameObject(this.player)
   }
 
   setStatic(isStatic: boolean) {
@@ -191,7 +196,7 @@ export abstract class GameContext {
       gameObjectsInUpdateArea,
     )
 
-    if (this.gameOver && this.player) {
+    if (this.gameOver) {
       this.player.update([])
     }
 
@@ -210,7 +215,7 @@ export abstract class GameContext {
       uiObject.draw(this.uiContext)
     }
 
-    const canMove = this.player?.canMove(this.currentDir)
+    const canMove = this.player.canMove(this.currentDir)
     if (!canMove) {
       return
     }
@@ -232,7 +237,7 @@ export abstract class GameContext {
           }
         }
       }
-    } else if (this.player) {
+    } else {
       if (this.currentDir === direction.RIGHT) {
         this.player.rect.x -= this.xSpeed
       } else if (this.currentDir === direction.LEFT) {
@@ -265,14 +270,14 @@ export abstract class GameContext {
     }
 
     this.pressedKeys.push(key)
-    this.player?.customKeyDown(key)
+    this.player.customKeyDown(key)
 
     if (key === 'arrowleft' || key === 'a') {
       this.currentDir = direction.RIGHT
     } else if (key === 'arrowright' || key === 'd') {
       this.currentDir = direction.LEFT
     } else if (key === 'arrowup' || key === 'w') {
-      this.player?.jump()
+      this.player.jump()
     } else if (key === 'shift') {
       this.xSpeed = 3
     }
@@ -290,7 +295,7 @@ export abstract class GameContext {
       1,
     )
 
-    this.player?.customKeyUp(key)
+    this.player.customKeyUp(key)
 
     if (
       key === 'arrowleft' ||
@@ -337,7 +342,7 @@ export abstract class GameContext {
       }
 
       this.isStatic = true
-      this.player?.playerKill()
+      this.player.playerKill()
     }
   }
 

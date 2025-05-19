@@ -1,9 +1,9 @@
 import type { collision } from '@/game-code/shared/types'
 import type { Brick } from '../set-pieces/obstacles/blocks/punchable-blockS/brick'
 import type { GameContext } from '@/game-code/shared/game-context'
-import { MovingGameObject } from '@/game-code/shared/game-objects/moving-game-object'
+import { Projectile } from './projectile'
 
-export class BrickDebris extends MovingGameObject {
+export class BrickDebris extends Projectile {
   readonly acceptsCollision = false
 
   constructor(gameContext: GameContext, parent: Brick) {
