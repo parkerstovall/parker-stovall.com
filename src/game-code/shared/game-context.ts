@@ -8,8 +8,9 @@ import { Player } from './player'
 import { RotatingGameObject } from './game-objects/rotating-game-object'
 import { direction, type collision } from './types'
 import { UpdatingGameObject } from './game-objects/updating-game-object'
+import { WinDisplay } from '../mustachio/classes/game-objects/ui-objects/win-display'
 
-export class GameContext {
+export abstract class GameContext {
   score: number = 0
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
@@ -24,14 +25,16 @@ export class GameContext {
   private mainLoop: number | null = null
   private timerLoop: number | null = null
   private isStatic: boolean = false
+  private gameOver: boolean = false
 
   private readonly pressedKeys: string[] = []
   private readonly gameObjects: GameObject[] = []
   private readonly uiObjects: GameObject[] = []
   private readonly contextId: number = Math.floor(Math.random() * 1000000)
+  protected abstract readonly gameName: string
 
   // Temporary player object until initialized
-  private player: Player | undefined
+  protected abstract readonly player: Player
 
   constructor() {
     let result = this.setupCanvas('canvas#game-layer')
@@ -46,23 +49,22 @@ export class GameContext {
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
   }
 
-  protected setPlayer(player: Player) {
-    if (this.player) {
-      return
-    }
-
-    this.player = player
-    this.addGameObject(player, true)
-  }
-
   getPlayer() {
     return this.player
   }
 
   setPlayerLocation(x: number, y: number) {
-    if (this.player) {
+    this.player.rect.y = y
+
+    if (this.isStatic) {
       this.player.rect.x = x
-      this.player.rect.y = y
+    } else {
+      for (const gameObject of this.gameObjects) {
+        if (!(gameObject instanceof Player)) {
+          gameObject.rect.x -= x
+          console.log(gameObject.rect.x)
+        }
+      }
     }
   }
 
@@ -111,14 +113,17 @@ export class GameContext {
     }
 
     this.gameObjects.splice(0, this.gameObjects.length)
-
-    if (this.player) {
-      this.addGameObject(this.player)
-    }
+    this.addGameObject(this.player)
   }
 
   setStatic(isStatic: boolean) {
     this.isStatic = isStatic
+  }
+
+  setGameOver() {
+    this.currentDir = direction.NONE
+    this.gameOver = true
+    this.stopTimer()
   }
 
   // Assign a unique ID to the game object and add it to the gameObjects array
@@ -126,10 +131,6 @@ export class GameContext {
     const gameObjectInList = this.gameObjects.find(
       (go) => go.objectId === gameObject.objectId,
     )
-
-    if (gameObject instanceof Player) {
-      console.log(gameObjectInList)
-    }
 
     if (gameObjectInList) {
       // If the game object is already in the list, we don't need to add it again
@@ -195,13 +196,13 @@ export class GameContext {
       gameObjectsInUpdateArea,
     )
 
-    if (this.player?.isDead) {
+    if (this.gameOver) {
       this.player.update([])
     }
 
     // Update the game objects in the game area
     for (const gameObject of gameObjectsInUpdateArea) {
-      if (!this.player?.isDead && gameObject instanceof UpdatingGameObject) {
+      if (!this.gameOver && gameObject instanceof UpdatingGameObject) {
         const collisions = gameObjectCollisions.get(gameObject.objectId)
         gameObject.update(collisions ?? [])
       }
@@ -214,8 +215,12 @@ export class GameContext {
       uiObject.draw(this.uiContext)
     }
 
-    const canMove = this.player?.canMove(this.currentDir)
+    const canMove = this.player.canMove(this.currentDir)
     if (!canMove) {
+      return
+    }
+
+    if (this.gameOver) {
       return
     }
 
@@ -232,7 +237,7 @@ export class GameContext {
           }
         }
       }
-    } else if (this.player) {
+    } else {
       if (this.currentDir === direction.RIGHT) {
         this.player.rect.x -= this.xSpeed
       } else if (this.currentDir === direction.LEFT) {
@@ -242,7 +247,7 @@ export class GameContext {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    if (event.repeat) {
+    if (this.gameOver || event.repeat) {
       return
     }
 
@@ -265,20 +270,24 @@ export class GameContext {
     }
 
     this.pressedKeys.push(key)
-    this.player?.customKeyDown(key)
+    this.player.customKeyDown(key)
 
     if (key === 'arrowleft' || key === 'a') {
       this.currentDir = direction.RIGHT
     } else if (key === 'arrowright' || key === 'd') {
       this.currentDir = direction.LEFT
     } else if (key === 'arrowup' || key === 'w') {
-      this.player?.jump()
+      this.player.jump()
     } else if (key === 'shift') {
       this.xSpeed = 3
     }
   }
 
   private onKeyUp(event: KeyboardEvent) {
+    if (this.gameOver) {
+      return
+    }
+
     const key = event.key.toLocaleLowerCase()
 
     this.pressedKeys.splice(
@@ -286,7 +295,7 @@ export class GameContext {
       1,
     )
 
-    this.player?.customKeyUp(key)
+    this.player.customKeyUp(key)
 
     if (
       key === 'arrowleft' ||
@@ -333,7 +342,7 @@ export class GameContext {
       }
 
       this.isStatic = true
-      this.player?.playerKill()
+      this.player.playerKill()
     }
   }
 
@@ -354,6 +363,13 @@ export class GameContext {
   private getGameObjectsWithCollisions(gameObjects: GameObject[]) {
     const collisons: Map<number, collision[]> = new Map()
     for (const gameObject of gameObjects) {
+      if (
+        gameObject instanceof UpdatingGameObject &&
+        !gameObject.acceptsCollision
+      ) {
+        continue
+      }
+
       this.getCollisionForGameObject(gameObject, gameObjects, collisons)
     }
 
@@ -386,10 +402,14 @@ export class GameContext {
       // we don't need to check for collisions again
       const goCollisions = collisions.get(gameObject.objectId)
       if (goCollisions) {
-        for (const collision of goCollisions) {
-          if (collision.gameObject.objectId === otherGameObject.objectId) {
-            return
-          }
+        const existingCollision = goCollisions.find(
+          (collision) =>
+            collision.gameObject.objectId === otherGameObject.objectId,
+        )
+
+        if (existingCollision) {
+          // If the collision already exists, we don't need to check for collisions again
+          return
         }
       }
     }
@@ -416,12 +436,16 @@ export class GameContext {
       if (goCollisions) {
         goCollisions.push(collision)
         collisions.set(gameObject.objectId, goCollisions)
+      } else {
+        collisions.set(gameObject.objectId, [collision])
       }
 
       const otherGoCollisions = collisions.get(otherGameObject.objectId)
       if (otherGoCollisions) {
         otherGoCollisions.push(reversedCollision)
         collisions.set(otherGameObject.objectId, otherGoCollisions)
+      } else {
+        collisions.set(otherGameObject.objectId, [reversedCollision])
       }
     }
   }
@@ -450,5 +474,9 @@ export class GameContext {
     }
 
     return collisionDirection
+  }
+
+  win() {
+    this.addUIObject(new WinDisplay(this))
   }
 }

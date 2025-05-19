@@ -1,12 +1,12 @@
-import type { GameContext } from '../../shared/game-context'
-import { Floor } from '../classes/game-objects/set-pieces/obstacles/floor'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { FallingFloor } from '../classes/game-objects/set-pieces/obstacles/blocks/falling-floor'
-import { StacheCannon } from '../classes/game-objects/set-pieces/obstacles/blocks/stache-cannon'
+import type { GameContext } from '@/game-code/shared/game-context'
 import { direction } from '@/game-code/shared/types'
-import { FireCrossBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/fire-cross-block'
+import { FallingFloor } from '../../classes/game-objects/set-pieces/obstacles/blocks/falling-floor'
+import { FireCrossBlock } from '../../classes/game-objects/set-pieces/obstacles/blocks/fire-cross-block'
+import { StacheCannon } from '../../classes/game-objects/set-pieces/obstacles/blocks/stache-cannon'
+import { Floor } from '../../classes/game-objects/set-pieces/obstacles/floor'
 
-export function testLevelThree(gameContext: GameContext) {
+export function testLevelCannonAndCross(gameContext: GameContext) {
   gameContext.clearLevel()
 
   gameContext.addGameObject(

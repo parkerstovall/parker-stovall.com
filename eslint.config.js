@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import { defineConfig } from 'eslint/config'
 import pluginPrettier from 'eslint-plugin-prettier/recommended'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 export default defineConfig([
   {
@@ -13,7 +14,7 @@ export default defineConfig([
       },
     },
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-    plugins: { js, pluginReact },
+    plugins: { js, pluginReact, 'unused-imports': unusedImports },
     extends: ['js/recommended'],
   },
   {
@@ -27,6 +28,7 @@ export default defineConfig([
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
+      'unused-imports/no-unused-imports': 'warn',
     },
   },
 ])

@@ -1,11 +1,11 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import { CaveWall } from '../classes/game-objects/set-pieces/obstacles/blocks/cave-wall'
+import { CaveWall } from '../../classes/game-objects/set-pieces/obstacles/blocks/cave-wall'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
-import { Coin } from '../classes/game-objects/point-objects/items/coin'
-import { Pipe } from '../classes/game-objects/set-pieces/obstacles/pipe'
-import { WarpPipe } from '../classes/game-objects/set-pieces/obstacles/warp-pipe'
-import { testLevelTwo } from './test-level-two'
-import { ItemBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/punchable-block/item-block'
+import { Coin } from '../../classes/game-objects/point-objects/items/coin'
+import { Pipe } from '../../classes/game-objects/set-pieces/obstacles/pipe'
+import { WarpPipe } from '../../classes/game-objects/set-pieces/obstacles/warp-pipe'
+import { testLevelCaveAndEnemies } from '../test-levels/caves-and-enemies'
+import { ItemBlock } from '../../classes/game-objects/set-pieces/obstacles/blocks/punchable-blockS/item-block'
 
 export function caveOne(
   gameContext: GameContext,
@@ -57,7 +57,7 @@ export function caveOne(
 
   gameContext.addGameObject(
     new WarpPipe(gameContext, BLOCK_SIZE * 26, BLOCK_SIZE * 14, (gc) => {
-      testLevelTwo(gc, [...previousLevels, 'caveOne'])
+      testLevelCaveAndEnemies(gc, [...previousLevels, 'caveOne'])
     }),
   )
 

@@ -15,24 +15,21 @@ import { direction, type collision } from '@/game-code/shared/types'
 import { StacheBall } from './projectiles/stache-ball'
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { FireBar } from './projectiles/enemy-projectiles/fire-bar'
-import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-block/punchable-block'
-import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-block/item-block'
+import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-blockS/punchable-block'
+import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-block'
+import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
+import { Floor } from './set-pieces/obstacles/floor'
+import { UpdatingGameObject } from '@/game-code/shared/game-objects/updating-game-object'
 
 export class Mustachio extends Player {
-  private readonly imageStraight = new Image()
-  private readonly imageLeft = new Image()
-  private readonly imageRight = new Image()
-  private readonly imageStraightFire = new Image()
-  private readonly imageLeftFire = new Image()
-  private readonly imageRightFire = new Image()
+  private readonly image = new Image()
   private isFire = false
   private isBig = false
   private hitTimer: number | null = null
   private warpPipe: WarpPipe | null = null
   private canFire = true
-  private deathAnimationTimeout: number | null = null
   private crouched = false
-  private goingDownPipe = false
+  private ignoreUpdate = false
 
   constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, {
@@ -42,41 +39,12 @@ export class Mustachio extends Player {
       height: BLOCK_SIZE * 0.66,
     })
 
-    this.imageStraight.src = 'Images/Mustachio.png'
-    this.imageLeft.src = 'Images/Mustachio_FacingLeft.png'
-    this.imageRight.src = 'Images/Mustachio_FacingRight.png'
-    this.imageStraightFire.src = 'Images/Mustachio_Fire.png'
-    this.imageLeftFire.src = 'Images/Mustachio_FacingLeft_Fire.png'
-    this.imageRightFire.src = 'Images/Mustachio_FacingRight_Fire.png'
+    this.image.src = 'Images/Mustachio.png'
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    let image: HTMLImageElement
-
-    if (!this.isDead) {
-      if (!this.isFire) {
-        if (this.gameContext.currentDir === direction.LEFT) {
-          image = this.imageRight
-        } else if (this.gameContext.currentDir === direction.RIGHT) {
-          image = this.imageLeft
-        } else {
-          image = this.imageStraight
-        }
-      } else {
-        if (this.gameContext.currentDir === direction.LEFT) {
-          image = this.imageRightFire
-        } else if (this.gameContext.currentDir === direction.RIGHT) {
-          image = this.imageLeftFire
-        } else {
-          image = this.imageStraightFire
-        }
-      }
-    } else {
-      image = this.imageStraight
-    }
-
     ctx.drawImage(
-      image,
+      this.image,
       this.rect.x,
       this.rect.y,
       this.rect.width,
@@ -85,17 +53,8 @@ export class Mustachio extends Player {
   }
 
   update(collisions: collision[]): void {
-    if (this.goingDownPipe) {
+    if (this.ignoreUpdate) {
       return // Let the goDownPipe method handle the update
-    }
-
-    if (this.isDead) {
-      if (this.deathAnimationTimeout === null) {
-        this.rect.y += this.speedY
-        this.speedY += 0.06
-      }
-
-      return
     }
 
     this.blockedDirHor = direction.NONE
@@ -114,7 +73,7 @@ export class Mustachio extends Player {
       return
     }
 
-    this.goingDownPipe = true
+    this.ignoreUpdate = true
     this.rect.x =
       this.warpPipe.rect.x + this.warpPipe.rect.width / 2 - this.rect.width / 2
     this.rect.y = this.warpPipe.rect.y - this.rect.height
@@ -137,7 +96,7 @@ export class Mustachio extends Player {
 
         this.warpPipe.enter()
         this.warpPipe = null
-        this.goingDownPipe = false
+        this.ignoreUpdate = false
       }
     }
 
@@ -202,6 +161,13 @@ export class Mustachio extends Player {
   }
 
   protected handleCollision(collision: collision) {
+    if (
+      collision.gameObject instanceof UpdatingGameObject &&
+      !collision.gameObject.acceptsCollision
+    ) {
+      return
+    }
+
     this.handleCollisionGameObject(collision)
     this.handleCollisionDirection(collision)
   }
@@ -218,10 +184,27 @@ export class Mustachio extends Player {
       return
     }
 
-    if (collision.collisionDirection === direction.DOWN) {
+    if (collision.gameObject instanceof Floor) {
+      if (this.rect.x + this.rect.width < collision.gameObject.rect.x) {
+        collision.collisionDirection = direction.LEFT
+      } else if (
+        this.rect.x >
+        collision.gameObject.rect.x + collision.gameObject.rect.width
+      ) {
+        collision.collisionDirection = direction.RIGHT
+      } else {
+        collision.collisionDirection = direction.DOWN
+      }
+    }
+
+    const cRect = collision.gameObject.rect
+    let allowVert = this.rect.x + this.rect.width > cRect.x + 10
+    allowVert = allowVert && this.rect.x < cRect.x + cRect.width - 10
+
+    if (allowVert && collision.collisionDirection === direction.DOWN) {
       this.blockedDirVert = direction.DOWN
       this.landOnGameObject(collision.gameObject)
-    } else if (collision.collisionDirection === direction.UP) {
+    } else if (allowVert && collision.collisionDirection === direction.UP) {
       this.speedY = 1
       this.rect.y =
         collision.gameObject.rect.y + collision.gameObject.rect.height - 1
@@ -304,8 +287,7 @@ export class Mustachio extends Player {
   private handleCollisionSetPiece(dir: direction, setPiece: SetPiece) {
     // The Flag is the goal
     if (setPiece instanceof Flag) {
-      // win(); // TODO: Implement win
-      console.log('You win!')
+      this.winGame(setPiece)
       return
     }
 
@@ -318,7 +300,10 @@ export class Mustachio extends Player {
       dir === direction.UP &&
       setPiece instanceof PunchableBlock
     ) {
-      setPiece.punch()
+      if (!(setPiece instanceof Brick) || this.isBig) {
+        setPiece.punch()
+      }
+
       this.speedY = 1
     }
   }
@@ -370,15 +355,23 @@ export class Mustachio extends Player {
   }
 
   playerKill() {
-    this.isDead = true
-    this.gameContext.stopTimer()
-    this.deathAnimationTimeout = setTimeout(() => {
-      this.deathAnimationTimeout = null
+    this.gameContext.setGameOver()
+    this.ignoreUpdate = true
+    console.log('You are dead!')
+
+    setTimeout(() => {
       this.speedY = -5
-      if (this.rect.y > this.gameContext.gameArea.height) {
-        this.gameContext.removeGameObject(this)
-        this.gameContext.stopMainLoop()
-      }
+
+      const deathAnimationTimeout = setInterval(() => {
+        this.rect.y += this.speedY
+        this.speedY += 0.06
+
+        if (this.rect.y > this.gameContext.gameArea.height) {
+          clearInterval(deathAnimationTimeout)
+          this.gameContext.removeGameObject(this)
+          this.gameContext.stopMainLoop()
+        }
+      })
     }, 1000)
   }
 
@@ -409,6 +402,18 @@ export class Mustachio extends Player {
       } else {
         this.toggleCrouch(true)
       }
+    } else if (key === 'arrowleft' || key === 'a') {
+      if (this.isFire) {
+        this.image.src = 'Images/Mustachio_FacingLeft_Fire.png'
+      } else {
+        this.image.src = 'Images/Mustachio_FacingLeft.png'
+      }
+    } else if (key === 'arrowright' || key === 'd') {
+      if (this.isFire) {
+        this.image.src = 'Images/Mustachio_FacingRight_Fire.png'
+      } else {
+        this.image.src = 'Images/Mustachio_FacingRight.png'
+      }
     }
   }
 
@@ -416,5 +421,32 @@ export class Mustachio extends Player {
     if (key === 'arrowdown' || key === 's') {
       this.toggleCrouch(false)
     }
+  }
+
+  winGame(flag: Flag) {
+    this.ignoreUpdate = true
+    this.gameContext.setGameOver()
+    this.image.src = 'Images/Mustachio_FacingRight.png'
+
+    const targetX = flag.rect.x + flag.rect.width / 2 - this.rect.width / 1.5
+
+    const winAnimation = setInterval(() => {
+      if (this.rect.y + this.rect.height < BLOCK_SIZE * 17) {
+        this.rect.y += this.speedY
+        this.speedY += this.gameContext.gravity
+      }
+
+      if (this.rect.x > targetX) {
+        clearInterval(winAnimation)
+        this.image.src = 'Images/Mustachio.png'
+        setTimeout(() => {
+          flag.closeDoor()
+          this.gameContext.removeGameObject(this)
+          this.gameContext.win()
+        }, 1000)
+      }
+
+      this.rect.x += 1.5
+    }, 5)
   }
 }
