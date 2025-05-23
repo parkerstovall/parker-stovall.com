@@ -19,7 +19,6 @@ import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-blockS/p
 import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-block'
 import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
 import { Floor } from './set-pieces/obstacles/floor'
-import { UpdatingGameObject } from '@/game-code/shared/game-objects/updating-game-object'
 
 export class Mustachio extends Player {
   private readonly image = new Image()
@@ -103,6 +102,11 @@ export class Mustachio extends Player {
     downAnimationID = setInterval(downAnimation, 50)
   }
 
+  reset(x?: number, y?: number) {
+    this.rect.x = x ?? BLOCK_SIZE * 4.5
+    this.rect.y = y ?? BLOCK_SIZE * 5
+  }
+
   private changeSize(isBig: boolean) {
     if (this.isBig === isBig) {
       return
@@ -161,13 +165,6 @@ export class Mustachio extends Player {
   }
 
   protected handleCollision(collision: collision) {
-    if (
-      collision.gameObject instanceof UpdatingGameObject &&
-      !collision.gameObject.acceptsCollision
-    ) {
-      return
-    }
-
     this.handleCollisionGameObject(collision)
     this.handleCollisionDirection(collision)
   }
@@ -357,7 +354,6 @@ export class Mustachio extends Player {
   playerKill() {
     this.gameContext.setGameOver()
     this.ignoreUpdate = true
-    console.log('You are dead!')
 
     setTimeout(() => {
       this.speedY = -5

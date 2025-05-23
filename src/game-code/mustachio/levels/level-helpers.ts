@@ -3,8 +3,9 @@ import { Wall } from '../classes/game-objects/set-pieces/obstacles/blocks/wall'
 import type { GameContext } from '@/game-code/shared/game-context'
 import { Coin } from '../classes/game-objects/point-objects/items/coin'
 import { Brick } from '../classes/game-objects/set-pieces/obstacles/blocks/punchable-blockS/brick'
+import { FallingFloor } from '../classes/game-objects/set-pieces/obstacles/blocks/falling-floor'
 
-export type BlockType = 'wall' | 'brick' | 'coin'
+export type BlockType = 'wall' | 'brick' | 'coin' | 'falling-floor'
 
 export function createBlockWall(
   gameContext: GameContext,
@@ -24,6 +25,8 @@ export function createBlockWall(
         gameContext.addGameObject(new Brick(gameContext, x, y))
       } else if (blockType === 'coin') {
         gameContext.addGameObject(new Coin(gameContext, x, y))
+      } else if (blockType === 'falling-floor') {
+        gameContext.addGameObject(new FallingFloor(gameContext, x, y))
       }
     }
   }

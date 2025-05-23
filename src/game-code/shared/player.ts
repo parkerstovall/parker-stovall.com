@@ -63,4 +63,6 @@ export abstract class Player extends MovingGameObject {
   abstract customKeyDown(key: string): void
 
   abstract customKeyUp(key: string): void
+
+  abstract reset(x?: number, y?: number): void
 }
