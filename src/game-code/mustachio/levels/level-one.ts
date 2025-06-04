@@ -37,7 +37,7 @@ export function levelOne(
   if (previousLevels[0] === 'cave-one') {
     gameContext.setPlayerLocation(BLOCK_SIZE * 69, BLOCK_SIZE * 8)
   }
-  
+
   gameContext.startMainLoop()
 }
 
@@ -365,10 +365,13 @@ function sectionSeven(gameContext: GameContext) {
   createBlockWall(gameContext, 189, 6, 1, 1, 'falling-floor')
   createBlockWall(gameContext, 193, 3, 1, 1, 'falling-floor')
   createBlockWall(gameContext, 194, 2, 1, 15, 'falling-floor')
-  
+
   createBlockSquare(gameContext, 198, 7, 10, 6, 'falling-floor')
   createBlockWall(gameContext, 199, 8, 8, 4, 'coin')
 
   createBlockWall(gameContext, 208, 17, 32, 1, 'wall')
-  gameContext.addGameObject(new Flag(gameContext, BLOCK_SIZE * 220, BLOCK_SIZE * 9), true)
+  gameContext.addGameObject(
+    new Flag(gameContext, BLOCK_SIZE * 220, BLOCK_SIZE * 9),
+    true,
+  )
 }
