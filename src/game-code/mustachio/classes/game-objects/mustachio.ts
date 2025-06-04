@@ -1,6 +1,5 @@
 import type { GameContext } from '../../../shared/game-context'
 import { Enemy } from './point-objects/enemies/enemy'
-import { StacheSeed } from './point-objects/enemies/stache-seed'
 import { Flag } from './set-pieces/flag'
 import { FireStache } from './point-objects/items/fire-stache'
 import { Item } from './point-objects/items/item'
@@ -19,6 +18,7 @@ import { PunchableBlock } from './set-pieces/obstacles/blocks/punchable-blockS/p
 import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-block'
 import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
 import { Floor } from './set-pieces/obstacles/floor'
+import { StacheSeed } from './point-objects/enemies/stache-seed'
 
 export class Mustachio extends Player {
   private readonly image = new Image()
@@ -28,7 +28,8 @@ export class Mustachio extends Player {
   private warpPipe: WarpPipe | null = null
   private canFire = true
   private crouched = false
-  private ignoreUpdate = false
+
+  protected ignoreUpdate = false
 
   constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, {
@@ -266,10 +267,11 @@ export class Mustachio extends Player {
   }
 
   private handleCollisionEnemy(dir: direction, enemy: Enemy) {
-    if (
-      dir !== direction.DOWN &&
-      (!(enemy instanceof StacheSeed) || !enemy.inPipe)
-    ) {
+    if (enemy instanceof StacheSeed) {
+      if (!enemy.isDead && !enemy.inPipe) {
+        this.playerHit()
+      }
+    } else if (dir !== direction.DOWN) {
       if (!enemy.isDead) {
         this.playerHit()
       }
@@ -354,6 +356,7 @@ export class Mustachio extends Player {
   playerKill() {
     this.gameContext.setGameOver()
     this.ignoreUpdate = true
+    this.image.src = 'Images/Mustachio.png'
 
     setTimeout(() => {
       this.speedY = -5
@@ -394,6 +397,7 @@ export class Mustachio extends Player {
       this.gameContext.addGameObject(fire)
     } else if (key === 'arrowdown' || key === 's') {
       if (this.warpPipe) {
+        this.image.src = 'Images/Mustachio.png'
         this.goDownPipe()
       } else {
         this.toggleCrouch(true)

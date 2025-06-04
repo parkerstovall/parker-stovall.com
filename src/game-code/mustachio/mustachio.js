@@ -4201,7 +4201,7 @@ function killMethod() {
       clearInterval(shrinkID)
       shrinkID = setInterval(shrink, 115)
     } else {
-      myGameArea.stop()
+      //myGameArea.stop()
       killPlayerID = setInterval(killMustachio, 5)
     }
   }

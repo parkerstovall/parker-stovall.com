@@ -4,6 +4,8 @@ import { MovingGameObject } from './game-objects/moving-game-object'
 import { direction, type rectangle } from './types'
 
 export abstract class Player extends MovingGameObject {
+  protected ignoreUpdate = false
+
   isDead: boolean = false
   blockedDirHor: direction = direction.NONE
   blockedDirVert: direction = direction.NONE
@@ -33,6 +35,7 @@ export abstract class Player extends MovingGameObject {
 
   canMove(dir: direction) {
     return (
+      !this.ignoreUpdate &&
       !this.isDead &&
       (this.blockedDirHor === direction.NONE || this.blockedDirHor !== dir)
     )

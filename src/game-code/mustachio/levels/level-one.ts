@@ -17,6 +17,8 @@ import { StacheCannon } from '../classes/game-objects/set-pieces/obstacles/block
 import { direction } from '@/game-code/shared/types'
 import { FireCrossBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/fire-cross-block'
 import { FireBarBlock } from '../classes/game-objects/set-pieces/obstacles/blocks/fire-bar-block'
+import { StacheStreaker } from '../classes/game-objects/point-objects/enemies/stache-streaker'
+import { Flag } from '../classes/game-objects/set-pieces/flag'
 
 export function levelOne(
   gameContext: GameContext,
@@ -29,10 +31,10 @@ export function levelOne(
   sectionThree(gameContext, previousLevels)
   sectionFour(gameContext)
   sectionFive(gameContext)
+  sectionSix(gameContext)
+  sectionSeven(gameContext)
 
-  if (previousLevels.length === 0) {
-    gameContext.setPlayerLocation(BLOCK_SIZE * 135, BLOCK_SIZE * 16)
-  } else if (previousLevels[0] === 'cave-one') {
+  if (previousLevels[0] === 'cave-one') {
     gameContext.setPlayerLocation(BLOCK_SIZE * 69, BLOCK_SIZE * 8)
   }
 
@@ -237,7 +239,7 @@ function sectionFive(gameContext: GameContext) {
 
   createBlockWall(gameContext, 129, 13, 1, 4, 'coin')
   createBlockWall(gameContext, 129, 17, 1, 1, 'wall')
-  createBlockWall(gameContext, 133, 17, 10, 1, 'wall')
+  createBlockWall(gameContext, 133, 17, 15, 1, 'wall')
   createBlockWall(gameContext, 132, 0, 1, 14, 'wall')
   createBlockWall(gameContext, 137, 5, 1, 12, 'wall')
 
@@ -289,4 +291,84 @@ function sectionFive(gameContext: GameContext) {
   gameContext.addGameObject(
     new StacheStalker(gameContext, BLOCK_SIZE * 140, BLOCK_SIZE * 12),
   )
+}
+
+function sectionSix(gameContext: GameContext) {
+  for (let i = 0; i < 5; i++) {
+    gameContext.addGameObject(
+      new StacheCannon(
+        gameContext,
+        BLOCK_SIZE * 143,
+        BLOCK_SIZE * (i * 3 + 2),
+        direction.RIGHT,
+      ),
+    )
+  }
+
+  createBlockWall(gameContext, 150, 3, 1, 1, 'wall')
+  createBlockWall(gameContext, 150, 6, 1, 1, 'wall')
+  createBlockWall(gameContext, 150, 9, 1, 1, 'wall')
+  createBlockWall(gameContext, 150, 12, 1, 1, 'wall')
+  createBlockWall(gameContext, 150, 15, 1, 1, 'wall')
+
+  createBlockWall(gameContext, 153, 4, 1, 1, 'wall')
+  createBlockWall(gameContext, 153, 7, 1, 1, 'wall')
+  createBlockWall(gameContext, 153, 10, 1, 1, 'wall')
+  createBlockWall(gameContext, 153, 13, 1, 1, 'wall')
+  createBlockWall(gameContext, 153, 16, 1, 1, 'wall')
+
+  createBlockWall(gameContext, 156, 2, 1, 1, 'wall')
+  createBlockWall(gameContext, 156, 5, 1, 1, 'wall')
+  createBlockWall(gameContext, 156, 8, 1, 1, 'wall')
+  createBlockWall(gameContext, 156, 11, 1, 1, 'wall')
+  createBlockWall(gameContext, 156, 14, 1, 1, 'wall')
+
+  createBlockWall(gameContext, 159, 3, 1, 1, 'wall')
+  createBlockWall(gameContext, 159, 6, 1, 1, 'wall')
+  createBlockWall(gameContext, 159, 9, 1, 1, 'wall')
+  createBlockWall(gameContext, 159, 12, 1, 1, 'wall')
+  createBlockWall(gameContext, 159, 15, 1, 1, 'wall')
+
+  gameContext.addGameObject(
+    new StacheStreaker(gameContext, BLOCK_SIZE * 155, 0),
+  )
+  const enemy = new StacheStreaker(gameContext, BLOCK_SIZE * 152, 0)
+  enemy.speedX *= -1
+  gameContext.addGameObject(enemy)
+
+  gameContext.addGameObject(
+    new Pipe(gameContext, {
+      x: BLOCK_SIZE * 162,
+      y: 0,
+      height: BLOCK_SIZE * 4,
+      hasStacheSeed: true,
+      reversed: true,
+    }),
+  )
+
+  gameContext.addGameObject(
+    new Pipe(gameContext, {
+      x: BLOCK_SIZE * 162,
+      y: BLOCK_SIZE * 10,
+      height: BLOCK_SIZE * 8,
+      hasStacheSeed: true,
+    }),
+  )
+}
+
+function sectionSeven(gameContext: GameContext) {
+  createBlockWall(gameContext, 168, 7, 2, 1, 'falling-floor')
+  createBlockWall(gameContext, 172, 4, 2, 1, 'falling-floor')
+  createBlockWall(gameContext, 184, 15, 2, 1, 'falling-floor')
+  createBlockWall(gameContext, 189, 12, 1, 1, 'falling-floor')
+  createBlockWall(gameContext, 193, 9, 1, 1, 'falling-floor')
+  createBlockWall(gameContext, 189, 6, 1, 1, 'falling-floor')
+  createBlockWall(gameContext, 193, 3, 1, 1, 'falling-floor')
+  createBlockWall(gameContext, 194, 2, 1, 15, 'falling-floor')
+  
+  createBlockSquare(gameContext, 198, 7, 10, 6, 'falling-floor')
+  createBlockWall(gameContext, 199, 8, 8, 4, 'coin')
+
+  createBlockWall(gameContext, 208, 17, 32, 1, 'wall')
+  gameContext.addGameObject(new Flag(gameContext, BLOCK_SIZE * 220, BLOCK_SIZE * 9), true)
 }
