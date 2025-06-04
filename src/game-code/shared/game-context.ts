@@ -54,15 +54,13 @@ export abstract class GameContext {
   }
 
   setPlayerLocation(x: number, y: number) {
-    this.player.rect.y = y
-
     if (this.isStatic) {
-      this.player.rect.x = x
+      this.player.reset(x, y)
     } else {
+      this.player.reset(undefined, y)
       for (const gameObject of this.gameObjects) {
         if (!(gameObject instanceof Player)) {
           gameObject.rect.x -= x
-          console.log(gameObject.rect.x)
         }
       }
     }
@@ -363,10 +361,7 @@ export abstract class GameContext {
   private getGameObjectsWithCollisions(gameObjects: GameObject[]) {
     const collisons: Map<number, collision[]> = new Map()
     for (const gameObject of gameObjects) {
-      if (
-        gameObject instanceof UpdatingGameObject &&
-        !gameObject.acceptsCollision
-      ) {
+      if (!gameObject.acceptsCollision) {
         continue
       }
 
@@ -382,6 +377,10 @@ export abstract class GameContext {
     collisons: Map<number, collision[]>,
   ) {
     for (const otherGameObject of gameObjects) {
+      if (!otherGameObject.acceptsCollision) {
+        continue
+      }
+
       this.getCollisionForGameObjects(gameObject, otherGameObject, collisons)
     }
   }

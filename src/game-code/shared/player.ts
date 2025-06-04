@@ -4,6 +4,8 @@ import { MovingGameObject } from './game-objects/moving-game-object'
 import { direction, type rectangle } from './types'
 
 export abstract class Player extends MovingGameObject {
+  protected ignoreUpdate = false
+
   isDead: boolean = false
   blockedDirHor: direction = direction.NONE
   blockedDirVert: direction = direction.NONE
@@ -33,6 +35,7 @@ export abstract class Player extends MovingGameObject {
 
   canMove(dir: direction) {
     return (
+      !this.ignoreUpdate &&
       !this.isDead &&
       (this.blockedDirHor === direction.NONE || this.blockedDirHor !== dir)
     )
@@ -63,4 +66,6 @@ export abstract class Player extends MovingGameObject {
   abstract customKeyDown(key: string): void
 
   abstract customKeyUp(key: string): void
+
+  abstract reset(x?: number, y?: number): void
 }

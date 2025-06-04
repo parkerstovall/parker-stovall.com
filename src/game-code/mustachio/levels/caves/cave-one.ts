@@ -3,9 +3,9 @@ import { CaveWall } from '../../classes/game-objects/set-pieces/obstacles/blocks
 import { BLOCK_SIZE } from '@/game-code/shared/constants'
 import { Coin } from '../../classes/game-objects/point-objects/items/coin'
 import { Pipe } from '../../classes/game-objects/set-pieces/obstacles/pipe'
-import { WarpPipe } from '../../classes/game-objects/set-pieces/obstacles/warp-pipe'
-import { testLevelCaveAndEnemies } from '../test-levels/caves-and-enemies'
 import { ItemBlock } from '../../classes/game-objects/set-pieces/obstacles/blocks/punchable-blockS/item-block'
+import { WarpPipe } from '../../classes/game-objects/set-pieces/obstacles/warp-pipe'
+import { levelOne } from '../level-one'
 
 export function caveOne(
   gameContext: GameContext,
@@ -17,9 +17,9 @@ export function caveOne(
   // Cave walls
   gameContext.addGameObject(
     new CaveWall(gameContext, {
-      x: -gameContext.gameArea.width,
+      x: 0,
       y: 0,
-      width: gameContext.gameArea.width + BLOCK_SIZE * 4,
+      width: BLOCK_SIZE * 4,
       height: gameContext.gameArea.height,
     }),
   )
@@ -28,7 +28,7 @@ export function caveOne(
     new CaveWall(gameContext, {
       x: BLOCK_SIZE * 28,
       y: 0,
-      width: gameContext.gameArea.width + BLOCK_SIZE * 4,
+      width: BLOCK_SIZE * 4,
       height: gameContext.gameArea.height,
     }),
   )
@@ -52,12 +52,17 @@ export function caveOne(
   )
 
   gameContext.addGameObject(
-    new Pipe(gameContext, BLOCK_SIZE * 4, BLOCK_SIZE * 2),
+    new Pipe(gameContext, {
+      x: BLOCK_SIZE * 4,
+      y: BLOCK_SIZE * 2,
+    }),
   )
 
   gameContext.addGameObject(
-    new WarpPipe(gameContext, BLOCK_SIZE * 26, BLOCK_SIZE * 14, (gc) => {
-      testLevelCaveAndEnemies(gc, [...previousLevels, 'caveOne'])
+    new WarpPipe(gameContext, {
+      x: BLOCK_SIZE * 26,
+      y: BLOCK_SIZE * 14,
+      setNewLevel: (gc) => levelOne(gc, [...previousLevels, 'cave-one']),
     }),
   )
 

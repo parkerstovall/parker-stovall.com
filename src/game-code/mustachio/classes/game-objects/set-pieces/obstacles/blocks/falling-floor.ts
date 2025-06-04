@@ -13,15 +13,14 @@ export class FallingFloor extends Block {
 
     this.fallStarted = true
     setTimeout(() => {
+      this.acceptsCollision = false
       this.isFalling = true
-    }, 1000)
+    }, 250)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     // This logic SHOULD be in the update method,
     // but I decided to extend block rather than UpdatingGameObject
-    // since it is a block
-
     if (this.isFalling) {
       this.rect.y += 5
 
@@ -46,5 +45,16 @@ export class FallingFloor extends Block {
       seeThroughRect.width,
       seeThroughRect.height,
     )
+
+    ctx.strokeStyle = 'black'
+    ctx.lineWidth = 2
+    ctx.strokeRect(
+      seeThroughRect.x,
+      seeThroughRect.y,
+      seeThroughRect.width,
+      seeThroughRect.height,
+    )
+
+    ctx.strokeRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
   }
 }

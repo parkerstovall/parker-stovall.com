@@ -64,7 +64,7 @@ export function outOfBounds(rect: rectangle, gameContext: GameContext) {
   const maxX = gameContext.gameArea.width * 2
   const minX = -gameContext.gameArea.width
   const maxY = gameContext.gameArea.height
-  const minY = 0
+  const minY = -gameContext.gameArea.height
 
   return (
     rect.x + rect.width < minX ||

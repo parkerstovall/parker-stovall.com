@@ -2,6 +2,8 @@ import type { rectangle } from '@/game-code/shared/types'
 import type { GameContext } from '../game-context'
 
 export abstract class GameObject {
+  acceptsCollision = true
+
   readonly rect: rectangle
   readonly objectId: number
 

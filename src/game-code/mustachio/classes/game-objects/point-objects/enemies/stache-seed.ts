@@ -2,6 +2,7 @@ import { direction, type collision } from '@/game-code/shared/types'
 import { Enemy } from './enemy'
 import type { GameContext } from '@/game-code/shared/game-context'
 import type { GameObject } from '@/game-code/shared/game-objects/game-object'
+import { BLOCK_SIZE } from '@/game-code/shared/constants'
 
 export class StacheSeed extends Enemy {
   readonly pointValue: number = 100
@@ -13,8 +14,8 @@ export class StacheSeed extends Enemy {
   private readonly reversed: boolean
 
   constructor(gameContext: GameContext, parent: GameObject, reversed: boolean) {
-    const width = parent.rect.width / 2
-    const height = parent.rect.height * 2
+    const width = BLOCK_SIZE * 1
+    const height = BLOCK_SIZE * 3
 
     let x: number
     let y: number
