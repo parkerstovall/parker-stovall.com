@@ -33,24 +33,36 @@ export function testLevelCaveAndEnemies(
 
   let pipe: Pipe
   if (previousLevels.includes('caveOne')) {
-    pipe = new Pipe(gameContext, BLOCK_SIZE * 10, touchingFloor, true)
+    pipe = new Pipe(gameContext, 
+      {
+        x: BLOCK_SIZE * 10,
+        y: touchingFloor,
+        hasStacheSeed: true,
+      })
   } else {
     pipe = new WarpPipe(
       gameContext,
-      BLOCK_SIZE * 10,
-      touchingFloor,
-      (gc) => caveOne(gc, [...previousLevels, 'testLevelTwo']),
-      true,
+      {
+        x: BLOCK_SIZE * 10,
+        y: touchingFloor,
+        hasStacheSeed: true,
+        setNewLevel:(gc) => caveOne(gc, [...previousLevels, 'testLevelTwo'])
+      }
     )
   }
 
   gameContext.addGameObject(pipe)
 
   gameContext.addGameObject(
-    new Pipe(gameContext, BLOCK_SIZE * 12, 0, true, true),
+    pipe = new Pipe(gameContext, 
+      {
+        x: BLOCK_SIZE * 12,
+        y: touchingFloor,
+        hasStacheSeed: true,
+      }),
   )
 
-  gameContext.addGameObject(new Pipe(gameContext, BLOCK_SIZE * 18, 0))
+  gameContext.addGameObject(new Pipe(gameContext, {x: BLOCK_SIZE * 18, y: 0}))
 
   gameContext.addGameObject(
     new StacheSlinger(gameContext, BLOCK_SIZE * 5, BLOCK_SIZE * 2),

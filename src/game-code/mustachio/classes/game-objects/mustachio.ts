@@ -19,6 +19,7 @@ import { ItemBlock } from './set-pieces/obstacles/blocks/punchable-blockS/item-b
 import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
 import { Floor } from './set-pieces/obstacles/floor'
 import { StacheSeed } from './point-objects/enemies/stache-seed'
+import { UpdatingGameObject } from '@/game-code/shared/game-objects/updating-game-object'
 
 export class Mustachio extends Player {
   private readonly image = new Image()
