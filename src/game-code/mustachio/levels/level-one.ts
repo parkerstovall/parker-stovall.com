@@ -37,7 +37,7 @@ export function levelOne(
   if (previousLevels[0] === 'cave-one') {
     gameContext.setPlayerLocation(BLOCK_SIZE * 69, BLOCK_SIZE * 8)
   }
-
+  
   gameContext.startMainLoop()
 }
 

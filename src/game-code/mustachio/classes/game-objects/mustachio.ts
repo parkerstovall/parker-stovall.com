@@ -28,7 +28,6 @@ export class Mustachio extends Player {
   private warpPipe: WarpPipe | null = null
   private canFire = true
   private crouched = false
-
   protected ignoreUpdate = false
 
   constructor(gameContext: GameContext, x: number, y: number) {
@@ -166,6 +165,13 @@ export class Mustachio extends Player {
   }
 
   protected handleCollision(collision: collision) {
+    if (
+      collision.gameObject instanceof UpdatingGameObject &&
+      !collision.gameObject.acceptsCollision
+    ) {
+      return
+    }
+
     this.handleCollisionGameObject(collision)
     this.handleCollisionDirection(collision)
   }
