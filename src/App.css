@@ -73,6 +73,7 @@ html, body {
   left: 50vw;
   height: 36vw;
   transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 hr {
@@ -118,27 +119,28 @@ header > h1 {
 }
 
 .mobile-controls .right {
-  left: 10vw;
+  left: 14vw;
 }
 
 .mobile-controls .jump {
-  right: 10vw;
+  right: 14vw;
 }
 
 .mobile-controls .fire {
-  right: 5vw;
+  right: 3vw;
 }
 
 .mobile-controls .left {
-  left: 5vw;
+  left: 3vw;
 }
 
 .mobile-controls button {
   position: absolute;
-  height: 3vw;
-  width: 3vw;
+  height: 8vw;
+  width: 8vw;
   opacity: .4;
   background-color: #333;
   bottom: 20px;
   border-radius: 50%;
+  pointer-events: all;
 }
