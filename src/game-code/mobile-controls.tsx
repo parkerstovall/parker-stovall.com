@@ -1,11 +1,11 @@
 export function MobileControls() {
   // The buttons just translate to keydowns
-  const onMouseDown = (key: string) => {
+  const onTouchStart = (key: string) => {
     const event = new KeyboardEvent('keydown', { key })
     window.dispatchEvent(event)
   }
 
-  const onMouseUp = (key: string) => {
+  const onTouchEnd = (key: string) => {
     const event = new KeyboardEvent('keyup', { key })
     window.dispatchEvent(event)
   }
@@ -13,23 +13,23 @@ export function MobileControls() {
   return (
     <div className="mobile-controls gameCanvas">
       <button
-        onMouseDown={() => onMouseDown('ArrowLeft')}
-        onMouseUp={() => onMouseUp('ArrowLeft')}
+        onTouchStart={() => onTouchStart('ArrowLeft')}
+        onTouchEnd={() => onTouchEnd('ArrowLeft')}
         className="left"
       ></button>
       <button
-        onMouseDown={() => onMouseDown('ArrowRight')}
-        onMouseUp={() => onMouseUp('ArrowRight')}
+        onTouchStart={() => onTouchStart('ArrowRight')}
+        onTouchEnd={() => onTouchEnd('ArrowRight')}
         className="right"
       ></button>
       <button
-        onMouseDown={() => onMouseDown('ArrowUp')}
-        onMouseUp={() => onMouseUp('ArrowUp')}
+        onTouchStart={() => onTouchStart('ArrowUp')}
+        onTouchEnd={() => onTouchEnd('ArrowUp')}
         className="jump"
       ></button>
       <button
-        onMouseDown={() => onMouseDown(' ')}
-        onMouseUp={() => onMouseUp(' ')}
+        onTouchStart={() => onTouchStart(' ')}
+        onTouchEnd={() => onTouchEnd(' ')}
         className="fire"
       ></button>
     </div>
