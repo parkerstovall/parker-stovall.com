@@ -34,10 +34,3 @@ jobs:
 
       - name: Commit changes if any
         uses: EndBug/add-and-commit@v9
-
-      - name: Approve pull request
-        if: ${{ success() }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr merge --auto --squash ${{ github.event.pull_request.html_url }}
