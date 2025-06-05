@@ -18,8 +18,10 @@ export abstract class GameContext {
   readonly gravity: number = 0.1
   readonly gameArea: HTMLCanvasElement
   readonly ui: HTMLCanvasElement
+  readonly bg: HTMLCanvasElement
   readonly uiContext: CanvasRenderingContext2D
   readonly gameContext: CanvasRenderingContext2D
+  readonly bgContext: CanvasRenderingContext2D
 
   private xSpeed: number = 1.5
   private mainLoop: number | null = null
@@ -30,6 +32,7 @@ export abstract class GameContext {
   private readonly pressedKeys: string[] = []
   private readonly gameObjects: GameObject[] = []
   private readonly uiObjects: GameObject[] = []
+  private readonly bgObjects: GameObject[] = []
   private readonly contextId: number = Math.floor(Math.random() * 1000000)
   protected abstract readonly gameName: string
 
@@ -44,6 +47,10 @@ export abstract class GameContext {
     result = this.setupCanvas('canvas#ui-layer')
     this.ui = result.canvas
     this.uiContext = result.context
+
+    result = this.setupCanvas('canvas#background-layer')
+    this.bg = result.canvas
+    this.bgContext = result.context
 
     window.addEventListener('keydown', (event) => this.onKeyDown(event))
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
@@ -146,6 +153,10 @@ export abstract class GameContext {
     this.uiObjects.push(gameObject)
   }
 
+  addBgObject(gameObject: GameObject) {
+    this.bgObjects.push(gameObject)
+  }
+
   removeGameObject(gameObject: GameObject) {
     const index = this.gameObjects.findIndex(
       (go) => go.objectId === gameObject.objectId,
@@ -161,6 +172,15 @@ export abstract class GameContext {
     )
     if (index > -1) {
       this.uiObjects.splice(index, 1)
+    }
+  }
+
+  removeBgObject(gameObject: GameObject) {
+    const index = this.bgObjects.findIndex(
+      (go) => go.objectId === gameObject.objectId,
+    )
+    if (index > -1) {
+      this.bgObjects.splice(index, 1)
     }
   }
 
@@ -185,6 +205,7 @@ export abstract class GameContext {
   private clear() {
     this.gameContext.clearRect(0, 0, this.gameArea.width, this.gameArea.height)
     this.uiContext.clearRect(0, 0, this.ui.width, this.ui.height)
+    this.bgContext.clearRect(0, 0, this.bg.width, this.bg.height)
   }
 
   private updateGameArea() {
@@ -196,6 +217,15 @@ export abstract class GameContext {
 
     if (this.gameOver) {
       this.player.update([])
+    }
+
+    // Draw the background layer
+    for (const bgObject of this.bgObjects) {
+      if (bgObject instanceof UpdatingGameObject) {
+        bgObject.update([])
+      }
+
+      bgObject.draw(this.bgContext)
     }
 
     // Update the game objects in the game area
