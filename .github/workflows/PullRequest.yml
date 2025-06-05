@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4      
+        with:
+          fetch-depth: 0  
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -37,4 +40,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
-          gh pr merge --auto --squash ${{ github.event.pull_request.html_url }}
+          gh pr merge --auto --squash ${{ github.event.pull_request.html_url }}\
