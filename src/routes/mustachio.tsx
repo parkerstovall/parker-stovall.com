@@ -21,6 +21,7 @@ function MustachioGame() {
     <div>
       <h1>Mustachio</h1>
       <p>Welcome to the Mustachio game!</p>
+      <canvas id="background-layer" className="gameCanvas" />
       <canvas id="game-layer" className="gameCanvas" />
       <canvas id="ui-layer" className="gameCanvas" />
     </div>

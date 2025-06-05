@@ -1,4 +1,4 @@
-import { UIObject } from './ui-objects'
+import { UIObject } from './ui-object'
 
 export class TimerDisplay extends UIObject {
   draw(ctx: CanvasRenderingContext2D): void {

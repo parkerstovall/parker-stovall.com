@@ -1,5 +1,5 @@
 import type { GameContext } from '@/game-code/shared/game-context'
-import { UIObject } from './ui-objects'
+import { UIObject } from './ui-object'
 
 export class WinDisplay extends UIObject {
   constructor(gameContext: GameContext) {
