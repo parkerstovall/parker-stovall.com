@@ -18,6 +18,8 @@ function MustachioGame() {
     }
   }, [])
 
+  const useMobileControls = window.innerWidth <= 768
+
   return (
     <div>
       <h1>Mustachio</h1>
@@ -25,7 +27,7 @@ function MustachioGame() {
       <canvas id="background-layer" className="gameCanvas" />
       <canvas id="game-layer" className="gameCanvas" />
       <canvas id="ui-layer" className="gameCanvas" />
-      <MobileControls />
+      {useMobileControls && <MobileControls />}
     </div>
   )
 }
