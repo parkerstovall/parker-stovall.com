@@ -5,7 +5,7 @@ import { Item } from './item'
 export class FireStache extends Item {
   readonly pointValue: number = 1000
   totalRaise: number = 20
-  speedX = 1
+  speedX = 2
 
   constructor(
     gameContext: GameContext,

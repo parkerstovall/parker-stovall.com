@@ -21,7 +21,7 @@ export abstract class Item extends PointObject {
 
     this.fromItemBlock = fromItemBlock
     if (fromItemBlock) {
-      this.speedY = -0.25
+      this.speedY = -0.5
     }
   }
 }

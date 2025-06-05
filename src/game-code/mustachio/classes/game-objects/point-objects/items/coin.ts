@@ -28,7 +28,7 @@ export class Coin extends Item {
     super(gameContext, rect, fromItemBlock)
 
     if (fromItemBlock) {
-      this.speedY = -2
+      this.speedY = -2.5
     }
   }
 
@@ -43,7 +43,7 @@ export class Coin extends Item {
 
     if (this.speedY < 0) {
       this.rect.y += this.speedY
-      this.speedY += 0.05
+      this.speedY += 0.1
       return
     }
 

@@ -27,7 +27,7 @@ export class StacheSlinger extends Enemy {
     )
 
     this.image.src = this.imageSources[0]
-    this.speedX = 0.75
+    this.speedX = 1.5
     gameContext.addGameObject(new FireBall(this.gameContext, this))
 
     this.shotTimer = setInterval(() => {

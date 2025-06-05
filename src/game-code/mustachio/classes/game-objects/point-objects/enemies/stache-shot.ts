@@ -7,7 +7,7 @@ import { outOfBounds } from '@/game-code/shared/app-code'
 
 export class StacheShot extends Enemy {
   readonly pointValue: number = 250
-  private readonly shotSpeed = 1.5
+  private readonly shotSpeed = 3
 
   constructor(gameContext: GameContext, parent: StacheCannon, dir: direction) {
     const width = BLOCK_SIZE * 0.75
@@ -44,10 +44,12 @@ export class StacheShot extends Enemy {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(_: collision[]) {
+    console.log('update')
     this.rect.x += this.speedX
     this.rect.y += this.speedY
 
     if (outOfBounds(this.rect, this.gameContext)) {
+      console.log('out of bounds')
       this.gameContext.removeGameObject(this)
     }
   }

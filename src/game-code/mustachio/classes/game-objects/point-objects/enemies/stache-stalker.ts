@@ -26,7 +26,7 @@ export class StacheStalker extends Enemy {
     )
 
     this.image.src = this.imageSources[0]
-    this.speedX = 0.5
+    this.speedX = 1
   }
 
   draw(ctx: CanvasRenderingContext2D) {

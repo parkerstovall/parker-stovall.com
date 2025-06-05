@@ -27,8 +27,8 @@ export class FireCross extends EnemyProjectile {
       height,
     })
 
-    this.speedY = 0.5
-    this.speedX = 0.5
+    this.speedY = 0.75
+    this.speedX = 0.75
 
     this.direction = dir
   }

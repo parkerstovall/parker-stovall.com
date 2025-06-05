@@ -15,7 +15,7 @@ export abstract class GameContext {
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
 
-  readonly gravity: number = 0.1
+  readonly gravity: number = 0.42
   readonly gameArea: HTMLCanvasElement
   readonly ui: HTMLCanvasElement
   readonly bg: HTMLCanvasElement
@@ -23,7 +23,9 @@ export abstract class GameContext {
   readonly gameContext: CanvasRenderingContext2D
   readonly bgContext: CanvasRenderingContext2D
 
-  private xSpeed: number = 1.5
+  private xSpeed: number = 5
+  private readonly walkSpeed = 5
+  private readonly sprintSpeed = 10
   private mainLoop: number | null = null
   private timerLoop: number | null = null
   private isStatic: boolean = false
@@ -82,7 +84,7 @@ export abstract class GameContext {
 
     this.mainLoop = setInterval(() => {
       this.updateGameArea()
-    }, 5)
+    }, 20)
 
     if (this.timerLoop) {
       clearInterval(this.timerLoop)
@@ -307,7 +309,7 @@ export abstract class GameContext {
     } else if (key === 'arrowup' || key === 'w') {
       this.player.jump()
     } else if (key === 'shift') {
-      this.xSpeed = 3
+      this.xSpeed = this.sprintSpeed
     }
   }
 
@@ -345,7 +347,7 @@ export abstract class GameContext {
         this.currentDir = direction.NONE
       }
     } else if (key === 'shift') {
-      this.xSpeed = 1.5
+      this.xSpeed = this.walkSpeed
     }
   }
 

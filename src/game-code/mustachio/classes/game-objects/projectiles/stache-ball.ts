@@ -24,7 +24,7 @@ export class StacheBall extends Projectile {
     this.leftRightMovement(collisions)
 
     if (this.onGround) {
-      this.speedY = -4
+      this.speedY = -5.5
     }
 
     if (this.rect.x < 0 || this.rect.x > this.gameContext.gameArea.width) {

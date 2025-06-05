@@ -29,7 +29,7 @@ export class StacheStreaker extends Enemy {
     )
 
     this.image.src = this.imageSources[0]
-    this.speedX = 0.5
+    this.speedX = 1
     this.shotTimer = setTimeout(() => {
       this.fireLaser()
     }, this.timeBetweenShots)

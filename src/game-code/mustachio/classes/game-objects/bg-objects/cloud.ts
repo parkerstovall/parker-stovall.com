@@ -3,7 +3,7 @@ import { UpdatingGameObject } from '@/game-code/shared/game-objects/updating-gam
 import type { collision } from '@/game-code/shared/types'
 
 export class Cloud extends UpdatingGameObject {
-  private readonly speed = 0.1
+  private readonly speed = 0.3
   constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, {
       width: 100,

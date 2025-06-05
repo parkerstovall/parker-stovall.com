@@ -37,7 +37,7 @@ export class StacheSeed extends Enemy {
 
     this.reversed = reversed
     this.parent = parent
-    this.speedY = 0.5
+    this.speedY = 1.5
     if (reversed) {
       this.direction = direction.DOWN
       this.imageSources.push(
