@@ -11,6 +11,11 @@ export class CaveWall extends Block {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'DarkSlateGray'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillRect(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
   }
 }

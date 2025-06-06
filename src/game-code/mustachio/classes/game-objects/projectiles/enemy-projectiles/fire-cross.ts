@@ -61,6 +61,11 @@ export class FireCross extends EnemyProjectile {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'red'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillRect(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
   }
 }

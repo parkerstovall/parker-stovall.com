@@ -12,7 +12,7 @@ export abstract class MovingGameObject extends UpdatingGameObject {
     // so if the object is outside of the canvas
     // we dont use gravity
 
-    this.onGround = outOfBounds(this.rect, this.gameContext)
+    this.onGround = outOfBounds(this, this.gameContext)
     for (const collision of collisions) {
       this.handleCollision(collision)
     }

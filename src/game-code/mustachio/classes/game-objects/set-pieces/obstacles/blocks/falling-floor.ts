@@ -30,10 +30,15 @@ export class FallingFloor extends Block {
     }
 
     ctx.fillStyle = 'Bisque'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillRect(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
 
     const seeThroughRect: rectangle = {
-      x: this.rect.x + BLOCK_SIZE / 3,
+      x: this.rect.x + BLOCK_SIZE / 3 + this.gameContext.xOffset,
       y: this.rect.y + BLOCK_SIZE / 3,
       width: this.rect.width - (BLOCK_SIZE / 3) * 2,
       height: this.rect.height - (BLOCK_SIZE / 3) * 2,

@@ -152,6 +152,8 @@ function sectionThree(gameContext: GameContext, previousLevels: string[]) {
     })
   }
 
+  createBlockWall(gameContext, 73, 11, 2, 1, 'wall')
+
   gameContext.addGameObject(pipe)
 
   createBlockWall(gameContext, 78, 16, 1, 1, 'wall')

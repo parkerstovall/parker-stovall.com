@@ -45,7 +45,13 @@ export class StacheBall extends Projectile {
     ctx.beginPath()
     ctx.lineWidth = 5
     ctx.fillStyle = 'red'
-    ctx.arc(this.rect.x, this.rect.y, this.rect.height, 0, 2 * Math.PI)
+    ctx.arc(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.height,
+      0,
+      2 * Math.PI,
+    )
     ctx.fill()
   }
 }

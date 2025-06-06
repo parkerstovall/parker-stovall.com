@@ -25,6 +25,11 @@ export class Pipe extends Obstacle {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'green'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillRect(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
   }
 }

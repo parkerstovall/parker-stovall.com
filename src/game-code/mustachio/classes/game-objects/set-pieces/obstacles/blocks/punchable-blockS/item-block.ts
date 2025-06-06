@@ -71,7 +71,7 @@ export class ItemBlock extends PunchableBlock {
 
     ctx.drawImage(
       this.image,
-      this.rect.x,
+      this.rect.x + this.gameContext.xOffset,
       this.rect.y,
       this.rect.width,
       this.rect.height,

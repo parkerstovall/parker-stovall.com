@@ -2,6 +2,7 @@ import type { GameContext } from '@/game-code/shared/game-context'
 import { Block } from './block'
 import { direction } from '@/game-code/shared/types'
 import { StacheShot } from '../../../point-objects/enemies/stache-shot'
+import { outOfBounds } from '@/game-code/shared/app-code'
 
 export class StacheCannon extends Block {
   private readonly image: HTMLImageElement = new Image()
@@ -22,17 +23,21 @@ export class StacheCannon extends Block {
     }
 
     this.shotTimer = setInterval(() => {
+      if (outOfBounds(this, this.gameContext)) {
+        return
+      }
+
       this.gameContext.addGameObject(
         new StacheShot(this.gameContext, this, dir),
         true,
       )
-    }, 4000)
+    }, 6000)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.drawImage(
       this.image,
-      this.rect.x,
+      this.rect.x + this.gameContext.xOffset,
       this.rect.y,
       this.rect.width,
       this.rect.height,

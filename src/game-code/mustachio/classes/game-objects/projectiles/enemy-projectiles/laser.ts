@@ -28,7 +28,12 @@ export class Laser extends EnemyProjectile {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'blue'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillRect(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
     ctx.strokeStyle = 'black'
     ctx.lineWidth = 2
     ctx.strokeRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)

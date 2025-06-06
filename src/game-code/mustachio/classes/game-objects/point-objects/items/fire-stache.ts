@@ -26,7 +26,12 @@ export class FireStache extends Item {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'red'
-    ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+    ctx.fillRect(
+      this.rect.x + this.gameContext.xOffset,
+      this.rect.y,
+      this.rect.width,
+      this.rect.height,
+    )
   }
 
   update(collisions: collision[]): void {

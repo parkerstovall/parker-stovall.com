@@ -14,8 +14,9 @@ export abstract class GameContext {
   score: number = 0
   currentDir: direction = direction.NONE
   time: number = 300 // 5 minutes
+  xOffset: number = 0
 
-  readonly gravity: number = 0.42
+  readonly gravity: number = 0.45
   readonly gameArea: HTMLCanvasElement
   readonly ui: HTMLCanvasElement
   readonly bg: HTMLCanvasElement
@@ -23,9 +24,9 @@ export abstract class GameContext {
   readonly gameContext: CanvasRenderingContext2D
   readonly bgContext: CanvasRenderingContext2D
 
-  private xSpeed: number = 5
-  private readonly walkSpeed = 5
-  private readonly sprintSpeed = 10
+  private xSpeed: number = 3
+  private readonly walkSpeed = 3
+  private readonly sprintSpeed = 6
   private mainLoop: number | null = null
   private timerLoop: number | null = null
   private isStatic: boolean = false
@@ -38,7 +39,7 @@ export abstract class GameContext {
   private readonly contextId: number = Math.floor(Math.random() * 1000000)
   protected abstract readonly gameName: string
 
-  // Temporary player object until initialized
+  // Needs to be initialized in the implementation
   protected abstract readonly player: Player
 
   constructor() {
@@ -67,11 +68,7 @@ export abstract class GameContext {
       this.player.reset(x, y)
     } else {
       this.player.reset(undefined, y)
-      for (const gameObject of this.gameObjects) {
-        if (!(gameObject instanceof Player)) {
-          gameObject.rect.x -= x
-        }
-      }
+      this.xOffset = x
     }
   }
 
@@ -84,7 +81,7 @@ export abstract class GameContext {
 
     this.mainLoop = setInterval(() => {
       this.updateGameArea()
-    }, 20)
+    }, 10)
 
     if (this.timerLoop) {
       clearInterval(this.timerLoop)
@@ -246,26 +243,17 @@ export abstract class GameContext {
     }
 
     const canMove = this.player.canMove(this.currentDir)
-    if (!canMove) {
-      return
-    }
-
-    if (this.gameOver) {
+    if (this.gameOver || !canMove) {
       return
     }
 
     if (!this.isStatic) {
-      // Always move every game object according to player speed
-      for (const gameObject of this.gameObjects) {
-        if (!(gameObject instanceof Player)) {
-          // We move the game object opposite to the player
-          // to simulate the player moving
-          if (this.currentDir === direction.RIGHT) {
-            gameObject.rect.x += this.xSpeed
-          } else if (this.currentDir === direction.LEFT) {
-            gameObject.rect.x -= this.xSpeed
-          }
-        }
+      // We move the game object opposite to the player
+      // to simulate the player moving
+      if (this.currentDir === direction.RIGHT) {
+        this.xOffset += this.xSpeed
+      } else if (this.currentDir === direction.LEFT) {
+        this.xOffset -= this.xSpeed
       }
     } else {
       if (this.currentDir === direction.RIGHT) {
@@ -380,7 +368,7 @@ export abstract class GameContext {
   // within the bounds of the game area
   private getGameObjectsToUpdate() {
     return this.gameObjects.filter((gameObject) => {
-      return !outOfBounds(gameObject.rect, this)
+      return !outOfBounds(gameObject, this)
     })
   }
 
@@ -501,7 +489,20 @@ export abstract class GameContext {
         collisionDirection = direction.NONE
       }
     } else {
-      collisionDirection = getCollisionDirection(gameObject, otherGameObject)
+      collisionDirection = getCollisionDirection(
+        gameObject,
+        otherGameObject,
+        this.xOffset,
+      )
+    }
+
+    if (gameObject instanceof Player) {
+      if (collisionDirection !== null) {
+        const dirStr = direction[collisionDirection]
+        console.log(
+          `Name: ${otherGameObject.constructor.name}; Direction: ${dirStr}`,
+        )
+      }
     }
 
     return collisionDirection

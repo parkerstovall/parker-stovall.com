@@ -44,7 +44,7 @@ export class FireBar extends RotatingGameObject {
 
     // Move the origin to the bottom-center of the firebar
     ctx.translate(
-      this.rect.x + this.rect.width / 2,
+      this.rect.x + this.rect.width / 2 + this.gameContext.xOffset,
       this.rect.y + this.rect.height,
     )
 

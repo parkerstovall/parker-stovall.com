@@ -31,7 +31,7 @@ export class BrickDebris extends Projectile {
 
     ctx.beginPath()
     ctx.arc(
-      this.rect.x + this.rect.width / 2,
+      this.rect.x + this.rect.width / 2 + this.gameContext.xOffset,
       this.rect.y + this.rect.height / 2,
       this.rect.width,
       0,

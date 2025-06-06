@@ -6,14 +6,14 @@ export class Floor extends Obstacle {
     ctx.fillStyle = 'YellowGreen'
 
     const grassRect = {
-      x: this.rect.x,
+      x: this.rect.x + this.gameContext.xOffset,
       y: this.rect.y,
       width: this.rect.width,
       height: BLOCK_SIZE / 3,
     }
 
     const dirtRect = {
-      x: this.rect.x,
+      x: this.rect.x + this.gameContext.xOffset,
       y: this.rect.y + BLOCK_SIZE / 3,
       width: this.rect.width,
       height: BLOCK_SIZE - BLOCK_SIZE / 3,

@@ -7,7 +7,7 @@ export abstract class RotatingGameObject extends UpdatingGameObject {
 
   hitDetection(playerX: number, playerY: number) {
     // 1. Move player point into firebar's local space (rotated frame)
-    const pivotX = this.rect.x + this.rect.width / 2
+    const pivotX = this.rect.x + this.rect.width / 2 + this.gameContext.xOffset
     const pivotY = this.rect.y + this.rect.height
 
     // Translate to pivot

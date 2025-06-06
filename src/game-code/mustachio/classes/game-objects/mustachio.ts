@@ -75,7 +75,10 @@ export class Mustachio extends Player {
 
     this.ignoreUpdate = true
     this.rect.x =
-      this.warpPipe.rect.x + this.warpPipe.rect.width / 2 - this.rect.width / 2
+      this.warpPipe.rect.x +
+      this.warpPipe.rect.width / 2 -
+      this.rect.width / 2 +
+      this.gameContext.xOffset
     this.rect.y = this.warpPipe.rect.y - this.rect.height
 
     let downAnimationID: number | null = null
@@ -188,13 +191,14 @@ export class Mustachio extends Player {
     if (collision.gameObject instanceof Item) {
       return
     }
+    const cRect = collision.gameObject.rect
 
     if (collision.gameObject instanceof Floor) {
-      if (this.rect.x + this.rect.width < collision.gameObject.rect.x) {
+      if (this.rect.x + this.rect.width < cRect.x + this.gameContext.xOffset) {
         collision.collisionDirection = direction.LEFT
       } else if (
         this.rect.x >
-        collision.gameObject.rect.x + collision.gameObject.rect.width
+        cRect.x + cRect.width + this.gameContext.xOffset
       ) {
         collision.collisionDirection = direction.RIGHT
       } else {
@@ -202,32 +206,32 @@ export class Mustachio extends Player {
       }
     }
 
-    const cRect = collision.gameObject.rect
-    let allowVert = this.rect.x + this.rect.width > cRect.x + 10
-    allowVert = allowVert && this.rect.x < cRect.x + cRect.width - 10
+    let allowVert =
+      this.rect.x + this.rect.width > cRect.x + 10 + this.gameContext.xOffset
+    allowVert =
+      allowVert &&
+      this.rect.x < cRect.x + cRect.width - 10 + this.gameContext.xOffset
 
     if (allowVert && collision.collisionDirection === direction.DOWN) {
       this.blockedDirVert = direction.DOWN
       this.landOnGameObject(collision.gameObject)
     } else if (allowVert && collision.collisionDirection === direction.UP) {
       this.speedY = 1
-      this.rect.y =
-        collision.gameObject.rect.y + collision.gameObject.rect.height - 1
+      this.rect.y = cRect.y + cRect.height - 1
       this.blockedDirVert = direction.UP
     } else if (
       collision.collisionDirection === direction.LEFT &&
       this.gameContext.currentDir === direction.LEFT
     ) {
       this.speedX = 0
-      this.rect.x = collision.gameObject.rect.x - this.rect.width + 1
+      this.rect.x = cRect.x - this.rect.width + 1 + this.gameContext.xOffset
       this.blockedDirHor = direction.LEFT
     } else if (
       collision.collisionDirection === direction.RIGHT &&
       this.gameContext.currentDir === direction.RIGHT
     ) {
       this.speedX = 0
-      this.rect.x =
-        collision.gameObject.rect.x + collision.gameObject.rect.width - 1
+      this.rect.x = cRect.x + cRect.width - 1 + this.gameContext.xOffset
       this.blockedDirHor = direction.RIGHT
     }
   }
@@ -435,7 +439,11 @@ export class Mustachio extends Player {
     this.gameContext.setGameOver()
     this.image.src = 'Images/Mustachio_FacingRight.png'
 
-    const targetX = flag.rect.x + flag.rect.width / 2 - this.rect.width / 1.5
+    const targetX =
+      flag.rect.x +
+      flag.rect.width / 2 -
+      this.rect.width / 1.5 +
+      this.gameContext.xOffset
 
     const winAnimation = setInterval(() => {
       if (this.rect.y + this.rect.height < BLOCK_SIZE * 17) {

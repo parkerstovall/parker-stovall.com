@@ -44,12 +44,10 @@ export class StacheShot extends Enemy {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(_: collision[]) {
-    console.log('update')
     this.rect.x += this.speedX
     this.rect.y += this.speedY
 
-    if (outOfBounds(this.rect, this.gameContext)) {
-      console.log('out of bounds')
+    if (outOfBounds(this, this.gameContext)) {
       this.gameContext.removeGameObject(this)
     }
   }
@@ -57,7 +55,7 @@ export class StacheShot extends Enemy {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.drawImage(
       this.image,
-      this.rect.x,
+      this.rect.x + this.gameContext.xOffset,
       this.rect.y,
       this.rect.width,
       this.rect.height,
