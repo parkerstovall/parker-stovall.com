@@ -73,8 +73,6 @@ export abstract class GameContext {
   }
 
   startMainLoop() {
-    console.log('Main loop started: ' + this.contextId)
-
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
     }
@@ -92,7 +90,6 @@ export abstract class GameContext {
   }
 
   stopMainLoop() {
-    console.log('Main loop stopped: ' + this.contextId)
     if (this.mainLoop) {
       clearInterval(this.mainLoop)
       this.mainLoop = null
@@ -495,15 +492,6 @@ export abstract class GameContext {
         otherGameObject,
         this.xOffset,
       )
-    }
-
-    if (gameObject instanceof Player) {
-      if (collisionDirection !== null) {
-        const dirStr = direction[collisionDirection]
-        console.log(
-          `Name: ${otherGameObject.constructor.name}; Direction: ${dirStr}`,
-        )
-      }
     }
 
     return collisionDirection
