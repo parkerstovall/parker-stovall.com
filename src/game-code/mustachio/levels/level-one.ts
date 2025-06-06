@@ -91,7 +91,7 @@ function sectionOne(gameContext: GameContext) {
   )
 
   gameContext.addGameObject(
-    new StacheStalker(gameContext, BLOCK_SIZE * 37.5, BLOCK_SIZE * 14),
+    new StacheStalker(gameContext, BLOCK_SIZE * 34, BLOCK_SIZE * 14),
   )
 }
 

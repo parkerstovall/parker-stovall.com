@@ -88,9 +88,9 @@ export function getReverseDirection(dir: direction) {
 
 export function outOfBounds(go: GameObject, gameContext: GameContext) {
   const maxX = gameContext.gameArea.width * 2
-  const minX = -gameContext.gameArea.width
+  const minX = -gameContext.gameArea.width / 2
   const maxY = gameContext.gameArea.height
-  const minY = -gameContext.gameArea.height
+  const minY = -gameContext.gameArea.height / 2
 
   let x = go.rect.x
   if (!(go instanceof Player)) {

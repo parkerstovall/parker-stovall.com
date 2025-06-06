@@ -6,12 +6,7 @@ import { BLOCK_SIZE } from '@/game-code/shared/constants'
 export class StacheStalker extends Enemy {
   readonly pointValue: number = 100
 
-  constructor(
-    gameContext: GameContext,
-
-    x: number,
-    y: number,
-  ) {
+  constructor(gameContext: GameContext, x: number, y: number) {
     const rect: rectangle = {
       x,
       y,

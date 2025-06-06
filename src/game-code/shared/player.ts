@@ -5,7 +5,6 @@ import { direction, type rectangle } from './types'
 
 export abstract class Player extends MovingGameObject {
   protected ignoreUpdate = false
-
   isDead: boolean = false
   blockedDirHor: direction = direction.NONE
   blockedDirVert: direction = direction.NONE
@@ -25,6 +24,9 @@ export abstract class Player extends MovingGameObject {
     if (this.blockedDirVert !== direction.DOWN) {
       this.speedY += this.gameContext.gravity
       this.rect.y += this.speedY
+      // if (this.speedY > this.maxSpeedY) {
+      //   this.speedY = this.maxSpeedY
+      // }
 
       // Fall off the screen
       if (this.rect.y + this.rect.height >= this.gameContext.gameArea.height) {

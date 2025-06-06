@@ -20,6 +20,7 @@ import { Brick } from './set-pieces/obstacles/blocks/punchable-blockS/brick'
 import { Floor } from './set-pieces/obstacles/floor'
 import { StacheSeed } from './point-objects/enemies/stache-seed'
 import { UpdatingGameObject } from '@/game-code/shared/game-objects/updating-game-object'
+import { CaveWall } from './set-pieces/obstacles/blocks/cave-wall'
 
 export class Mustachio extends Player {
   private readonly image = new Image()
@@ -92,7 +93,7 @@ export class Mustachio extends Player {
 
       this.rect.y += 5
 
-      if (this.rect.y >= this.warpPipe.rect.y + this.warpPipe.rect.height) {
+      if (this.rect.y >= this.warpPipe.rect.y) {
         if (downAnimationID) {
           clearInterval(downAnimationID)
         }
@@ -193,7 +194,10 @@ export class Mustachio extends Player {
     }
     const cRect = collision.gameObject.rect
 
-    if (collision.gameObject instanceof Floor) {
+    if (
+      collision.gameObject instanceof Floor ||
+      collision.gameObject instanceof CaveWall
+    ) {
       if (this.rect.x + this.rect.width < cRect.x + this.gameContext.xOffset) {
         collision.collisionDirection = direction.LEFT
       } else if (
@@ -408,7 +412,12 @@ export class Mustachio extends Player {
       this.gameContext.addGameObject(fire)
     } else if (key === 'arrowdown' || key === 's') {
       if (this.warpPipe) {
-        this.image.src = 'Images/Mustachio.png'
+        if (this.isFire) {
+          this.image.src = 'Images/Mustachio_Fire.png'
+        } else {
+          this.image.src = 'Images/Mustachio.png'
+        }
+
         this.goDownPipe()
       } else {
         this.toggleCrouch(true)

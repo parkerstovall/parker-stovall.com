@@ -16,7 +16,7 @@ export abstract class GameContext {
   time: number = 300 // 5 minutes
   xOffset: number = 0
 
-  readonly gravity: number = 0.45
+  readonly gravity: number = 0.375
   readonly gameArea: HTMLCanvasElement
   readonly ui: HTMLCanvasElement
   readonly bg: HTMLCanvasElement
@@ -68,7 +68,7 @@ export abstract class GameContext {
       this.player.reset(x, y)
     } else {
       this.player.reset(undefined, y)
-      this.xOffset = x
+      this.xOffset = -x
     }
   }
 
@@ -106,6 +106,7 @@ export abstract class GameContext {
 
   clearLevel() {
     this.isStatic = false
+    this.xOffset = 0
     this.stopMainLoop()
 
     for (const gameObject of this.gameObjects) {
