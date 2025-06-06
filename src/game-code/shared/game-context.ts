@@ -36,7 +36,6 @@ export abstract class GameContext {
   private readonly gameObjects: GameObject[] = []
   private readonly uiObjects: GameObject[] = []
   private readonly bgObjects: GameObject[] = []
-  private readonly contextId: number = Math.floor(Math.random() * 1000000)
   protected abstract readonly gameName: string
 
   // Needs to be initialized in the implementation

@@ -18,7 +18,7 @@ function MustachioGame() {
     }
   }, [])
 
-  const useMobileControls = window.innerWidth <= 768
+  const useMobileControls = window.innerWidth <= 1000
 
   return (
     <div>

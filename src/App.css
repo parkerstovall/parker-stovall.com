@@ -74,6 +74,8 @@ html, body {
   height: 36vw;
   transform: translate(-50%, -50%);
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 hr {
@@ -108,6 +110,7 @@ hr {
   border: 2px solid darkgray;
   border-radius: 50px;
 }
+
 header > h1 {
   text-align: Left;
   font-size: 100px;
@@ -116,6 +119,7 @@ header > h1 {
 
 .mobile-controls {
   z-index: 4;
+  top: 75vh;
 }
 
 .mobile-controls .right {
