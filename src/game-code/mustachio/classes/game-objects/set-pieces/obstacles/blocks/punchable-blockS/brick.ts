@@ -17,7 +17,7 @@ export class Brick extends PunchableBlock {
     }
 
     this.punched = true
-    this.gameContext.score += 100
+    this.gameContext.addScore(100)
 
     const speedXs = [-1, -2.5, 1, 2.5]
     const speedYs = [-2, -3.5, -2, -3.5]

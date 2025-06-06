@@ -42,7 +42,7 @@ export abstract class Enemy extends PointObject {
     this.speedY = 0
     this.rect.y += this.rect.height / 2
     this.rect.height /= 2
-    this.gameContext.score += this.pointValue
+    this.gameContext.addScore(this.pointValue)
 
     setTimeout(() => {
       this.gameContext.removeGameObject(this)

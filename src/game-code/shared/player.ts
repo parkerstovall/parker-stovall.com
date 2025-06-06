@@ -48,7 +48,7 @@ export abstract class Player extends MovingGameObject {
       return
     }
 
-    this.speedY = -12
+    this.speedY = -14
     this.numJumps++
     this.blockedDirVert = direction.NONE
     this.rect.y -= 5

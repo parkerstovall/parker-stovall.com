@@ -9,6 +9,8 @@ import { RotatingGameObject } from './game-objects/rotating-game-object'
 import { direction, type collision } from './types'
 import { UpdatingGameObject } from './game-objects/updating-game-object'
 import { WinDisplay } from '../mustachio/classes/game-objects/ui-objects/win-display'
+import type { ScoreDisplay } from '../mustachio/classes/game-objects/ui-objects/score-display'
+import type { TimerDisplay } from '../mustachio/classes/game-objects/ui-objects/timer-display'
 
 export abstract class GameContext {
   score: number = 0
@@ -16,7 +18,7 @@ export abstract class GameContext {
   time: number = 300 // 5 minutes
   xOffset: number = 0
 
-  readonly gravity: number = 0.375
+  readonly gravity: number = 0.6
   readonly gameArea: HTMLCanvasElement
   readonly ui: HTMLCanvasElement
   readonly bg: HTMLCanvasElement
@@ -24,9 +26,9 @@ export abstract class GameContext {
   readonly gameContext: CanvasRenderingContext2D
   readonly bgContext: CanvasRenderingContext2D
 
-  private xSpeed: number = 3
-  private readonly walkSpeed = 3
-  private readonly sprintSpeed = 6
+  private xSpeed: number
+  private readonly walkSpeed
+  private readonly sprintSpeed
   private mainLoop: number | null = null
   private timerLoop: number | null = null
   private isStatic: boolean = false
@@ -40,8 +42,17 @@ export abstract class GameContext {
 
   // Needs to be initialized in the implementation
   protected abstract readonly player: Player
+  protected abstract readonly scoreDisplay: ScoreDisplay
+  protected abstract readonly timeDisplay: TimerDisplay
 
   constructor() {
+    if (window.innerWidth <= 1000) {
+      this.walkSpeed = 14
+    } else {
+      this.walkSpeed = 7
+    }
+    this.xSpeed = this.walkSpeed
+    this.sprintSpeed = 14
     let result = this.setupCanvas('canvas#game-layer')
     this.gameArea = result.canvas
     this.gameContext = result.context
@@ -62,6 +73,11 @@ export abstract class GameContext {
     return this.player
   }
 
+  addScore(score: number) {
+    this.score += score
+    this.scoreDisplay.draw(this.uiContext)
+  }
+
   setPlayerLocation(x: number, y: number) {
     if (this.isStatic) {
       this.player.reset(x, y)
@@ -78,7 +94,7 @@ export abstract class GameContext {
 
     this.mainLoop = setInterval(() => {
       this.updateGameArea()
-    }, 10)
+    }, 20)
 
     if (this.timerLoop) {
       clearInterval(this.timerLoop)
@@ -151,6 +167,7 @@ export abstract class GameContext {
 
   addBgObject(gameObject: GameObject) {
     this.bgObjects.push(gameObject)
+    gameObject.draw(this.bgContext)
   }
 
   removeGameObject(gameObject: GameObject) {
@@ -200,8 +217,8 @@ export abstract class GameContext {
 
   private clear() {
     this.gameContext.clearRect(0, 0, this.gameArea.width, this.gameArea.height)
-    this.uiContext.clearRect(0, 0, this.ui.width, this.ui.height)
-    this.bgContext.clearRect(0, 0, this.bg.width, this.bg.height)
+    // this.uiContext.clearRect(0, 0, this.ui.width, this.ui.height)
+    // this.bgContext.clearRect(0, 0, this.bg.width, this.bg.height)
   }
 
   private updateGameArea() {
@@ -213,15 +230,6 @@ export abstract class GameContext {
 
     if (this.gameOver) {
       this.player.update([])
-    }
-
-    // Draw the background layer
-    for (const bgObject of this.bgObjects) {
-      if (bgObject instanceof UpdatingGameObject) {
-        bgObject.update([])
-      }
-
-      bgObject.draw(this.bgContext)
     }
 
     // Update the game objects in the game area
@@ -350,6 +358,7 @@ export abstract class GameContext {
 
   private timerTick() {
     this.time--
+    this.timeDisplay.draw(this.uiContext)
     if (this.time <= 0) {
       if (this.timerLoop) {
         clearInterval(this.timerLoop)
