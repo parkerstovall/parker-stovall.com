@@ -196,7 +196,7 @@ export class Mustachio extends Player {
 
     if (
       collision.gameObject instanceof Floor ||
-      collision.gameObject instanceof CaveWall
+      (collision.gameObject instanceof CaveWall && this.rect.y < cRect.y)
     ) {
       if (this.rect.x + this.rect.width < cRect.x + this.gameContext.xOffset) {
         collision.collisionDirection = direction.LEFT
