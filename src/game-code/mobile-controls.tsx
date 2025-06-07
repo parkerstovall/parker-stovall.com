@@ -28,8 +28,14 @@ export function MobileControls() {
         className="jump"
       ></button>
       <button
-        onTouchStart={() => onTouchStart(' ')}
-        onTouchEnd={() => onTouchEnd(' ')}
+        onTouchStart={() => {
+          onTouchStart(' ')
+          onTouchStart('ArrowDown')
+        }}
+        onTouchEnd={() => {
+          onTouchEnd(' ')
+          onTouchEnd('ArrowDown')
+        }} 
         className="fire"
       ></button>
     </div>
