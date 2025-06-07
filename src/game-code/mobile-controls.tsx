@@ -35,7 +35,7 @@ export function MobileControls() {
         onTouchEnd={() => {
           onTouchEnd(' ')
           onTouchEnd('ArrowDown')
-        }} 
+        }}
         className="fire"
       ></button>
     </div>
