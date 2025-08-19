@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { MustachioGameContext } from '@/game-code/mustachio/mustachi-game-context'
-import { levelOne } from '@/game-code/mustachio/levels/level-one'
 import { MobileControls } from '@/game-code/mobile-controls'
+import { levelOne } from '@/game-code/custom/mustachio/levels/level-one'
+import { MustachioGameContext } from '@/game-code/custom/mustachio/mustachi-game-context'
 
 export const Route = createFileRoute('/mustachio')({
   component: MustachioGame,
