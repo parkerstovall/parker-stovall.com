@@ -50,5 +50,6 @@
     "tabWidth": 2,
     "semi": false,
     "printWidth": 80
-  }
+  },
+  "version": "0.0.1"
 }
