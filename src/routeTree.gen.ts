@@ -8,27 +8,66 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as GamesIndexRouteImport } from './routes/games/index'
+import { Route as GamesPacManRouteImport } from './routes/games/pac-man'
+import { Route as GamesMustachioRouteImport } from './routes/games/mustachio'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as MustachioImport } from './routes/mustachio'
-import { Route as IndexImport } from './routes/index'
-
-// Create/Update Routes
-
-const MustachioRoute = MustachioImport.update({
-  id: '/mustachio',
-  path: '/mustachio',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesIndexRoute = GamesIndexRouteImport.update({
+  id: '/games/',
+  path: '/games/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesPacManRoute = GamesPacManRouteImport.update({
+  id: '/games/pac-man',
+  path: '/games/pac-man',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesMustachioRoute = GamesMustachioRouteImport.update({
+  id: '/games/mustachio',
+  path: '/games/mustachio',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/games/mustachio': typeof GamesMustachioRoute
+  '/games/pac-man': typeof GamesPacManRoute
+  '/games': typeof GamesIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/games/mustachio': typeof GamesMustachioRoute
+  '/games/pac-man': typeof GamesPacManRoute
+  '/games': typeof GamesIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/games/mustachio': typeof GamesMustachioRoute
+  '/games/pac-man': typeof GamesPacManRoute
+  '/games/': typeof GamesIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/games/mustachio' | '/games/pac-man' | '/games'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/games/mustachio' | '/games/pac-man' | '/games'
+  id: '__root__' | '/' | '/games/mustachio' | '/games/pac-man' | '/games/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  GamesMustachioRoute: typeof GamesMustachioRoute
+  GamesPacManRoute: typeof GamesPacManRoute
+  GamesIndexRoute: typeof GamesIndexRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
@@ -36,76 +75,39 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/mustachio': {
-      id: '/mustachio'
-      path: '/mustachio'
-      fullPath: '/mustachio'
-      preLoaderRoute: typeof MustachioImport
-      parentRoute: typeof rootRoute
+    '/games/': {
+      id: '/games/'
+      path: '/games'
+      fullPath: '/games'
+      preLoaderRoute: typeof GamesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/pac-man': {
+      id: '/games/pac-man'
+      path: '/games/pac-man'
+      fullPath: '/games/pac-man'
+      preLoaderRoute: typeof GamesPacManRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/mustachio': {
+      id: '/games/mustachio'
+      path: '/games/mustachio'
+      fullPath: '/games/mustachio'
+      preLoaderRoute: typeof GamesMustachioRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
-}
-
-// Create and export the route tree
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/mustachio': typeof MustachioRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/mustachio': typeof MustachioRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/mustachio': typeof MustachioRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/mustachio'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/mustachio'
-  id: '__root__' | '/' | '/mustachio'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  MustachioRoute: typeof MustachioRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  MustachioRoute: MustachioRoute,
+  GamesMustachioRoute: GamesMustachioRoute,
+  GamesPacManRoute: GamesPacManRoute,
+  GamesIndexRoute: GamesIndexRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/mustachio"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/mustachio": {
-      "filePath": "mustachio.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
