@@ -13,11 +13,11 @@ export class Flag extends SetPiece {
       height: BLOCK_SIZE * 8,
     })
 
-    this.image.src = 'Images/homestead.png'
+    this.image.src = '/Images/homestead.webp'
   }
 
   closeDoor() {
-    this.image.src = 'Images/homesteadClosed.png'
+    this.image.src = '/Images/homesteadClosed.webp'
   }
 
   draw(ctx: CanvasRenderingContext2D) {

@@ -7,7 +7,7 @@ export class FireBarBlock extends Block {
   constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, x, y)
 
-    this.image.src = 'Images/obstacleBrick.png'
+    this.image.src = '/Images/obstacleBrick.webp'
     const fireBar = new FireBar(
       gameContext,
       this.rect.x + this.rect.width / 2 - 5,

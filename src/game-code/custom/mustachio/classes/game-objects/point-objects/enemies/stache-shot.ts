@@ -26,16 +26,16 @@ export class StacheShot extends Enemy {
     )
 
     if (dir === direction.LEFT) {
-      this.image.src = 'Images/stacheShotLeft.png'
+      this.image.src = '/Images/stacheShotLeft.webp'
       this.speedX = -this.shotSpeed
     } else if (dir === direction.RIGHT) {
-      this.image.src = 'Images/stacheShotRight.png'
+      this.image.src = '/Images/stacheShotRight.webp'
       this.speedX = this.shotSpeed
     } else if (dir === direction.UP) {
-      this.image.src = 'Images/stacheShotUp.png'
+      this.image.src = '/Images/stacheShotUp.webp'
       this.speedY = -this.shotSpeed
     } else if (dir === direction.DOWN) {
-      this.image.src = 'Images/stacheShotDown.png'
+      this.image.src = '/Images/stacheShotDown.webp'
       this.speedY = this.shotSpeed
     } else {
       throw new Error('Invalid direction for StacheShot')

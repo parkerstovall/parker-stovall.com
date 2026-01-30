@@ -6,7 +6,7 @@ export class Wall extends Block {
 
   constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, x, y)
-    this.image.src = 'Images/obstacleBrick.png'
+    this.image.src = '/Images/obstacleBrick.webp'
   }
 
   draw(ctx: CanvasRenderingContext2D) {

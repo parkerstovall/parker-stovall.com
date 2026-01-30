@@ -16,8 +16,8 @@ export class StacheStalker extends Enemy {
     super(gameContext, rect)
 
     this.imageSources.push(
-      'Images/stacheStalker.png',
-      'Images/stacheStalkerReversed.png',
+      '/Images/stacheStalker.webp',
+      '/Images/stacheStalkerReversed.webp',
     )
 
     this.image.src = this.imageSources[0]

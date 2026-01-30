@@ -39,7 +39,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/games/mustachio': typeof GamesMustachioRoute
   '/games/pac-man': typeof GamesPacManRoute
-  '/games': typeof GamesIndexRoute
+  '/games/': typeof GamesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -56,7 +56,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/games/mustachio' | '/games/pac-man' | '/games'
+  fullPaths: '/' | '/games/mustachio' | '/games/pac-man' | '/games/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/games/mustachio' | '/games/pac-man' | '/games'
   id: '__root__' | '/' | '/games/mustachio' | '/games/pac-man' | '/games/'
@@ -81,7 +81,7 @@ declare module '@tanstack/react-router' {
     '/games/': {
       id: '/games/'
       path: '/games'
-      fullPath: '/games'
+      fullPath: '/games/'
       preLoaderRoute: typeof GamesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

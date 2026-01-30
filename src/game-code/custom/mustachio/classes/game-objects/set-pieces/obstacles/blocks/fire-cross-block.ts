@@ -14,7 +14,7 @@ export class FireCrossBlock extends Block {
   ) {
     super(gameContext, x, y)
 
-    this.image.src = 'Images/obstacleBrick.png'
+    this.image.src = '/Images/obstacleBrick.webp'
 
     for (const dir of dirs) {
       this.gameContext.addGameObject(new FireCross(gameContext, this, dir))

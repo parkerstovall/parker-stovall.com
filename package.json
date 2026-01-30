@@ -18,7 +18,7 @@
     "@tanstack/router-plugin": "^1.131.27",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-markdown": "^5.1.0",
-    "pac-man-phaser": "^1.0.1",
+    "pac-man-phaser": "^1.0.8",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "terser": "^5.43.1"

@@ -8,7 +8,7 @@ export class Brick extends PunchableBlock {
 
   constructor(gameContext: GameContext, x: number, y: number) {
     super(gameContext, x, y)
-    this.image.src = 'Images/brick.png'
+    this.image.src = '/Images/brick.webp'
   }
 
   punch() {
