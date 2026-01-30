@@ -46,7 +46,10 @@ export class StacheSeed extends Enemy {
       )
     } else {
       this.direction = direction.UP
-      this.imageSources.push('/Images/stacheSeed1.webp', '/Images/stacheSeed2.webp')
+      this.imageSources.push(
+        '/Images/stacheSeed1.webp',
+        '/Images/stacheSeed2.webp',
+      )
     }
   }
 
