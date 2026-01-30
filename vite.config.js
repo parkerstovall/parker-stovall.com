@@ -27,4 +27,14 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1500, // Phaser is a large dependency
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          phaser: ['phaser'],
+        },
+      },
+    },
+  },
 })
