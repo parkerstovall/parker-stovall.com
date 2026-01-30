@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { startMustachio } from 'mustachio-game'
+import { MobileControls } from '@/shared/mobile-controls'
 
 export const Route = createFileRoute('/games/mustachio')({
   component: MustachioGame,
@@ -11,14 +12,14 @@ function MustachioGame() {
     startMustachio('game-container')
   }, [])
 
-  // const useMobileControls = window.innerWidth <= 1000
+  const useMobileControls = window.innerWidth <= 1000
 
   return (
     <div>
       <h1>Mustachio</h1>
       <p>Welcome to the Mustachio game!</p>
       <div id="game-container"></div>
-      {/* {useMobileControls && <MobileControls />} */}
+      {useMobileControls && <MobileControls />}
     </div>
   )
 }
