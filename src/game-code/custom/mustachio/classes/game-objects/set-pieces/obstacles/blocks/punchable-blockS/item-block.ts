@@ -10,8 +10,8 @@ export class ItemBlock extends PunchableBlock {
   hidden: boolean
 
   private readonly image: HTMLImageElement = new Image()
-  private readonly imageSource: string = 'Images/itemBlock.png'
-  private readonly imageSourcePunched: string = 'Images/punchedBlock.png'
+  private readonly imageSource: string = '/Images/itemBlock.webp'
+  private readonly imageSourcePunched: string = '/Images/punchedBlock.webp'
 
   protected item: new (
     gameContext: GameContext,

@@ -40,7 +40,7 @@ export class Mustachio extends Player {
       height: BLOCK_SIZE * 0.66,
     })
 
-    this.image.src = 'Images/Mustachio.png'
+    this.image.src = '/Images/Mustachio.webp'
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -371,7 +371,7 @@ export class Mustachio extends Player {
   playerKill() {
     this.gameContext.setGameOver()
     this.ignoreUpdate = true
-    this.image.src = 'Images/Mustachio.png'
+    this.image.src = '/Images/Mustachio.webp'
 
     setTimeout(() => {
       this.speedY = -5
@@ -413,9 +413,9 @@ export class Mustachio extends Player {
     } else if (key === 'arrowdown' || key === 's') {
       if (this.warpPipe) {
         if (this.isFire) {
-          this.image.src = 'Images/Mustachio_Fire.png'
+          this.image.src = '/Images/Mustachio_Fire.webp'
         } else {
-          this.image.src = 'Images/Mustachio.png'
+          this.image.src = '/Images/Mustachio.webp'
         }
 
         this.goDownPipe()
@@ -424,15 +424,15 @@ export class Mustachio extends Player {
       }
     } else if (key === 'arrowleft' || key === 'a') {
       if (this.isFire) {
-        this.image.src = 'Images/Mustachio_FacingLeft_Fire.png'
+        this.image.src = '/Images/Mustachio_FacingLeft_Fire.webp'
       } else {
-        this.image.src = 'Images/Mustachio_FacingLeft.png'
+        this.image.src = '/Images/Mustachio_FacingLeft.webp'
       }
     } else if (key === 'arrowright' || key === 'd') {
       if (this.isFire) {
-        this.image.src = 'Images/Mustachio_FacingRight_Fire.png'
+        this.image.src = '/Images/Mustachio_FacingRight_Fire.webp'
       } else {
-        this.image.src = 'Images/Mustachio_FacingRight.png'
+        this.image.src = '/Images/Mustachio_FacingRight.webp'
       }
     }
   }
@@ -446,7 +446,7 @@ export class Mustachio extends Player {
   winGame(flag: Flag) {
     this.ignoreUpdate = true
     this.gameContext.setGameOver()
-    this.image.src = 'Images/Mustachio_FacingRight.png'
+    this.image.src = '/Images/Mustachio_FacingRight.webp'
 
     const targetX =
       flag.rect.x +
@@ -462,7 +462,7 @@ export class Mustachio extends Player {
 
       if (this.rect.x > targetX) {
         clearInterval(winAnimation)
-        this.image.src = 'Images/Mustachio.png'
+        this.image.src = '/Images/Mustachio.webp'
         setTimeout(() => {
           flag.closeDoor()
           this.gameContext.removeGameObject(this)

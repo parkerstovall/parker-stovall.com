@@ -41,12 +41,12 @@ export class StacheSeed extends Enemy {
     if (reversed) {
       this.direction = direction.DOWN
       this.imageSources.push(
-        'Images/stacheSeedReversed1.png',
-        'Images/stacheSeedReversed2.png',
+        '/Images/stacheSeedReversed1.webp',
+        '/Images/stacheSeedReversed2.webp',
       )
     } else {
       this.direction = direction.UP
-      this.imageSources.push('Images/stacheSeed1.png', 'Images/stacheSeed2.png')
+      this.imageSources.push('/Images/stacheSeed1.webp', '/Images/stacheSeed2.webp')
     }
   }
 

@@ -22,8 +22,8 @@ export class StacheSlinger extends Enemy {
     this.minX = x - BLOCK_SIZE * 4
 
     this.imageSources.push(
-      'Images/stacheSlinger1.png',
-      'Images/stacheSlinger2.png',
+      '/Images/stacheSlinger1.webp',
+      '/Images/stacheSlinger2.webp',
     )
 
     this.image.src = this.imageSources[0]

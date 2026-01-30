@@ -11,13 +11,13 @@ export class StacheCannon extends Block {
   constructor(gameContext: GameContext, x: number, y: number, dir: direction) {
     super(gameContext, x, y)
     if (dir === direction.UP) {
-      this.image.src = 'Images/cannonUp.png'
+      this.image.src = '/Images/cannonUp.webp'
     } else if (dir === direction.DOWN) {
-      this.image.src = 'Images/cannonDown.png'
+      this.image.src = '/Images/cannonDown.webp'
     } else if (dir === direction.LEFT) {
-      this.image.src = 'Images/cannonLeft.png'
+      this.image.src = '/Images/cannonLeft.webp'
     } else if (dir === direction.RIGHT) {
-      this.image.src = 'Images/cannonRight.png'
+      this.image.src = '/Images/cannonRight.webp'
     } else {
       throw new Error('Invalid direction for StacheCannon')
     }

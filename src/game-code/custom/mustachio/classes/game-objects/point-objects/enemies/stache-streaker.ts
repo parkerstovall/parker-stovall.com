@@ -24,8 +24,8 @@ export class StacheStreaker extends Enemy {
     )
 
     this.imageSources.push(
-      'Images/stacheStreaker1.png',
-      'Images/stacheStreaker2.png',
+      '/Images/stacheStreaker1.webp',
+      '/Images/stacheStreaker2.webp',
     )
 
     this.image.src = this.imageSources[0]
