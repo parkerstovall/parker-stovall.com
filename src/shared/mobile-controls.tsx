@@ -11,7 +11,7 @@ export function MobileControls() {
   }
 
   return (
-    <div className="mobile-controls gameCanvas">
+    <div className="mobile-controls">
       <button
         onTouchStart={() => onTouchStart('ArrowLeft')}
         onTouchEnd={() => onTouchEnd('ArrowLeft')}
