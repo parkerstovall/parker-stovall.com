@@ -1,21 +1,15 @@
+import { MobileControls } from '@/shared/mobile-controls'
 import { createFileRoute } from '@tanstack/react-router'
+import { startMustachio } from 'mustachio-game'
 import { useEffect } from 'react'
-import { MobileControls } from '@/game-code/mobile-controls'
-import { levelOne } from '@/game-code/custom/mustachio/levels/level-one'
-import { MustachioGameContext } from '@/game-code/custom/mustachio/mustachi-game-context'
 
 export const Route = createFileRoute('/games/mustachio')({
   component: MustachioGame,
 })
 
-let gc: MustachioGameContext | null = null
-
 function MustachioGame() {
   useEffect(() => {
-    if (!gc) {
-      gc = new MustachioGameContext()
-      gc.restart(levelOne)
-    }
+    startMustachio('game-container')
   }, [])
 
   const useMobileControls = window.innerWidth <= 1000
@@ -24,9 +18,10 @@ function MustachioGame() {
     <div>
       <h1>Mustachio</h1>
       <p>Welcome to the Mustachio game!</p>
-      <canvas id="background-layer" className="gameCanvas" />
-      <canvas id="game-layer" className="gameCanvas" />
-      <canvas id="ui-layer" className="gameCanvas" />
+      <div
+        style={{ height: '36vw', width: '64vw', margin: 'auto' }}
+        id="game-container"
+      ></div>
       {useMobileControls && <MobileControls />}
     </div>
   )
